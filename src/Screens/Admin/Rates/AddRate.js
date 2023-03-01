@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import {
-  Box, FormControlLabel, Checkbox, Grid, Typography, Drawer, Button, TextField, Autocomplete, Divider, IconButton, Radio, RadioGroup
+  Box, FormControlLabel, Checkbox, Grid, Typography, Drawer, Button, TextField, Autocomplete, Divider, IconButton, Radio, RadioGroup, FormGroup
 } from "@mui/material";
 import {Add, Close, DeleteForeverOutlined} from "@mui/icons-material";
 
@@ -218,6 +218,20 @@ export default function AddRate(props) {
                             required
                             fullWidth
                           />
+                        </Grid>
+                        <Grid item xs={12}>
+                          <FormGroup>
+                            <FormControlLabel sx={{color: "#000000de"}} control={
+                              <Checkbox 
+                                id={index}
+                                checked={el.flat_rate === true}
+                                color="primary"
+                                onChange={props.handleStepChange}
+                                value={el.flat_rate}
+                                size="small"
+                                name="flat_rate"
+                              />} label={props.literals.flat_rate} />
+                          </FormGroup>
                         </Grid>
                         <Grid item xs={2} alignSelf="center">
                           <Typography variant="body1" sx={{color: '#000000de'}}>

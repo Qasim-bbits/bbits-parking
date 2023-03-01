@@ -1,7 +1,7 @@
 import { 
   DashboardOutlined, DirectionsCar, BackupTableOutlined, Public, 
   MapOutlined, Inventory2Outlined, Business, ViewModuleOutlined, 
-  LockOpenOutlined, ConfirmationNumberOutlined, Settings, 
+  LockOpenOutlined, ConfirmationNumberOutlined, Settings, Report, 
 } from "@mui/icons-material";
 import {router} from "./routhPaths";
 
@@ -75,6 +75,11 @@ const adminRoutes = [
     path: router.external_parking_config,
     icon: <Settings />,
     value: "external_parking_config",
+  },
+  {
+    path: router.reporting,
+    icon: <Report />,
+    value: "reporting",
   },
 ];
 

@@ -29,6 +29,7 @@ export const router = {
   permission: "/suite/permission",
   profile: "/profile",
   external_parking_config: "/suite/external_parking_config",
+  reporting: "/suite/reporting",
 };
 
 export const adminRoutes = [

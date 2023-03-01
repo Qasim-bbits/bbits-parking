@@ -133,8 +133,9 @@ export default function TicketsIssuedView(props) {
                             <StyledTableCell>{props.literals.ticket_name}</StyledTableCell>
                             <StyledTableCell>{props.literals.plate}</StyledTableCell>
                             <StyledTableCell>{props.literals.issued_at}</StyledTableCell>
+                            <StyledTableCell>{props.literals.amount}</StyledTableCell>
+                            <StyledTableCell>{props.literals.paid_at}</StyledTableCell>
                             <StyledTableCell>{props.literals.parking_id}</StyledTableCell>
-                            <StyledTableCell>{props.literals.start_date_time} - {props.literals.end_date_time}</StyledTableCell>
                             <StyledTableCell>{props.literals.parking_status}</StyledTableCell>
                             <StyledTableCell>{props.literals.ticket_status}</StyledTableCell>
                           </TableRow>
@@ -166,8 +167,9 @@ export default function TicketsIssuedView(props) {
                                           <TableCell>{row.ticket?.ticket_name}</TableCell>
                                           <TableCell>{row.plate}</TableCell>
                                           <TableCell>{moment(row.issued_at).format('MMM Do YY, hh:mm a')}</TableCell>
+                                          <TableCell>{(row.amount !== undefined) ? '$ '+(row.amount/100).toFixed(2) : ''}</TableCell>
+                                          <TableCell>{(row.paid_at !== undefined) ? moment(row.paid_at).format('MMM Do YY, hh:mm a') : ''}</TableCell>
                                           <TableCell>{row.parking?.parking_id}</TableCell>
-                                          <TableCell>{moment(row.parking?.from).format('MMM Do YY, hh:mm a')} - {moment(row.parking?.to).format('MMM Do YY, hh:mm a')}</TableCell>
                                           <TableCell>
                                             <ThemeProvider theme={theme}>
                                               <Button 

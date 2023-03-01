@@ -1,6 +1,6 @@
 import * as React from "react";
 import {
-  Box, FormControlLabel, Checkbox, Grid, Typography, Drawer, Button, TextField
+  Box, FormControlLabel, Checkbox, Grid, Typography, Drawer, Button, TextField, FormGroup
 } from "@mui/material";
 import {Close} from "@mui/icons-material";
 
@@ -21,7 +21,7 @@ export default function EditRate(props) {
           backgroundColor: "#fff !important",
           width:
             window.innerWidth > 700
-              ? "35% !important"
+              ? "50% !important"
               : "100% !important",
         },
       }}
@@ -131,6 +131,19 @@ export default function EditRate(props) {
                 required
                 fullWidth
               />
+            </Grid>
+            <Grid item xs={12}>
+              <FormGroup>
+                <FormControlLabel sx={{color: "#000000de"}} control={
+                  <Checkbox 
+                    checked={props.inputField.flat_rate === true}
+                    color="primary"
+                    onChange={props.handleCheck}
+                    value={props.inputField.flat_rate}
+                    size="small"
+                    name="flat_rate"
+                  />} label={props.literals.flat_rate} />
+              </FormGroup>
             </Grid>
             <Grid item xs={4} alignSelf="center" align="center">
               <Typography variant="body1" sx={{color: '#000000de'}}>

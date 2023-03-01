@@ -35,6 +35,7 @@ import PayTicket from './Screens/User/PayTicket/PayTicket';
 import { config } from './Constants';
 import ExternalParkingConfig from './Screens/Admin/ExternalParkingConfig/ExternalParkingConfig';
 import TenentPlates from './Screens/Admin/TenentPlates/TenentPlates';
+import Reporting from './Screens/Admin/Reporting/Reporting';
 
 const App = () => {
   const location = useLocation();
@@ -171,6 +172,7 @@ const App = () => {
             <Route exact path={router.zones} element={<Zones org={org} literals={literals}/>} />
             <Route exact path={router.businessPlates} element={<PlatesUtils literals={literals}/>} />
             <Route exact path={router.tenentPlates} element={<TenentPlates literals={literals} org={org}/>} />
+            <Route exact path={router.reporting} element={<Reporting literals={literals} org={org}/>} />
             <Route exact path={router.parkings+"/:id"} element={<ParkingsUtils org={org} literals={literals}/>} />
           </Route>
           <Route path={router.admin} element={

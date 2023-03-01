@@ -31,7 +31,7 @@ export default function RatesUtils(props) {
   const [editId, setEditId] = useState('');
   const inputArr = [{rate: 0, time: 0}];
   const stepsArr = [{
-    rate_type_name: '', start_time: '', end_time: '', 
+    rate_type_name: '', start_time: '', end_time: '', flat_rate: false,
     Monday: false, Tuesday: false, Wednesday: false, 
     Thursday: false, Friday: false, Saturday: false, Sunday: false, 
     rate_steps: inputArr
@@ -82,10 +82,12 @@ export default function RatesUtils(props) {
   }
 
   const handleCheck =  (e)=> {
+    console.log(e.target.name, e.target.checked)
     setInputField({...inputField, [e.target.name] : e.target.checked});
   }
 
   const handleAddCheck =  (e)=> {
+    console.log(e.target.name, e.target.value,e.target.checked)
     setInputAddField({...inputAddField, [e.target.name] : e.target.checked});
   }
 
@@ -120,7 +122,7 @@ export default function RatesUtils(props) {
 
   const handleAddSubmit = async(e, steps)=> {
     e.preventDefault();
-    setSpinner(true);
+    // setSpinner(true);
     let body = {};
     body['rate_name']= inputAddField["rate_name"];
     body['zone_id']= selectedZone._id;
@@ -140,6 +142,7 @@ export default function RatesUtils(props) {
       body['rates'].map(x=>{
         x['special_rate'] = false;
       })
+      console.log(body)
       const res = rateServices.addCompleteRate(body);
     }
     reset();
@@ -162,6 +165,7 @@ export default function RatesUtils(props) {
       e.start_date = convertToDatetime(e.start_date);
       e.end_date = convertToDatetime(e.end_date);
     }
+    console.log(e)
     setRateSteps(rate_step);
     setInputRateSteps(rate_step)
     setInputField(e);
@@ -237,11 +241,13 @@ export default function RatesUtils(props) {
 
   const handleStepChange = (e) => {
     const index = e.target.id;
+    console.log(e.target.checked, e.target.value)
     setSteps(s => {
       const newArr = s.slice();
       newArr[index][e.target.name] =  e.target.checked || e.target.value;
       return newArr;
     });
+    console.log(steps)
   };
 
   return (

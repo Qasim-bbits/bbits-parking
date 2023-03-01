@@ -70,6 +70,7 @@ export const endpoints = {
     delUser : config.url.API_URL + 'delUser',
     addUser : config.url.API_URL + 'addUser',
     editUser : config.url.API_URL + 'editUser',
+    getAgents : config.url.API_URL + 'getAgents',
   },
 
   ///---Plates service--///
@@ -175,6 +176,15 @@ export const endpoints = {
   moneris : {
     generateToken : config.url.API_URL + 'generateToken',
     monerisReceipt : config.url.API_URL + 'monerisReceipt',
+  },
+
+  ///---reporting service--///
+
+  reporting : {
+    getAllKeys : config.url.API_URL + 'getAllKeys',
+    generateReport : config.url.API_URL + 'generateReport',
+    exportPDF : config.url.API_URL + 'exportPDF',
+    generateTicketIssuedReport : config.url.API_URL + 'generateTicketIssuedReport',
   },
 
 }
