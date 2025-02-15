@@ -60,6 +60,32 @@ export default function AddRate(props) {
                 )}
               />
             </Grid>
+            <Grid item xs={6}>
+              <FormGroup>
+                <FormControlLabel sx={{color: "#000000de"}} control={
+                  <Checkbox 
+                    checked={props.inputAddField["is_visitor_pass"] === true}
+                    color="primary"
+                    onChange={props.handleAddCheck}
+                    value={props.inputAddField["is_visitor_pass"]}
+                    size="small"
+                    name="is_visitor_pass"
+                  />} label={props.literals.is_visitor_pass} />
+              </FormGroup>
+            </Grid>
+            <Grid item xs={6}>
+              <FormGroup>
+                <FormControlLabel sx={{color: "#000000de"}} control={
+                  <Checkbox 
+                    checked={props.inputAddField["enable_custom_rate"] === true}
+                    color="primary"
+                    onChange={props.handleAddCheck}
+                    value={props.inputAddField["enable_custom_rate"]}
+                    size="small"
+                    name="enable_custom_rate"
+                  />} label={props.literals?.enable_custom_rate} />
+              </FormGroup>
+            </Grid>
             <Grid item xs={12}>
               <RadioGroup
                 row
@@ -106,6 +132,7 @@ export default function AddRate(props) {
                 )}
               />
             </Grid>}
+
             {props.rateType === 'special' && <Grid item xs={6}>
               <TextField
                 id="standard-error-helper-text"
@@ -207,7 +234,7 @@ export default function AddRate(props) {
                         <Grid item xs={6}>
                           <TextField
                             id={index}
-                            label={props.literals.end_date}
+                            label={props.literals.end_time}
                             color="primary"
                             type="time"
                             name="end_time"

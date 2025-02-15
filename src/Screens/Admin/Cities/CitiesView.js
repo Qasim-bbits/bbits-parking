@@ -114,6 +114,7 @@ export default function CitiesView(props) {
                               {/* <StyledTableCell></StyledTableCell> */}
                               <StyledTableCell>{props.literals.organization}</StyledTableCell>
                               <StyledTableCell>{props.literals.city_name}</StyledTableCell>
+                              <StyledTableCell>{props.literals.time_zone}</StyledTableCell>
                               <StyledTableCell>{props.literals.action}</StyledTableCell>
                           </TableRow>
                       </TableHead>
@@ -138,6 +139,7 @@ export default function CitiesView(props) {
                                           </TableCell> */}
                                           <TableCell>{row.org?.org_name}</TableCell>
                                           <TableCell>{row.city_name}</TableCell>
+                                          <TableCell>{row.time_zone}</TableCell>
                                           <TableCell >
                                               <Button
                                                   type="button"

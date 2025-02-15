@@ -22,6 +22,7 @@ export default function TenentPlates(props) {
   const [zones, setZones] = useState([])
   const [selectedOrg, setSelectedOrg] = useState(null)
   const [selectedZone, setSelectedZone] = useState(null)
+  const [plates, setPlates] = useState(1)
   const [editId, setEditId] = useState('');
   const [btn, setBtn] = useState(props.literals.add);
   const user = JSON.parse(sessionStorage.getItem('userLogged'));
@@ -58,6 +59,8 @@ export default function TenentPlates(props) {
   }
 
   const handleChange = (e) => {
+    if(e.target.name == 'plate' || e.target.name == 'plate_two' || e.target.name == 'plate_three')
+    e.target.value = e.target.value.toUpperCase();
     setInputField({ ...inputField, [e.target.name]: e.target.value });
   };
 
@@ -66,11 +69,12 @@ export default function TenentPlates(props) {
     setSpinner(true);
     inputField['org'] = selectedOrg._id;
     inputField['zone'] = selectedZone._id;
+    inputField['city'] = selectedZone.city_id;
+    inputField['tenant_and_visitor'] = selectedZone.tenant_and_visitor;
     if(btn === props.literals.add){
       const res = await tenentPlateServices.addTenentPlate(inputField);
-      console.log(res.data)
-      setMsg(props.literals[res.data.msg]);
-      setSeverity(res.data.status);
+      setMsg(props.literals[res.data?.msg]);
+      setSeverity(res.data?.status);
       setAlert(true);
     }else{
       inputField['id'] = editId;
@@ -105,7 +109,29 @@ export default function TenentPlates(props) {
     setSelectedOrg(org);
     let zone = zones.find(x=>x._id == e.zone._id);
     setSelectedZone(zone);
-    setInputField(e);
+    let obj = {
+      fname: e.user?.fname,
+      lname: e.user?.lname,
+      address: e.user?.address,
+      unit: e.user?.unit,
+      email: e.user?.email,
+      no_of_visitors: e.user?.no_of_visitors,
+      mobile_no: e.user?.mobile_no,
+      plate: e?.plate,
+      car_make: e?.car_make,
+      model: e?.model,
+      color: e?.color,
+      plate_two: e.plate_two,
+      car_make_two: e?.car_make_two,
+      model_two: e?.model_two,
+      color_two: e?.color_two,
+      plate_three: e.plate_three,
+      car_make_three: e?.car_make_three,
+      model_three: e?.model_three,
+      color_three: e?.color_three,
+      user: e.user?._id,
+    }
+    setInputField(obj);
     setOpenDrawer(true);
     setEditId(e._id);
     setBtn(props.literals.update);
@@ -118,16 +144,16 @@ export default function TenentPlates(props) {
 
   return (
     <>
-    <TenentPlatesView
-      tenantPlates={tenantPlates}
-      literals={props.literals}
+      <TenentPlatesView
+        tenantPlates={tenantPlates}
+        literals={props.literals}
 
-      onEdit={(e)=>onEdit(e)}
-      delItem={(id) => {setEditId(id); setOpenDialog(true)}}
-      setOpenDrawer={()=>{setOpenDrawer(!openDrawer); reset()}}
-      reset={()=>reset()}
-    />
-    <Drawer
+        onEdit={(e)=>onEdit(e)}
+        delItem={(id) => {setEditId(id); setOpenDialog(true)}}
+        setOpenDrawer={()=>{setOpenDrawer(!openDrawer); reset()}}
+        reset={()=>reset()}
+      />
+      <Drawer
       PaperProps={{
         sx: {
           backgroundColor: "#fff !important",
@@ -150,12 +176,15 @@ export default function TenentPlates(props) {
         zones={zones}
         selectedZone={selectedZone}
         user={user}
+        plates={plates}
         
         setSelectedOrg={(e)=>setSelectedOrg(e)}
         setSelectedZone={(e)=>setSelectedZone(e)}
         handleChange={(e)=>handleChange(e)}
         handleSubmit={(e)=>handleSubmit(e)}
         onClose={()=>{setOpenDrawer(false)}}
+        addPlate={()=>{setPlates(plates+1)}}
+        delPlate={()=>{setPlates(plates-1)}}
       />
       </Drawer>
 

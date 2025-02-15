@@ -3,7 +3,9 @@ import { alpha, styled } from '@mui/material/styles';
 import { 
     Button, Typography, Table, TableBody, TableContainer,
     TableHead, TableRow, Paper, TablePagination, Switch,
-    Collapse, IconButton, TableFooter, Grid
+    Collapse, IconButton, TableFooter, Grid,
+    Menu,
+    MenuItem
 } from "@mui/material";
 import { createTheme , ThemeProvider } from "@mui/material/styles";
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
@@ -35,6 +37,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   }));
 
 export default function ReportingView(props) {
+  const [anchorEl, setAnchorEl] = React.useState(null);
     
     return (
       <Grid container spacing={3} sx={{placeContent: "center", py: 2}}>
@@ -48,10 +51,27 @@ export default function ReportingView(props) {
             type="button"
             variant="contained"
             color="primary"
-            onClick={props.exportPDF}
+            onClick={(event)=>setAnchorEl(event.currentTarget)}
           >
             <FileDownloadOutlined/>
           </IconButton>}
+          <Menu
+            anchorEl={anchorEl}
+            anchorOrigin={{
+              vertical: "top",
+              horizontal: "right",
+            }}
+            keepMounted
+            transformOrigin={{
+              vertical: "top",
+              horizontal: "right",
+            }}
+            open={Boolean(anchorEl)}
+            onClose={()=>setAnchorEl(null)}
+          >
+            <MenuItem onClick={()=>props.exportPDF()}>PDF</MenuItem>
+            <MenuItem onClick={()=>props.exportCSV()}>CSV</MenuItem>
+          </Menu>
           <Button 
               type="button"
               variant="contained"
@@ -67,16 +87,23 @@ export default function ReportingView(props) {
               <TableContainer sx={{ height: '65vh' }}>
                   <Table aria-label="collapsible table" size="small">
                       <TableHead>
-                          <TableRow>
+                      <TableRow>
                             <StyledTableCell>{props.literals.organization}</StyledTableCell>
                             <StyledTableCell>{props.literals.city_name}</StyledTableCell>
                             <StyledTableCell>{props.literals.zone_name}</StyledTableCell>
-                            <StyledTableCell>{props.literals.email}</StyledTableCell>
-                            <StyledTableCell>{props.literals.parking_id}</StyledTableCell>
-                            <StyledTableCell>{props.literals.plate}</StyledTableCell>
+                            {!props.selectedGroup && <>
+                              <StyledTableCell>{props.literals.email}</StyledTableCell>
+                              <StyledTableCell>{props.literals.parking_id}</StyledTableCell>
+                              <StyledTableCell>{props.literals.plate}</StyledTableCell>
+                            </>}
+                            {props.selectedGroup && <>
+                              <StyledTableCell>No of Parkings</StyledTableCell>
+                            </>}
                             <StyledTableCell>{props.literals.service_fee}</StyledTableCell>
                             <StyledTableCell>{props.literals.amount}</StyledTableCell>
-                            <StyledTableCell>{props.literals.start_date_time} - {props.literals.end_date_time}</StyledTableCell>
+                            {!props.selectedGroup && <>
+                              <StyledTableCell>{props.literals.start_date_time} - {props.literals.end_date_time}</StyledTableCell>
+                            </>}
                           </TableRow>
                       </TableHead>
                       <TableBody>
@@ -87,12 +114,19 @@ export default function ReportingView(props) {
                                           <TableCell>{row.org?.org_name}</TableCell>
                                           <TableCell>{row.city?.city_name}</TableCell>
                                           <TableCell>{row.zone?.zone_name}</TableCell>
-                                          <TableCell>{row.user?.email}</TableCell>
-                                          <TableCell>{row.parking_id}</TableCell>
-                                          <TableCell>{row.plate}</TableCell>
+                                          {!props.selectedGroup && <>
+                                            <TableCell>{row.user?.email}</TableCell>
+                                            <TableCell>{row.parking_id}</TableCell>
+                                            <TableCell>{row.plate}</TableCell>
+                                          </>}
+                                          {props.selectedGroup && <>
+                                            <TableCell>{row.total_parking}</TableCell>
+                                          </>}
                                           <TableCell>$ {(parseInt(row.service_fee)/100).toFixed(2)}</TableCell>
                                           <TableCell>$ {(row.amount/100).toFixed(2)}</TableCell>
-                                          <TableCell>{moment(row.from).format('MMM Do YY, hh:mm a')} - {moment(row.to).format('MMM Do YY, hh:mm a')}</TableCell>
+                                          {!props.selectedGroup && <>
+                                            <TableCell>{moment(row.from).format('MMM Do YY, hh:mm a')} - {moment(row.to).format('MMM Do YY, hh:mm a')}</TableCell>
+                                          </>}
                                       </TableRow>
                                   </>
                               );
@@ -106,22 +140,22 @@ export default function ReportingView(props) {
                     <TableFooter>
                       <TableRow>
                         <TableCell rowSpan={4} />
-                        <TableCell colSpan={6} sx={{border: 0}}></TableCell>
+                        <TableCell colSpan={props.selectedGroup? 3 : 6} sx={{border: 0}}></TableCell>
                         <TableCell colSpan={1}>Parkings</TableCell>
                         <TableCell align="right">{props.total.total_parkings}</TableCell>
                       </TableRow>
                       <TableRow>
-                        <TableCell colSpan={6} sx={{border: 0}}></TableCell>
+                        <TableCell colSpan={props.selectedGroup? 3 : 6} sx={{border: 0}}></TableCell>
                         <TableCell colSpan={1}>Plates</TableCell>
                         <TableCell align="right">{props.total.total_plates}</TableCell>
                       </TableRow>
                       <TableRow>
-                        <TableCell colSpan={6} sx={{border: 0}}></TableCell>
+                        <TableCell colSpan={props.selectedGroup? 3 : 6} sx={{border: 0}}></TableCell>
                         <TableCell colSpan={1}>Service Fee</TableCell>
                         <TableCell align="right">$ {(parseInt(props.total.service_fee)/100).toFixed(2)}</TableCell>
                       </TableRow>
                       <TableRow>
-                        <TableCell colSpan={6} sx={{border: 0}}></TableCell>
+                        <TableCell colSpan={props.selectedGroup? 3 : 6} sx={{border: 0}}></TableCell>
                         <TableCell colSpan={1} sx={{fontWeight: "bold"}}>Total Amount</TableCell>
                         <TableCell align="right" sx={{fontWeight: "bold"}}>$ {(parseInt(props.total.amount)/100).toFixed(2)}</TableCell>
                       </TableRow>

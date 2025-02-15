@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Backdrop, CircularProgress } from "@mui/material";
+import { Box, Backdrop, CircularProgress, useTheme } from "@mui/material";
 import { styled } from '@mui/material/styles';
 
 const useStyles = styled((theme) => ({   
@@ -9,13 +9,14 @@ const useStyles = styled((theme) => ({
     },
   }));
 export default function Spinner(prop){
+    const theme = useTheme();
     const classes = useStyles();
 
     return(
         <>
             <Backdrop className={classes.backdrop} open={prop.spinner} sx={{zIndex: 9999}}>
                 <Box position="relative" display="inline-flex">
-                    <CircularProgress sx={{color: 'primary'}}/>
+                    <CircularProgress sx={{color: theme.palette.primary.main}}/>
                 </Box>
             </Backdrop>
         </>

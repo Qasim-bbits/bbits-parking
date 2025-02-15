@@ -1,10 +1,15 @@
 import React, {useState, useEffect} from 'react';
 import { styled } from '@mui/material/styles';
-import {Box, Button, Divider, Chip} from "@mui/material";
-import {PaymentRequestButtonElement, useStripe, CardElement, useElements} from '@stripe/react-stripe-js';
+import {Box, Button, Divider, Chip, Grid, useTheme, Typography, Paper} from "@mui/material";
+import {PaymentRequestButtonElement, useStripe, CardElement, useElements, CardNumberElement, CardExpiryElement, CardCvcElement} from '@stripe/react-stripe-js';
 import parkingService from '../../../services/parking-service';
 import Spinner from '../../../Common/Spinner';
 import SnackAlert from '../../../Common/Alerts';
+import {ReactComponent as Amex} from '../../../assets/icons/cards/amex.svg'
+import {ReactComponent as JCB} from '../../../assets/icons/cards/jcb.svg'
+import {ReactComponent as Mastercard} from '../../../assets/icons/cards/mastercard.svg'
+import {ReactComponent as Visa} from '../../../assets/icons/cards/visa.svg'
+import { config } from '../../../Constants';
 
 const Root = styled('div')(({ theme }) => ({
   width: '100%',
@@ -32,6 +37,7 @@ const CARD_OPTIONS = {
   }
 
 function Payment(props) {
+  const theme = useTheme();
   const stripe = useStripe();
   const elements = useElements()
   const [spinner, setSpinner] = useState(false);
@@ -43,8 +49,8 @@ function Payment(props) {
   useEffect(() => {
     if (stripe) {
       const pr = stripe.paymentRequest({
-        country: 'CA',
-        currency: 'cad',
+        country: config.constant.country,
+        currency: config.constant.currency,
         total: {
           label: 'BBits Solutions Inc',
           amount: props.props.rateCycle[props.props.steps].total,
@@ -93,6 +99,13 @@ function Payment(props) {
     }
   }, [stripe, props.props.rateCycle[props.props.steps].total]);
 
+  useEffect(() => {
+    setSpinner(true);
+    if (elements) {
+      setSpinner(false)
+    }
+  }, [elements])
+  
   const purchaseParking= async (e)=>{
     e.preventDefault();
     setSpinner(true);
@@ -105,7 +118,7 @@ function Payment(props) {
     }
     const {error, paymentMethod} = await stripe.createPaymentMethod({
         type: 'card',
-        card: elements.getElement(CardElement),
+        card: elements.getElement(CardNumberElement),
     })
     if(!error){
         try{
@@ -162,8 +175,54 @@ function Payment(props) {
           </Root>
         </>
         }
-        <form onSubmit={purchaseParking} style={{width:'100%',marginTop: '16px'}}>
-            <CardElement options={CARD_OPTIONS}/>
+        {elements && <form onSubmit={purchaseParking} style={{width:'100%',marginTop: '16px'}}>
+          <Paper elevation={2} sx={{p:1}}>
+            <Grid container>
+              <Grid item md={5} xs={12} sx={{mx: 1}} alignSelf={'center'}>
+                <Typography variant='subtitle1' align='left' sx={{color: 'primary.main', fontWeight: 'bold'}} >
+                  Payment Details:
+                </Typography>
+              </Grid>
+              <Grid item md={5} xs={12} sx={{mx: 1}}>
+                <Amex sx={{width: 100}}/><JCB/><Mastercard/><Visa/>
+              </Grid>
+              <Grid item xs={12} sx={{m: 1}}>
+                <Typography variant='caption' align='left' sx={{color: '#6f6e6e'}} >
+                  Card Number
+                </Typography>
+                <Grid item xs={12} sx={{
+                  border: '1px solid '+theme.palette.primary.main,
+                  borderRadius: '5px',
+                  padding: '10px',
+                }}>
+                  <CardNumberElement options={CARD_OPTIONS}/>
+                </Grid>
+              </Grid>
+              <Grid item xs={4} sx={{m: 1}}>
+                <Typography variant='caption' align='left' sx={{color: '#6f6e6e'}} >
+                  Expiry Date
+                </Typography>
+                <Grid item xs={12} sx={{
+                  border: '1px solid '+theme.palette.primary.main,
+                  borderRadius: '5px',
+                  padding: '10px',
+                }}>
+                  <CardExpiryElement options={CARD_OPTIONS}/>
+                </Grid>
+              </Grid>
+              <Grid item xs={4} sx={{m: 1}}>
+                <Typography variant='caption' align='left' sx={{color: '#6f6e6e'}} >
+                  CVC
+                </Typography>
+                <Grid item xs={12} sx={{
+                  border: '1px solid '+theme.palette.primary.main,
+                  borderRadius: '5px',
+                  padding: '10px',
+                }}>
+                  <CardCvcElement options={CARD_OPTIONS}/>
+                </Grid>
+              </Grid>
+            </Grid>
             <Button 
               type='submit'
               size='large'
@@ -172,7 +231,8 @@ function Payment(props) {
             >
               ${(props.props.rateCycle[props.props.steps].total/100).toFixed(2)}
             </Button>
-        </form>
+          </Paper>
+        </form>}
       </Box>
       
       <Spinner

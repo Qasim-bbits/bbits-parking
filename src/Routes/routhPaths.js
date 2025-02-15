@@ -1,4 +1,4 @@
-import {Receipt, DashboardOutlined, ManageSearch, PersonOffOutlined, Person} from '@mui/icons-material';
+import {Receipt, LocalParking, ManageSearch, PersonOffOutlined, Person} from '@mui/icons-material';
 
 export const router = {
   error: '/error',
@@ -22,6 +22,8 @@ export const router = {
   parkings: "/suite/parkings",
   businessPlates: "/suite/business_plates",
   tenentPlates: "/suite/tenant_plates",
+  businessPassPlates: "/suite/business_pass_plates",
+  residantPlate: "/suite/resident_plates",
   visitorPlates: "/suite/visitor_pass",
   module: "/suite/module",
   ticket: "/suite/ticket",
@@ -30,6 +32,16 @@ export const router = {
   profile: "/profile",
   external_parking_config: "/suite/external_parking_config",
   reporting: "/suite/reporting",
+  kickOutPlates: "/suite/kick_out_plates",
+  visitor: "/visitor",
+  visitorPass: '/visitor_pass',
+  agent: '/agent',
+  agentSignin: '/agent',
+  agentReset: '/agent/reset',
+  agentIssueTicket: '/agent/issue_ticket',
+  agentHistory: '/agent/history',
+  conditionOfUse: "/condition_of_use",
+  privacyPolicy: "/privacy_policy",
 };
 
 export const adminRoutes = [
@@ -46,6 +58,14 @@ export const adminRoutes = [
       title: 'pay_for_parking',
       path: router.main,
       icon: <Receipt />
+    },
+    child: []
+  },
+  {
+    parent: {
+      title: 'park_visitor',
+      path: router.visitor,
+      icon: <LocalParking/>
     },
     child: []
   },

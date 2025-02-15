@@ -111,7 +111,7 @@ export default function MainView(props) {
                 disableClearable
                 blurOnSelect
                 options={props.cities}
-                getOptionLabel={(option) => option.city_name}
+                getOptionLabel={(option) => option.city_name+' - '+option.org?.org_name}
                 value={props.selectedCity}
                 onChange={(event, newValue)=>props.onSelectedCity(newValue)}
                 renderInput={(params) => (

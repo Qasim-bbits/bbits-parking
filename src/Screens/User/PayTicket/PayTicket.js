@@ -19,8 +19,10 @@ export default function PayTicket(props) {
   const [organizations, setOrganizations] = useState([])
   const [selectedOrg, setSelectedOrg] = useState(null)
   const [selectedCity, setSelectedCity] = useState(null)
+  const [ticketOrg, setTicketOrg] = useState({})
   const [activeStep, setActiveStep] = React.useState(0);
-  const [ticket, setTicket] = React.useState({});
+  const [ticket, setTicket] = React.useState([]);
+  const [selectedtickets, setSelectedtickets] = React.useState([]);
   const [showMoneris, setShowMoneris] = useState(false)
 
   useEffect(()=>{
@@ -47,20 +49,22 @@ export default function PayTicket(props) {
   }
 
   const handleChange = (e) => {
-    setInputField({ ...inputField, [e.target.name]: e.target.value });
+    setInputField({ ...inputField, [e.target.name]: e.target.value.toUpperCase().replace(/\s/g, '') });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSpinner(true);
-    inputField['org'] = selectedOrg._id;
-    inputField['city'] = selectedCity._id;
+    // inputField['org'] = selectedOrg._id;
+    // inputField['city'] = selectedCity._id;
     const res = await ticketServices.searchTicket(inputField);
     if(res.data.status !== undefined){
       setAlert(true);
       setMsg(props.literals[res.data.msg]);
       setSeverity(res.data.status);
     }else{
+      setSelectedtickets(res.data);
+      setTicketOrg(res.data[0].ticketIssued.org)
       setTicket(res.data);
       setActiveStep(1);
     }
@@ -70,15 +74,25 @@ export default function PayTicket(props) {
   const emailTicketReciept = async (e) =>{
     console.log(e)
     const res = await ticketServices.searchTicket(inputField);
-
   }
 
+  const onChecked = async (e) =>{
+    let allTickets = [...selectedtickets];
+    let findIndex = allTickets.findIndex(x=> x.ticketIssued._id == e.ticketIssued._id);
+    if(findIndex > -1){
+      allTickets.splice(findIndex, 1);
+    }else{
+      allTickets.push(e);
+    }
+    setSelectedtickets(allTickets)
+  }
+  
   return (
     <>
       <Layout org={props.org} literals = {props.literals}>
         <PayTicketView 
           user = {user}
-          org={props.org}
+          org={ticketOrg}
           literals={props.literals}
           activeStep={activeStep}
           cities = {cities}
@@ -87,6 +101,7 @@ export default function PayTicket(props) {
           selectedOrg = {selectedOrg}
           inputField = {inputField}
           ticket = {ticket}
+          selectedTickets = {selectedtickets}
 
           handleChange={(e)=>handleChange(e)}
           handleSubmit={(e)=>handleSubmit(e)}
@@ -96,16 +111,16 @@ export default function PayTicket(props) {
           handleBack={()=>setActiveStep((prevActiveStep) => prevActiveStep - 1)}
           handleNext={()=>setActiveStep((prevActiveStep) => prevActiveStep + 1)}
           showMoneris = {()=>setShowMoneris(true)}
+          onChecked = {(e)=>onChecked(e)}
         />
         {showMoneris &&
           <Moneris
-            amount={ticket?.ticketAmount?.rate}
-            plate={ticket?.ticketIssued?.plate}
-            issued_at={ticket?.ticketIssued?.issued_at}
-            id={ticket?.ticketIssued?._id}
-            org={props.org}
+            amount={ticket?.reduce((n, { ticketAmount }) => n + ticketAmount.rate, 0)}
+            plate={ticket[0]?.ticketIssued?.plate}
+            ticketIds={ticket.map(x => ({id: x.ticketIssued?._id, amount: x.ticketAmount.rate }))}
+            org={ticketOrg}
             literals={props.literals}
-            zone={ticket?.ticketIssued?.zone?.zone_name}
+            zone={JSON.stringify(ticket?.map(x => x?.ticketIssued?.zone?.zone_name))}
 
             handleBack = {()=>setShowMoneris(false)}
             handleNext = {()=>{setActiveStep(2);setShowMoneris(false);}}

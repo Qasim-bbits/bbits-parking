@@ -12,6 +12,7 @@ import Logo from "../../../assets/images/Logos/logo.svg";
 import ResponsiveCard from "../../User/ResponsiveCard";
 import { router } from '../../../Routes/routhPaths';
 import { useTheme } from '@mui/styles';
+import { config } from '../../../Constants';
 
 function ForgetPasswordView(props) {
   const theme = useTheme()
@@ -24,7 +25,7 @@ function ForgetPasswordView(props) {
       <Grid sx={{paddingTop: 5}}>
         <ResponsiveCard>
           <Grid align='center'>
-            <Avatar src={Logo} sx={{ width: '60%', height: '70%', marginTop: '10%' }} variant='square' />
+            <Avatar src={config.url.file_url+props.org.logo} sx={{ width: '60%', height: '70%', marginTop: '10%' }} variant='square' />
           </Grid>
           <form onSubmit={props.handleSubmit}>
             <Box

@@ -118,6 +118,7 @@ export default function OrganizationsView(props) {
                               <StyledTableCell>{props.literals.payment_gateway}</StyledTableCell>
                               <StyledTableCell>{props.literals.service_fee}</StyledTableCell>
                               <StyledTableCell>{props.literals.theme_color}</StyledTableCell>
+                              <StyledTableCell>{props.literals.whatsapp_no}</StyledTableCell>
                               <StyledTableCell>{props.literals.logo}</StyledTableCell>
                               <StyledTableCell>{props.literals.action}</StyledTableCell>
                           </TableRow>
@@ -126,7 +127,8 @@ export default function OrganizationsView(props) {
                           {props.organizations
                           .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                           .map((row) => {
-                            
+                              const sub_domain = row.sub_domain == 'root' ? '' : (row.sub_domain+".");
+                              const url = `${config.url.http}${sub_domain}${config.url.client_url}`
                               return (
                                   <>
                                       <TableRow key={row.org_name}>
@@ -144,13 +146,14 @@ export default function OrganizationsView(props) {
                                           <TableCell>{row.org_name}</TableCell>
                                           <TableCell>{row.sub_domain}</TableCell>
                                           <TableCell>
-                                            <a href={config.url.http + row.sub_domain +"."+ config.url.client_url} target="_blank">
-                                              {config.url.http + row.sub_domain +"."+ config.url.client_url}
+                                            <a href={url} target="_blank">
+                                              {url}
                                             </a>
                                           </TableCell>
                                           <TableCell>{row.payment_gateway}</TableCell>
                                           <TableCell>{row.service_fee}</TableCell>
                                           <TableCell><Card type="button" sx={{bgcolor: row.color, p: 2, width: '100%'}}></Card></TableCell>
+                                          <TableCell>{row.whatsapp_no}</TableCell>
                                           <TableCell><img alt = "Loading" src={config.url.file_url + row.logo} width="100px"/></TableCell>
                                           <TableCell >
                                               <Button 

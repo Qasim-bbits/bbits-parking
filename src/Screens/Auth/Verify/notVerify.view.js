@@ -47,7 +47,7 @@ const NotVerify = (props) => {
             textAlign: "center"
           }}
         >
-          <img src={config.url.file_url+props.org.logo} alt="logo" style={{ width: "300px" , marginTop: '30px' }} />
+          <img src={config.url.file_url+props.org.logo} alt="logo" style={{ width: "200px" , marginTop: '30px' }} />
           <div
             style={{
               textAlign: "center",

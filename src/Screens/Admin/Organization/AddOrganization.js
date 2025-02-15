@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import {
   Box, Grid, Typography, TextField, Button, IconButton, InputAdornment,
-  FormControlLabel, Radio, RadioGroup, FormLabel, useTheme, Divider, FormControl, FormGroup, Switch
+  FormControlLabel, Radio, RadioGroup, FormLabel, useTheme, Divider, FormControl, FormGroup, Switch,
+  Checkbox
 } from "@mui/material";
 import { AddCircleOutlined, Close, Delete, Edit, EditOff, Visibility, VisibilityOff } from "@mui/icons-material";
 import { config } from "../../../Constants";
@@ -180,6 +181,67 @@ export default function AddOrganization(props) {
                 fullWidth
               />
           </Grid>
+          <Grid item xs={12}>
+            <TextField
+                id="standard-error-helper-text"
+                label={props.literals.condition_of_use}
+                color="primary"
+                type="text"
+                name="condition_of_use"
+                value={props.inputField["condition_of_use"]}
+                onChange={props.handleChange}
+                size="small"
+                multiline
+                rows={4}
+                required
+                fullWidth
+              />
+          </Grid>
+          
+          <Grid item xs={12}>
+            <TextField
+                id="standard-error-helper-text"
+                label={props.literals.literal_sheet_url}
+                color="primary"
+                type="text"
+                name="literal_sheet_url"
+                value={props.inputField["literal_sheet_url"]}
+                onChange={props.handleChange}
+                size="small"
+                fullWidth
+              />
+          </Grid>
+          
+          <Grid item xs={12}>
+            <TextField
+                id="standard-error-helper-text"
+                label={props.literals.whatsapp_no}
+                color="primary"
+                type="number"
+                name="whatsapp_no"
+                value={props.inputField["whatsapp_no"]}
+                onChange={props.handleChange}
+                size="small"
+                fullWidth
+              />
+          </Grid>
+          
+          <Grid item xs={12}>
+            <TextField
+                id="standard-error-helper-text"
+                label={props.literals.privacy_policy}
+                color="primary"
+                type="text"
+                name="privacy_policy"
+                value={props.inputField["privacy_policy"]}
+                onChange={props.handleChange}
+                multiline
+                rows={4}
+                size="small"
+                required
+                fullWidth
+              />
+          </Grid>
           <>
             <Grid item xs={12}>
               <FormLabel id="demo-radio-buttons-group-label">{props.literals.payment_gateway}</FormLabel>
@@ -339,6 +401,20 @@ export default function AddOrganization(props) {
                   {props.literals.permissions}
                 </Typography>  
               </Divider>
+            </Grid>
+            <Grid item xs={5}>
+              <Typography variant="subtitle1" sx={{color: theme.palette.tertiary.main}}>
+                {props.literals.hide_login_button}
+              </Typography>
+            </Grid>
+            <Grid item xs={7} align="center">
+              <FormGroup>
+                <Checkbox
+                  name="hide_login_button"
+                  onChange={props.handleCheck}
+                  checked={props.inputField['hide_login_button']}
+                />
+              </FormGroup>
             </Grid>
             <Grid item xs={12}>
               <Grid container spacing={3} sx={{alignItems: "center"}}>

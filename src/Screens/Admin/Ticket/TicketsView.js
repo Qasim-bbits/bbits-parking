@@ -114,6 +114,7 @@ export default function TicketsView(props) {
                             <StyledTableCell></StyledTableCell>
                             <StyledTableCell>{props.literals.organization}</StyledTableCell>
                             <StyledTableCell>{props.literals.ticket_name}</StyledTableCell>
+                            <StyledTableCell>{props.literals.ticket_type}</StyledTableCell>
                             <StyledTableCell>{props.literals.ticket_num_start}</StyledTableCell>
                             <StyledTableCell>{props.literals.ticket_num_next}</StyledTableCell>
                             <StyledTableCell>{props.literals.action}</StyledTableCell>
@@ -141,6 +142,7 @@ export default function TicketsView(props) {
                                           </TableCell>
                                           <TableCell>{row.org?.org_name}</TableCell>
                                           <TableCell>{row.ticket_name}</TableCell>
+                                          <TableCell>{row.ticket_type}</TableCell>
                                           <TableCell>{row.ticket_num_min}</TableCell>
                                           <TableCell>{row.ticket_num_next}</TableCell>
                                           <TableCell>

@@ -112,7 +112,9 @@ function Moneris(props) {
       coord: props.center,
       rate: props.selectedTariff._id,
       ticket: ticket,
-      org: props.org._id
+      org: props.org._id,
+      tenant_visitor_zone: props.tenant_visitor_zone,
+      no_of_visitors: props.no_of_visitor
     }
     const res = await parkingService.buyParking(body);
     setSpinner(false);

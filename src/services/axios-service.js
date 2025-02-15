@@ -7,8 +7,13 @@ export class AxiosServices {
     return res;        
     }
 
-  async get(url){      
-    const res = await axios.get(url)
+  async get(url, header){      
+    const res = await axios.get(url, header)
+    return res;        
+  }
+
+  async delete(url){      
+    const res = await axios.delete(url)
     return res;        
     }
 

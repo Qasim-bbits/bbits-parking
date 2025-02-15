@@ -38,6 +38,7 @@ export default function MainUtils(props) {
   const [parking, setParking] = useState({})
   const [selectedTariff, setSelectedTariff] = useState({})
   const [tarif, setTarif] = useState([]);
+  const [inputField, setInputField] = useState({});
 
   useEffect(()=>{
     getCities();
@@ -49,6 +50,10 @@ export default function MainUtils(props) {
     setCities(res.data)
     setShowSpinner(false);
   }
+
+  const handleCheck = (e) => {
+    setInputField({ ...inputField, [e.target.name]: e.target.checked });
+  };
 
   const toggleDrawer = ()=>setDrawer(true);
 
@@ -140,12 +145,13 @@ export default function MainUtils(props) {
   }
   
   const handleChange = (value) => {
-    var factor = 100;
-    var number = value;
-    var b = number.toString().split('.');
-    var answer = (b[1] !== undefined) ? b[0]*factor+b[1]*(factor/(Math.pow(10,b[1].length))) : 0;
-    let index = rateCycle.findIndex( x => x.total === answer );
-    setSteps(index);
+    // var factor = 100;
+    // var number = value;
+    // var b = number.toString().split('.');
+    // var answer = (b[1] !== undefined) ? b[0]*factor+b[1]*(factor/(Math.pow(10,b[1].length))) : 0;
+    // let index = rateCycle.findIndex( x => x.total === answer );
+    // setSteps(index);
+    setSteps(value);
   };
 
   const onPlateDel = async(e) => {
@@ -224,7 +230,11 @@ export default function MainUtils(props) {
         {drawerComponent === 0 && <SelectTariff 
           tarif = {tarif}
           literals = {props.literals}
+          caption_en = {selectedZone?.caption_en}
+          caption_fr = {selectedZone?.caption_fr}
+          inputField = {inputField}
 
+          handleCheck = {(e)=>handleCheck(e)}
           setDrawerOpen = {toggleDrawer}
           onTarifSelect = {(e)=>onTarifSelect(e)}
           back = {()=>setDrawerComponent(2)}

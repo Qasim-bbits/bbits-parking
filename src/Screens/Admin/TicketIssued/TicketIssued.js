@@ -27,19 +27,19 @@ export default function TicketIssued(props) {
     setSpinner(false);
   }
 
-  // const delItem=async()=>{
-  //   setSpinner(true);
-  //   const res = await ticketServices.delTicket({id: editId});
-  //   if(res.data.deletedCount === 1)
-  //   setTicketsIssued(tickets.filter(function( obj ) {
-  //       return obj._id !== editId;
-  //   }))
-  //   setSpinner(false);
-  //   setOpenDialog(false);
-  //   setMsg(props.literals.ticket_deleted_successfuly)
-  //   setSeverity('success')
-  //   setAlert(true)
-  // }
+  const delItem=async()=>{
+    setSpinner(true);
+    const res = await ticketServices.delIssuedTicket(editId);
+    if(res.data.deletedCount === 1)
+    setTicketsIssued(ticketsIssued.filter(function( obj ) {
+        return obj._id !== editId;
+    }))
+    setSpinner(false);
+    setOpenDialog(false);
+    setMsg(props.literals.ticket_deleted_successfuly)
+    setSeverity('success')
+    setAlert(true)
+  }
 
   // const onEdit = async(e)=> {
   //   setInputField(e);
@@ -76,8 +76,8 @@ export default function TicketIssued(props) {
         aging={aging}
 
         // onEdit={(e)=>onEdit(e)}
-        // delItem={(id) => {setEditId(id); setOpenDialog(true)}}
-        // setOpenDrawer={()=>{setOpenDrawer(!openDrawer)}}
+        delItem={(id) => {setEditId(id); setOpenDialog(true)}}
+        setOpenDrawer={()=>{setOpenDrawer(!openDrawer)}}
         getAgingByTicket={(e)=>getAgingByTicket(e)}
       />
       <SnackAlert
@@ -90,12 +90,12 @@ export default function TicketIssued(props) {
       <Spinner
         spinner = {spinner}
       />
-      {/* <ConfirmDiallog
+      <ConfirmDiallog
         openDialog = {openDialog}
 
         closeDialog = {()=>setOpenDialog(false)}
         delItem = {()=>delItem()}
-      /> */}
+      />
     </>
   );
 }

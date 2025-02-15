@@ -3,11 +3,13 @@ import { alpha, styled } from '@mui/material/styles';
 import { 
     Button, Typography, Table, TableBody, TableContainer,
     TableHead, TableRow, Paper, TablePagination, Switch,
-    Collapse, IconButton, InputBase, Grid
+    Collapse, IconButton, InputBase, Grid, Box
 } from "@mui/material";
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 import { DeleteForeverOutlined, EditOutlined, KeyboardArrowDown, KeyboardArrowUp, Search } from "@mui/icons-material";
+import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import helpers from "../../../Helpers/Helpers";
+import { useTheme } from "@mui/styles";
 
 const SearchBar = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -62,18 +64,51 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   }));
 
 export default function TenentPlatesView(props) {
-    const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(10);
-    const [open, setOpen] = React.useState('');
-
-    const handleChangePage = (event, newPage) => {
-      setPage(newPage);
-    };
-  
-    const handleChangeRowsPerPage = (event) => {
-      setRowsPerPage(+event.target.value);
-      setPage(0);
-    };
+  const theme = useTheme();
+  const columns = [
+    { field: 'org', headerName: 'Organization', valueGetter: (params) => params.row?.org?.org_name, width: 150, headerClassName: 'header' },
+    { field: 'zone', headerName: 'Zone', valueGetter: (params) => params.row?.zone?.zone_name, width: 250, headerClassName: 'header' },
+    { field: 'user', headerName: 'User Name', valueGetter: (params) => params.row?.user?.fname, width: 250, headerClassName: 'header' },
+    { field: 'email', headerName: 'User Email', valueGetter: (params) => params.row?.user?.email, width: 250, headerClassName: 'header' },
+    { field: 'plate', headerName: 'Plate One', valueGetter: (params) => params.row?.plate, width: 150, headerClassName: 'header' },
+    { field: 'car_make', headerName: 'Vehicle 1 Car Make', valueGetter: (params) => params.row?.car_make, width: 150, headerClassName: 'header' },
+    { field: 'model', headerName: 'Vehicle 1 Model', valueGetter: (params) => params.row?.model, width: 150, headerClassName: 'header' },
+    { field: 'color', headerName: 'Vehicle 1 Color', valueGetter: (params) => params.row?.color, width: 150, headerClassName: 'header' },
+    { field: 'plate_two', headerName: 'Plate Two', valueGetter: (params) => params.row?.plate_two, width: 150, headerClassName: 'header' },
+    { field: 'car_make_two', headerName: 'Vehicle 2 Car Make', valueGetter: (params) => params.row?.car_make_two, width: 150, headerClassName: 'header' },
+    { field: 'model_two', headerName: 'Vehicle 2 Model', valueGetter: (params) => params.row?.model_two, width: 150, headerClassName: 'header' },
+    { field: 'color_two', headerName: 'Vehicle 2 Color', valueGetter: (params) => params.row?.color_two, width: 150, headerClassName: 'header' },
+    { field: 'plate_three', headerName: 'Plate Three', valueGetter: (params) => params.row?.plate_three, width: 150, headerClassName: 'header' },
+    { field: 'car_make_three', headerName: 'Vehicle 3 Car Make', valueGetter: (params) => params.row?.car_make_three, width: 150, headerClassName: 'header' },
+    { field: 'model_three', headerName: 'Vehicle 3 Model', valueGetter: (params) => params.row?.model_three, width: 150, headerClassName: 'header' },
+    { field: 'color_three', headerName: 'Vehicle 3 Color', valueGetter: (params) => params.row?.color_three, width: 150, headerClassName: 'header' },
+    {
+      field: 'action',
+      headerName: props.literals.action,
+      width: 150,
+      headerClassName: 'header',
+      renderCell: (params) => (
+        <>
+          <Button 
+              type="button" 
+              disabled={helpers.abilityByModuleKey('tenant_plates').can_delete == false}
+              onClick={()=>props.delItem(params.row._id)} 
+              sx={{color: '#bc0000', background: '#bc00002e', p: '2px', minWidth: 0, m: 1}}
+          >
+              <DeleteForeverOutlined />
+          </Button>
+          <Button
+              type="button"
+              disabled={helpers.abilityByModuleKey('tenant_plates').can_edit == false}
+              onClick={()=>{props.onEdit(params.row)}}
+              sx={{color: '#027c92', background: '#027c924d', p: '2px', minWidth: 0, m: 1}}
+          >
+              <EditOutlined/>
+          </Button>
+        </>
+      )
+    },
+  ]
     
     return (
       <Grid container spacing={3} sx={{placeContent: "center", py: 2}}>
@@ -92,20 +127,29 @@ export default function TenentPlatesView(props) {
             {props.literals.add} +
           </Button>
         </Grid>
-        {/* <Grid item xs={6} sm={12} md={6} lg={6}>
-          <SearchBar>
-            <SearchIconWrapper>
-                <Search />
-            </SearchIconWrapper>
-            <StyledInputBase
-                placeholder="Search…"
-                inputProps={{ 'aria-label': 'search' }}
-                value={props.searched}
-                onChange={(e) => props.requestSearch(e.target.value)}
-            />
-          </SearchBar>
-        </Grid> */}
         <Grid item xs={12}>
+          <Box
+            sx={{
+              height: '75vh',
+              width: '100%',
+              '& .header': {
+                backgroundColor: theme.palette.primary.main,
+                color: '#fff'
+              },
+            }}
+          >
+            <DataGrid
+              rowHeight={100}
+              getRowId={(row) => row._id}
+              rows={props.tenantPlates }
+              columns={columns}
+              disableSelectionOnClick={true}
+              components={{ Toolbar: GridToolbar }} 
+              density={'compact'}
+            />
+          </Box>
+        </Grid>
+        {/* <Grid item xs={12}>
           <Paper elevation={0} sx={{ width: '100%', overflow: 'hidden' }}>
               <TableContainer sx={{ height: '65vh' }}>
                   <Table aria-label="collapsible table" size="small">
@@ -166,7 +210,7 @@ export default function TenentPlatesView(props) {
                   }}
               />
           </Paper> 
-        </Grid>
+        </Grid> */}
       </Grid>
     );
 }

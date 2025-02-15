@@ -1,7 +1,8 @@
 import { 
   DashboardOutlined, DirectionsCar, BackupTableOutlined, Public, 
   MapOutlined, Inventory2Outlined, Business, ViewModuleOutlined, 
-  LockOpenOutlined, ConfirmationNumberOutlined, Settings, Report, 
+  LockOpenOutlined, ConfirmationNumberOutlined, Settings, Report, LocationOnOutlined, PinDropOutlined, LocalOfferOutlined, PeopleAltOutlined, LocalParkingOutlined,
+  East, 
 } from "@mui/icons-material";
 import {router} from "./routhPaths";
 
@@ -33,32 +34,47 @@ const adminRoutes = [
   },
   {
     path: router.cities,
-    icon: <MapOutlined />,
+    icon: <LocationOnOutlined />,
     value: "manage_cities",
   },
   {
     path: router.zones,
-    icon: <Inventory2Outlined />,
+    icon: <PinDropOutlined />,
     value: "manage_zones",
   },
   {
     path: router.rates,
-    icon: <BackupTableOutlined />,
+    icon: <LocalOfferOutlined />,
     value: "manage_rates",
   },
   {
     path: router.users,
-    icon: <BackupTableOutlined />,
+    icon: <PeopleAltOutlined />,
     value: "manage_users",
   },
   {
     path: router.tenentPlates,
-    icon: <BackupTableOutlined />,
+    icon: <DirectionsCar />,
     value: "manage_tenent_plates",
   },
   {
-    path: router.parkings+"/all",
+    path: router.residantPlate,
     icon: <DirectionsCar />,
+    value: "manage_residant_plates",
+  },
+  {
+    path: router.businessPassPlates,
+    icon: <DirectionsCar />,
+    value: "manage_business_pass_plates",
+  },
+  {
+    path: router.kickOutPlates,
+    icon: <East />,
+    value: "kick_out_plates",
+  },
+  {
+    path: router.parkings+"/all",
+    icon: <LocalParkingOutlined />,
     value: "parkings",
   },
   {
@@ -68,7 +84,7 @@ const adminRoutes = [
   },
   {
     path: router.tickets_issued,
-    icon: <ConfirmationNumberOutlined />,
+    icon: <LocalOfferOutlined />,
     value: "tickets_issued",
   },
   {

@@ -78,6 +78,11 @@ export class MainService {
     return res;
   }
 
+  addVisitor(body){
+    const res = AxiosServices.post(endpoints.main.addVisitor,body);
+    return res;
+  }
+
   getCurrentParking(body){
     const res = AxiosServices.post(endpoints.main.getCurrentParking,body);
     return res;

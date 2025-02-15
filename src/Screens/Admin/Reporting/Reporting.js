@@ -6,13 +6,16 @@ import Spinner from "../../../shared/Spinner";
 import ReportingView from "./ReportingView";
 import organizationServices from "../../../services/organization-service";
 import Filter from "./Filter";
-import { Drawer } from "@mui/material";
+import { Drawer, useTheme } from "@mui/material";
 import reportingServices from "../../../services/reporting-service";
-import { commonOperator, dateOperator, objectIDOperator, parking, tickets_issued } from "../../../data/filterKeys";
+import { commonOperator, dateOperator, timeOperator, objectIDOperator, parking, tickets_issued } from "../../../data/filterKeys";
 import cityServices from "../../../services/city-service";
 import userServices from "../../../services/user-service";
+import Papa from 'papaparse'
+import { config } from "../../../Constants";
 
 export default function Reporting(props) {
+  const theme = useTheme();
   const [openDialog, setOpenDialog] = useState(false);
   const [spinner, setSpinner] = useState(false);
   const [msg, setMsg] = useState("");
@@ -30,16 +33,25 @@ export default function Reporting(props) {
   const [operator, setOperator] = useState({
     commonOperator: commonOperator,
     dateOperator: dateOperator,
-    objectIDOperator: objectIDOperator
+    timeOperator: timeOperator,
+    objectIDOperator: objectIDOperator,
   });
   const [selectedOperator, setSelectedOperator] = useState(null)
 
-  const inputObj = {key: null, operator: null, value: null, condition: ''}
+  const inputObj = {key: null, operator: null, value: null, condition: '', value2: null}
   const inputsArr = [inputObj]
   const [inputs, setInputs] = useState(inputsArr);
   const status = ['paid', 'unpaid']
+  const user = JSON.parse(sessionStorage.getItem('userLogged'));
+  const groupBy = ['Zone']
+  const [selectedGroup, setSelectedGroup] = useState(null)
 
   useEffect(()=>{
+    if(user?.result?.role !== 'root'){
+      tickets_issued.splice(0, 1);
+      parking.splice(0, 1);
+      console.log(tickets_issued)
+    }
   },[])
 
   const getOrganizations = async()=>{
@@ -79,14 +91,43 @@ export default function Reporting(props) {
 
   const generateReport = async(e)=>{
     e.preventDefault();
+    let body = [];
+    if(user?.result?.role !== 'root'){
+      body = [{
+        condition: 'AND',
+        key: {key: 'org', name: 'Organization'},
+        operator: {key: '$eq', name: 'equal to'},
+        value: props.org
+      }];
+      body = [...body, ...inputs];
+    }else{
+      body = inputs;
+    }
+    console.log(body)
     setSpinner(true);
     let res;
     if(filterBy == 'parking'){
-      res = await reportingServices.generateReport(inputs);
+      res = await reportingServices.generateReport(body);
     }else{
-      res = await reportingServices.generateTicketIssuedReport(inputs);
+      res = await reportingServices.generateTicketIssuedReport(body);
     }
-    setReport(res.data.report)
+    if (selectedGroup == 'Zone') {
+      var result = [];
+      res.data.report.reduce(function (res, value) {
+        console.log(value)
+        if (!res[value.zone._id]) {
+          res[value.zone._id] = { ...value, amount: 0, service_fee: 0, total_parking: 0 };
+          result.push(res[value.zone._id])
+        }
+        res[value.zone._id].amount += value.amount;
+        res[value.zone._id].service_fee += parseFloat(value.service_fee);
+        res[value.zone._id].total_parking = res[value.zone._id].total_parking+1;
+        return res;
+      }, {});
+      setReport(result)
+    }else{
+      setReport(res.data.report)
+    }
     setTotal(res.data.total)
     setOpenDrawer(false);
     setSpinner(false);
@@ -196,40 +237,50 @@ export default function Reporting(props) {
       orientation: "landscape",
       format: "A3",
     });
+    // setSpinner(true)
 
-    doc.autoTable({
-      headStyles :{fillColor : [44, 54, 128], textColor: [255,255,255]},
-      body: [...table],
-      columnStyles: {
-        2: {cellWidth: 50},
-      },
-      columns: columns,
-      didDrawPage: function (data) {
-        var pageSize = doc.internal.pageSize;
-        var pageHeight = pageSize.height ? pageSize.height : pageSize.getHeight();
-        var pageWidth = pageSize.width ? pageSize.width : pageSize.getWidth();
-        // Header
-        doc.setFontSize(20);
-        doc.setTextColor('#2c3680');
-        var img = new Image(); //this mount a variable to img
-        img.src = require('../../../assets/images/Logos/logo.jpeg')
-        doc.addImage(img, 'JPEG', data.settings.margin.left, 10, 60, 20);
-        doc.text(filename, (pageWidth - 50)/2, 20);
-
-        // Footer
-        var str = "Page " + doc.internal.getNumberOfPages()
-        doc.setFontSize(10);
-        doc.text(str, data.settings.margin.left, pageHeight - 10);
-        doc.text(moment().format('MMM Do YY, hh:mm a'), pageWidth - 50, pageHeight - 10);
-        doc.text('© 2023 Connected Parking', (pageWidth - 50)/2, pageHeight - 10);
-      },
-      margin: {top: 40}
-    });
-    doc.save(filename+'.pdf', { returnPromise: true }).then(() => {
-      setSpinner(false)
-    });
+    getBase64ImageFromUrl(props.org._id)
+    .then(result => {
+      doc.autoTable({
+        headStyles :{fillColor : theme.palette.primary.main, textColor: [255,255,255]},
+        body: [...table],
+        columnStyles: {
+          2: {cellWidth: 50},
+        },
+        columns: columns,
+        didDrawPage: function (data) {
+          var pageSize = doc.internal.pageSize;
+          var pageHeight = pageSize.height ? pageSize.height : pageSize.getHeight();
+          var pageWidth = pageSize.width ? pageSize.width : pageSize.getWidth();
+          // Header
+          doc.setFontSize(20);
+          doc.setTextColor(theme.palette.primary.main);
+          // var img = new Image(); //this mount a variable to img
+          // img.src = require(config.url.file_url+props.org?.logo)
+          doc.addImage(result, 'JPEG', data.settings.margin.left, 10, 60, 20);
+          doc.text(filename, (pageWidth - 50)/2, 20);
+  
+          // Footer
+          var str = "Page " + doc.internal.getNumberOfPages()
+          doc.setFontSize(10);
+          doc.text(str, data.settings.margin.left, pageHeight - 10);
+          doc.text(moment().format('MMM Do YY, hh:mm a'), pageWidth - 50, pageHeight - 10);
+          doc.text('© 2023 '+props.org?.org_name, (pageWidth - 50)/2, pageHeight - 10);
+        },
+        margin: {top: 40}
+      });
+      doc.save(filename+'.pdf', { returnPromise: true }).then(() => {
+        setSpinner(false)
+      });
+    })
+    .catch(err => console.error(err));
   }
 
+  async function getBase64ImageFromUrl(id) {
+    var res = await reportingServices.getOrgImage({id: id});
+    return res.data
+  }
+  
   const onKeySelect = async(e, index)=>{
     if(e?.key == 'org'){
       getOrganizations();
@@ -252,6 +303,7 @@ export default function Reporting(props) {
         newArr[index].operator =  null;
         newArr[index].value =  null;
         newArr[index].condition =  null;
+        newArr[index].value2 =  null;
         return newArr;
       });
     }
@@ -312,6 +364,95 @@ export default function Reporting(props) {
     setTotal({amount: 0, service_fee: 0});
   }
 
+  const exportCSV = async () => {
+    let data = [];
+    let emptyColumns = {};
+    let summaryKeys = {key1: 'Amount', key2: 'Start Date/Time - End Date/Time'}
+    if(selectedGroup == 'Zone'){
+      data = report.map(function (item) {
+        return {
+          Organization: item.org?.org_name,
+          "City Name": item.city?.city_name,
+          "Zone Name": item.zone?.zone_name,
+          "Total Parking" : item.total_parking,
+          "Service Fee": '$ ' + (parseInt(item.service_fee) / 100).toFixed(2),
+          Amount: '$ ' + (item.amount / 100).toFixed(2)
+        }
+      })
+      emptyColumns = {
+        Organization: "",
+        "City Name": "",
+        "Zone Name": "",
+        "Total Parking": "",
+      }
+      summaryKeys = {key1: 'Service Fee', key2: 'Amount'}
+    }else{
+      data = report.map(function (item) {
+        return {
+          Organization: item.org?.org_name,
+          "City Name": item.city?.city_name,
+          "Zone Name": item.zone?.zone_name,
+          Email: item.user?.email,
+          "Parking ID": item.parking_id,
+          Plate: item.plate,
+          "Service Fee": '$ ' + (parseInt(item.service_fee) / 100).toFixed(2),
+          Amount: '$ ' + (item.amount / 100).toFixed(2),
+          "Start Date/Time - End Date/Time": moment(item.from).format('MMM Do YY, hh:mm a') + ' - ' + moment(item.to).format('MMM Do YY, hh:mm a'),
+        }
+      })
+      emptyColumns = {
+        Organization: "",
+        "City Name": "",
+        "Zone Name": "",
+        Email: "",
+        "Parking ID": "",
+        Plate: "",
+        "Service Fee": "",
+      }
+    }
+    let total_summary = [
+      {
+        ...emptyColumns,
+        [summaryKeys.key1]: "Parkings",
+        [summaryKeys.key2]: total.total_parkings,
+      },
+      {
+        ...emptyColumns,
+        [summaryKeys.key1]: "Plates",
+        [summaryKeys.key2]: total.total_plates,
+      },
+      {
+        ...emptyColumns,
+        [summaryKeys.key1]: "Service Fee",
+        [summaryKeys.key2]: '$ ' + (parseInt(total.service_fee) / 100).toFixed(2),
+      },
+      {
+        ...emptyColumns,
+        [summaryKeys.key1]: "Total Amount",
+        [summaryKeys.key2]: '$ ' + (parseInt(total.amount) / 100).toFixed(2),
+      }
+    ]
+    data = [...data, ...total_summary];
+    
+    var csv = Papa.unparse(data);
+
+    var csvData = new Blob([csv], {type: 'text/csv;charset=utf-8;'});
+    var csvURL =  null;
+    if (navigator.msSaveBlob)
+    {
+        csvURL = navigator.msSaveBlob(csvData, 'parking_report.csv');
+    }
+    else
+    {
+        csvURL = window.URL.createObjectURL(csvData);
+    }
+
+    var tempLink = document.createElement('a');
+    tempLink.href = csvURL;
+    tempLink.setAttribute('download', 'parking_report.csv');
+    tempLink.click();
+  }
+
   return (
     <>
       <ReportingView
@@ -319,9 +460,11 @@ export default function Reporting(props) {
         report = {report}
         total = {total}
         literals={props.literals}
+        selectedGroup={selectedGroup}
 
         setOpenDrawer={()=>{setOpenDrawer(!openDrawer)}}
         exportPDF={()=>exportPDF()}
+        exportCSV={() => exportCSV()}
       />
       <Drawer
         PaperProps={{
@@ -349,7 +492,9 @@ export default function Reporting(props) {
           inputs={inputs}
           literals = {props.literals}
           filterBy={filterBy}
-          
+          groupBy={groupBy}
+          selectedGroup={selectedGroup}
+
           onKeySelect={(e, index)=>onKeySelect(e, index)}
           onOperatorSelect={(e, index)=>onOperatorSelect(e, index)}
           onValueSelect={(e, index)=>onValueSelect(e, index)}
@@ -359,6 +504,7 @@ export default function Reporting(props) {
           handleInputChange={(e)=>handleInputChange(e)}
           generateReport={(e)=>generateReport(e)}
           setFilterBy={(e)=>onFilterChange(e.target.value)}
+          setSelectedGroup={(e) => setSelectedGroup(e)}
         />
       </Drawer>
       <Spinner

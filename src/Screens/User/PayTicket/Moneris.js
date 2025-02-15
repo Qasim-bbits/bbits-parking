@@ -28,12 +28,14 @@ function Moneris(props) {
     }
     const script = document.createElement("script");    
     script.async = true;
-    script.src = "https://gatewayt.moneris.com/chkt/js/chkt_v1.00.js";
+    script.src = (props.org.payment_envoirnment === 'test') ? 
+      'https://gatewayt.moneris.com/chkt/js/chkt_v1.00.js' :
+      'https://gateway.moneris.com/chkt/js/chkt_v1.00.js';
     document.body.appendChild(script);
     
     script.onload = ()=> {
         MonerisRef.current = new window.monerisCheckout();
-        MonerisRef.current.setMode("qa");
+        MonerisRef.current.setMode((props.org.payment_envoirnment === 'test') ? 'qa' : 'prod');
         MonerisRef.current.setCheckoutDiv("monerisCheckout");
         MonerisRef.current.startCheckout(res.data.ticket);
         setSpinner(false);
@@ -86,11 +88,10 @@ function Moneris(props) {
     setSpinner(true);
     let body = {
       payment_gateway: "moneris",
-      id: props.id,
+      ticketIds: props.ticketIds,
       org: props.org._id,
       amount: props.amount,
       plate: props.plate,
-      issued_at: props.issued_at,
       zone_name: props.zone,
       moneris_ticket: ticket,
     }

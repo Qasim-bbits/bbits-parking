@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 import helpers from "../../../Helpers/Helpers";
-import { DeleteForeverOutlined, EditOutlined } from "@mui/icons-material";
+import { DeleteForeverOutlined, Done, EditOutlined, Key, Password } from "@mui/icons-material";
 
 
 const SearchBar = styled('div')(({ theme }) => ({
@@ -169,6 +169,22 @@ export default function UsersView(props) {
                                                     >
                                                         <EditOutlined/>
                                                     </Button>
+                                                    <Button
+                                                        type="button" 
+                                                        disabled={helpers.abilityByModuleKey('users').can_edit == false}
+                                                        onClick={()=>{props.passwordModel(row)}}
+                                                        sx={{color: '#dc9003', background: '#ffa50061', p: '2px', minWidth: 0, m: 1}}
+                                                    >
+                                                        <Key/>
+                                                    </Button>
+                                                    {!row.email_verified && <Button
+                                                        type="button" 
+                                                        disabled={helpers.abilityByModuleKey('users').can_edit == false}
+                                                        onClick={()=>{props.onVerify(row)}}
+                                                        sx={{color: '#029225', background: '#0292254f', p: '2px', minWidth: 0, m: 1}}
+                                                    >
+                                                        <Done/>
+                                                    </Button>}
                                                 </TableCell>
                                             </TableRow>
                                             {/* <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>

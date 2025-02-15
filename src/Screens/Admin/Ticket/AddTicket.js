@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Grid, Typography, TextField, Button, IconButton, Autocomplete, Divider, useTheme} from "@mui/material";
+import { Box, Grid, Typography, TextField, Button, IconButton, Autocomplete, Divider, useTheme, RadioGroup, FormControlLabel, Radio} from "@mui/material";
 import { Add, Close, DeleteForeverOutlined } from "@mui/icons-material";
 
 export default function AddTicket(props) {
@@ -77,6 +77,26 @@ export default function AddTicket(props) {
                 required
                 fullWidth
               />
+          </Grid>
+          <Grid item xs={12}>
+            <RadioGroup
+                row
+                aria-labelledby="demo-row-radio-buttons-group-label"
+                name="row-radio-buttons-group"
+              >
+                <FormControlLabel value="normal" sx={{color: "#2c3680"}} control={
+                  <Radio
+                    checked={props.inputField['ticket_type'] == 'normal'}
+                    onChange={props.onTicketType}
+                    required
+                  />} label={props.literals.normal}/>
+                <FormControlLabel value="booting" sx={{color: "#2c3680"}} control={
+                  <Radio
+                    checked={props.inputField['ticket_type'] == 'booting'}
+                    onChange={props.onTicketType}
+                    required
+                  />} label={props.literals.booting}/>
+              </RadioGroup>
           </Grid>
           <Grid item xs={12}>
             <Divider>

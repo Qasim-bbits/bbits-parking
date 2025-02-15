@@ -133,8 +133,10 @@ export default function ZonesView(props) {
                               <StyledTableCell>{props.literals.city}</StyledTableCell>
                               <StyledTableCell>{props.literals.organization}</StyledTableCell>
                               <StyledTableCell>{props.literals.tenant_zone}</StyledTableCell>
+                              <StyledTableCell>{props.literals.business_pass_plates}</StyledTableCell>
                               <StyledTableCell>{props.literals.link}</StyledTableCell>
                               <StyledTableCell>{props.literals.qr_code}</StyledTableCell>
+                              <StyledTableCell>{props.literals.visitor_pass}</StyledTableCell>
                               <StyledTableCell align="right">{props.literals.action}</StyledTableCell>
                           </TableRow>
                       </TableHead>
@@ -142,7 +144,9 @@ export default function ZonesView(props) {
                           {props.zones
                           .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                           .map((row) => {
-                            
+                              const sub_domain = row.org?.sub_domain == 'root' ? '' : (row.org?.sub_domain+".");
+                              const url = `${config.url.http}${sub_domain}${config.url.client_url}zone/${row._id}`
+                              const visitorPassUrl = `${config.url.http}${sub_domain}${config.url.client_url}visitor_pass/${row._id}`
                               return (
                                   <>
                                       <TableRow key={row.zone_name}>
@@ -161,9 +165,10 @@ export default function ZonesView(props) {
                                           <TableCell>{row.city_id?.city_name}</TableCell>
                                           <TableCell>{row.org?.org_name}</TableCell>
                                           <TableCell>{(row.tenant_zone === true) ? 'Yes' : 'No'}</TableCell>
+                                          <TableCell>{(row.is_business_pass === true) ? 'Yes' : 'No'}</TableCell>
                                           <TableCell>
-                                            <a href={config.url.http+row.org?.sub_domain+'.'+config.url.client_url+'zone/'+row._id} target="_blank">
-                                              {config.url.http}{row.org?.sub_domain}.{config.url.client_url}zone/{row._id}
+                                            <a href={url} target="_blank">
+                                              {url}
                                             </a>
                                           </TableCell>
                                           <TableCell>
@@ -173,12 +178,17 @@ export default function ZonesView(props) {
                                             <div style={{display: 'none'}}>
                                               <QRCode
                                                 id={row._id}
-                                                value={config.url.http+row.org?.sub_domain+'.'+config.url.client_url+'zone/'+row._id}
+                                                value={url}
                                                 size={400}
                                                 level={"H"}
                                                 includeMargin={true}
                                               />
                                             </div>
+                                          </TableCell>
+                                          <TableCell>
+                                            <a href={visitorPassUrl} target="_blank">
+                                              {visitorPassUrl}
+                                            </a>
                                           </TableCell>
                                           <TableCell align="right">
                                               <Button

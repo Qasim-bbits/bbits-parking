@@ -101,7 +101,13 @@ export default function Zones(props) {
 
   const onEdit = async(e)=> {
     setInputField(e);
-    setSelectedCity(e.city_id);
+    if(e.caption_en !== undefined){
+      setInputField({...inputField, add_caption: true})
+    }
+    setSelectedCity({
+      ...e.city_id,
+      org: e.org
+    });
     setOpenDrawer(true);
     setPolygon(e.polygon);
     setCenter(e.polygon[0]);

@@ -4,7 +4,10 @@ import SnackAlert from "../../../shared/SnackAlert";
 import Spinner from "../../../shared/Spinner";
 import ParkingsView from "./ParkingsView";
 import parkingServices from "../../../services/parking-service";
-import moment from 'moment';
+import parkingService from "../../../services/parking-service";
+import ConfirmEndSessionDiallog from "../../../shared/ConfirmEndSessionDiallog";
+const moment = require('moment-timezone');
+moment.tz.setDefault("America/New_York");
 
 export default function ParkingsUtils(props) {
   let {id} = useParams();
@@ -17,6 +20,11 @@ export default function ParkingsUtils(props) {
   const [searched, setSearched] = useState("");
   const [rows, setRows] = useState([]);
   const [filter, setFilter] = useState({});
+  const [openDialog, setOpenDialog] = useState(false);
+  const [editId, setEditId] = useState('');
+  const [kickOutParking, setKickOutParking] = useState({});
+  const [dialogTitle, setDialogTitle] = useState('');
+  const [dialogContent, setDialogContent] = useState('');
 
   useEffect(()=>{
     getFilter();
@@ -75,6 +83,54 @@ const handleParkings = (e)=>{
   getParkings(body);
 }
 
+const onResetParking = async (e)=>{
+  let body = {
+    zone: e.zone,
+    plate: e.plate
+  }
+  setSpinner(true);
+  await parkingServices.resetParkingLimit(body);
+  setMsg(props.literals.parking_limit_reset_successfully);
+  setSeverity('success');
+  setAlert(true);
+  setSpinner(false);
+}
+
+  const endSession = async (e) => {
+    if(editId){
+      setSpinner(true);
+      await parkingService.editParking({id: editId, to: moment().toDate()});
+      setEditId('');
+      setMsg(props.literals.session_end_successfully);
+      setSeverity('success');
+      setAlert(true);
+      setOpenDialog(false);
+      getFilter();
+      setSpinner(false);
+    }else{
+      kickOutPlate();
+    }
+  }
+
+  const kickOutPlate = async () =>{
+    let user = JSON.parse(sessionStorage.getItem("userLogged"));
+    let body = {
+      zone: kickOutParking.zone._id,
+      city: kickOutParking.city._id,
+      org: kickOutParking.org._id,
+      parking: kickOutParking._id,
+      kicked_out_plate: kickOutParking.plate,
+      kicked_out_By: user.result.email
+    }
+    setSpinner(true);
+    await parkingServices.kickOutPlate(body);
+    setMsg(props.literals.plate_kickout_purchase_now);
+    setSeverity('success');
+    setAlert(true);
+    setSpinner(false);
+    setOpenDialog(false);
+  }
+
   return (
     <>
       <ParkingsView
@@ -85,6 +141,15 @@ const handleParkings = (e)=>{
 
         requestSearch = {(e)=>requestSearch(e)}
         handleParkings = {(e)=>handleParkings(e)}
+        onResetParking = {(e)=>onResetParking(e)}
+        endSession = {(e) => {setEditId(e._id); setOpenDialog(true)}}
+        conFirmKickOutPlate = {(e) => {
+          setKickOutParking(e);
+          setOpenDialog(true);
+          setDialogTitle(props.literals.parking_already_purchased)
+          setDialogContent(`Are you sure, you want to kick out this ${e.plate} plate`)
+        }}
+        kickOutPlate = {(e) => kickOutPlate(e)}
       />
       <SnackAlert
         msg = {msg}
@@ -95,6 +160,14 @@ const handleParkings = (e)=>{
       />
       <Spinner
         spinner = {spinner}
+      />
+      <ConfirmEndSessionDiallog
+        openDialog = {openDialog}
+        dialogTitle = {dialogTitle}
+        dialogContent = {dialogContent}
+
+        closeDialog = {()=>setOpenDialog(false)}
+        delItem = {()=>endSession()}
       />
     </>
   );

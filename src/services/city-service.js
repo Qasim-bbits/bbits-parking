@@ -47,6 +47,11 @@ export class CityServices {
     const res = AxiosServices.post(endpoints.city.getVisitorZone,body);    
     return res;
   }
+
+  getTenantAndVisitorZones(body){
+    const res = AxiosServices.post(endpoints.city.getTenantAndVisitorZones,body);    
+    return res;
+  }
 }
 const cityServices = new CityServices();
 export default cityServices;

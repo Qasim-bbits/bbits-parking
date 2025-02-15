@@ -55,12 +55,14 @@ export default function Filter(props) {
                             )}
                           />
                         </Grid>
-                        <Grid item xs={3}>
+                        <Grid item xs={2}>
                           <Autocomplete
                             disablePortal
                             options={props.operator[
-                              (el.key?.key === 'from') ? 'dateOperator'
-                              : (el.key?.key === 'to') ? 'dateOperator'
+                              (el.key?.key === 'from' && el.key?.name === 'Start Date') ? 'dateOperator'
+                              : (el.key?.key === 'from' && el.key?.name === 'Start Time') ? 'timeOperator'
+                              : (el.key?.key === 'to' && el.key?.name === 'End Date') ? 'dateOperator'
+                              : (el.key?.key === 'to' && el.key?.name === 'End Time') ? 'timeOperator'
                               : (el.key?.key === 'issued_at') ? 'dateOperator'
                               : (el.key?.key === 'paid_at') ? 'dateOperator'
                               : (el.key?.key === 'parking_id') ? 'dateOperator'
@@ -80,7 +82,7 @@ export default function Filter(props) {
                             )}
                           />
                         </Grid>
-                        <Grid item xs={3}>
+                        <Grid item xs={4}>
                           {(el.key?.key === 'org' || el.key?.key === 'city'
                           || el.key?.key === 'zone' || el.key?.key === 'user' || el.key?.key === 'issued_by') &&
                             <Autocomplete
@@ -95,16 +97,16 @@ export default function Filter(props) {
                               )}
                             />}
                             {(el.key?.key === 'ticket_status') &&
-                            <Autocomplete
-                              disablePortal
-                              options={props.value[el.key.key]}
-                              getOptionLabel={(option) => option}
-                              value={el.value}
-                              // readOnly={(props.user?.result?.role !== 'root') ? true : false}
-                              onChange={(event, newValue)=>props.onValueSelect(newValue, index)}
-                              renderInput={(params) => (
-                              <TextField {...params} label={el.key.name} color="primary" size="small" required/>
-                              )}
+                              <Autocomplete
+                                disablePortal
+                                options={props.value[el.key.key]}
+                                getOptionLabel={(option) => option}
+                                value={el.value}
+                                // readOnly={(props.user?.result?.role !== 'root') ? true : false}
+                                onChange={(event, newValue)=>props.onValueSelect(newValue, index)}
+                                renderInput={(params) => (
+                                <TextField {...params} label={el.key.name} color="primary" size="small" required/>
+                                )}
                             />}
                           {(el.key?.key == 'plate' || el.key?.key == 'amount' 
                             || el.key?.key == 'parking_id' || el.key?.key == 'service_fee'
@@ -123,20 +125,61 @@ export default function Filter(props) {
                               fullWidth
                             />
                           }
-                          {(el.key?.key === 'from' || el.key?.key === 'to' || el.key?.key === 'issued_at' || el.key?.key === 'paid_at') &&
-                            <TextField
-                              id={index}
-                              label={el.key?.name}
-                              color="primary"
-                              type="date"
-                              name="value"
-                              value={el.value}
-                              onChange={props.handleInputChange}
-                              size="small"
-                              InputLabelProps={{ shrink: true }}
-                              required
-                              fullWidth
-                            />
+                          {(
+                            (el.key?.key === 'from' && el.key?.name === 'Start Date') ||
+                            (el.key?.key === 'to' && el.key?.name === 'End Date') ||
+                            el.key?.key === 'issued_at' ||
+                            el.key?.key === 'paid_at') &&
+                              <TextField
+                                id={index}
+                                label={el.key?.name}
+                                color="primary"
+                                type="date"
+                                name="value"
+                                value={el.value}
+                                onChange={props.handleInputChange}
+                                size="small"
+                                InputLabelProps={{ shrink: true }}
+                                required
+                                fullWidth
+                              />
+                          }
+                          {(
+                            (el.key?.key === 'from' && el.key?.name === 'Start Time') ||
+                            (el.key?.key === 'to' && el.key?.name === 'End Time')) &&
+                            <Grid container spacing={2} sx={{placeContent: "center"}}>
+                              <Grid item xs={6}>
+                                <TextField
+                                  id={index}
+                                  label={el.key?.name}
+                                  color="primary"
+                                  type="time"
+                                  name="value"
+                                  value={el.value}
+                                  onChange={props.handleInputChange}
+                                  size="small"
+                                  InputLabelProps={{ shrink: true }}
+                                  required
+                                  fullWidth
+                                />
+                              </Grid>
+                              <Grid item xs={6}>
+                                <TextField
+                                  id={index}
+                                  label={el.key?.name}
+                                  color="primary"
+                                  type="time"
+                                  name="value2"
+                                  value={el.value2}
+                                  min="09:00"
+                                  onChange={props.handleInputChange}
+                                  size="small"
+                                  InputLabelProps={{ shrink: true }}
+                                  required
+                                  fullWidth
+                                />
+                              </Grid>
+                            </Grid>
                           }
                         </Grid>
                         <Grid item xs={1} align="center">
@@ -170,6 +213,19 @@ export default function Filter(props) {
                   )}
                 )}
               </Grid>
+              {props.filterBy === 'parking' && <Grid item sm={12} md={4} className="mt-3">
+                <Autocomplete
+                  disablePortal
+                  id="combo-box-demo"
+                  options={props.groupBy}
+                  getOptionLabel={(option) => option}
+                  value={props.selectedGroup}
+                  onChange={(event, newValue) => props.setSelectedGroup(newValue)}
+                  renderInput={(params) => (
+                    <TextField {...params} label={props.literals.group_by} color="primary" size="small" />
+                  )}
+                />
+              </Grid>}
           </Grid>
           <Grid item xs={12} align="right">
             <Button 

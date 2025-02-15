@@ -23,6 +23,12 @@ export class ReportingServices {
     return res;
   }
 
+  getOrgImage(body){ 
+    console.log(body)   
+    const res = AxiosServices.post(endpoints.organization.getOrgImage, body);
+    return res;
+  }
+
 }
 const reportingServices = new ReportingServices();
 export default reportingServices;

@@ -21,6 +21,7 @@ import { router } from '../../../Routes/routhPaths';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { useTheme } from '@mui/styles';
 import { config } from '../../../Constants';
+import InputMask from 'react-input-mask';
 
 function SignUpView(props) {
   const theme = useTheme();
@@ -91,16 +92,20 @@ function SignUpView(props) {
               value={props.inputField['address']}
               onChange={props.handleChange}
             />
-            <TextField
-              id="standard-error-helper-text"
-              label={props.literals.phone_no}
-              fullWidth
-              variant="standard"
-              type="number"
-              name="mobile_no"
-              value={props.inputField['mobile_no']}
-              onChange={props.handleChange}
-            />
+            <InputMask
+                mask="+1 (999) 999-9999"
+                maskChar=""
+                value={props.inputField['mobile_no']}
+                onChange={props.handleChange}
+            >
+              {() => <TextField
+                label={props.literals.phone_no}
+                color="primary"
+                variant="standard"
+                name="mobile_no"
+                fullWidth
+              />}
+            </InputMask>
             <TextField
               id="standard-error-helper-text"
               label={props.literals.email_address}
@@ -157,7 +162,10 @@ function SignUpView(props) {
                 }
                 label={
                   <Typography variant='caption' sx={{letterSpacing: 0.1}}>
-                    {props.literals.i_have_read_and_agreed}
+                    I have read and agreed to the
+                    <Link to={{pathname: router.conditionOfUse}} style ={{color: theme.palette.primary.main, textDecoration: 'none'}}> Conditions of Use </Link>
+                    and the
+                    <Link to={{pathname: router.privacyPolicy}} style ={{color: theme.palette.primary.main, textDecoration: 'none'}}> Privacy Policy</Link>.
                   </Typography>
                 }
               />

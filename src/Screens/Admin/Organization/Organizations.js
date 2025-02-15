@@ -147,6 +147,10 @@ export default function Organizations(props) {
     setInputField({});
   }
 
+  const handleCheck = (e) => {
+    setInputField({ ...inputField, [e.target.name]: e.target.checked });
+  };
+
   return (
     <>
     <OrganizationsView
@@ -182,6 +186,7 @@ export default function Organizations(props) {
         handleSwitch={(e,x)=>handleSwitch(e,x)}
         handleSubmit={(e)=>handleSubmit(e)}
         onClose={()=>setOpenDrawer(false)}
+        handleCheck={(e)=>handleCheck(e)}
       />
       </Drawer>
 

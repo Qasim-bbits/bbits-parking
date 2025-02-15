@@ -131,6 +131,9 @@ function LoginView(props) {
                 {props.literals?.log_in}
               </Button>
             </Grid>
+            {props.notVerified && <Typography fontSize='13px'>
+                {props.literals?.did_not_received_verification_email} <Button onClick={props.resend}>Resend</Button>
+            </Typography>}
             <Typography fontSize='13px'>
               {props.literals?.dont_have_an_account}? <Link to={{pathname: router.signUp}} style ={{color: theme.palette.primary.main}}> {props.literals?.sign_up}</Link>
             </Typography>

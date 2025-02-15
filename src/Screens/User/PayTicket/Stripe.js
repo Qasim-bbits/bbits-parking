@@ -65,7 +65,7 @@ function Stripe(props) {
         let body = {
           paymentMethod : ev.paymentMethod,
           payment_gateway: "stripe",
-          id: props.id,
+          ticketIds: props.ticketIds,
           org: props.org._id,
           amount: props.amount,
           plate: props.plate,
@@ -105,11 +105,10 @@ function Stripe(props) {
           let body = {
             paymentMethod : paymentMethod,
             payment_gateway: "stripe",
-            id: props.id,
+            ticketIds: props.ticketIds,
             org: props.org._id,
             amount: props.amount,
             plate: props.plate,
-            issued_at: props.issued_at,
             zone_name: props.zone
           }
           const res = await ticketServices.payTicket(body);

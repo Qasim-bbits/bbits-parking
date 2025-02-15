@@ -155,6 +155,7 @@ export default function RatesView(props) {
                                                             <StyledTableCell> {props.literals.rate_name}</StyledTableCell>
                                                             <StyledTableCell> {props.literals.days}</StyledTableCell>
                                                             <StyledTableCell> {props.literals.enabled_from_to}</StyledTableCell>
+                                                            <StyledTableCell> {props.literals.enable_custom_rate}</StyledTableCell>
                                                             <StyledTableCell> {props.literals.time}</StyledTableCell>
                                                             <StyledTableCell> {props.literals.steps}</StyledTableCell>
                                                             <StyledTableCell> {props.literals.action}</StyledTableCell>
@@ -173,6 +174,7 @@ export default function RatesView(props) {
                                                                   + ' - ' + 
                                                                   moment(x.end_date).format('MMM/DD/YYYY, hh:mm a') : 'Always'}
                                                                 </TableCell>
+                                                                <TableCell>{x.enable_custom_rate ? 'Yes' : 'No'}</TableCell>
                                                                 <TableCell>{x.start_time} - {x.end_time}</TableCell>
                                                                 <TableCell>
                                                                   {x.rate_step.map(y=>{

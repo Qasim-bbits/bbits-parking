@@ -33,6 +33,11 @@ export class TicketServices {
     return res;
   }
 
+  delIssuedTicket(id){
+    const res = AxiosServices.delete(`${endpoints.ticket.delIssuedTicket}/${id}`);
+    return res;
+  }
+
   searchTicket(body){
     const res = AxiosServices.post(endpoints.ticket.searchTicket, body);
     return res;
@@ -43,6 +48,20 @@ export class TicketServices {
     return res;
   }
 
+  getTicketsByOrg(body){
+    const res = AxiosServices.post(endpoints.ticket.getTicketsByOrg, body);
+    return res;
+  }
+
+  IssueTicket(body){
+    const res = AxiosServices.post(endpoints.ticket.IssueTicket, body);
+    return res;
+  }
+
+  getTicketsIssuedByAgent(body){
+    const res = AxiosServices.post(endpoints.ticket.getTicketsIssuedByAgent, body);
+    return res;
+  }
 }
 const ticketServices = new TicketServices();
 export default ticketServices;

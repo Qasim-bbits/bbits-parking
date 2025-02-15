@@ -1,4 +1,5 @@
 import { Typography } from '@mui/material';
+import { config } from '../../Constants';
 
 export const FooterView = () => {
 
@@ -8,7 +9,7 @@ export const FooterView = () => {
         color="text.secondary"
         align="center"
       >
-        © 2022 BBits Solutions Inc
+        © {(new Date()).getFullYear()} {config.url.COMPANY_NAME}
       </Typography>
     );
 };

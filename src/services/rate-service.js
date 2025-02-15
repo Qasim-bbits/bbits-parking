@@ -37,6 +37,11 @@ export class RateServices {
     const res = AxiosServices.post(endpoints.rate.delRateType, body);    
     return res;
   }
+
+  getVisitorPassRate(zone_id){
+    const res = AxiosServices.get(`${endpoints.rate.visitorPassRate}/${zone_id}`);
+    return res;
+  }
 }
 const rateServices = new RateServices();
 export default rateServices;

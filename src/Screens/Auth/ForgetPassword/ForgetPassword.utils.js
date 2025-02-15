@@ -30,6 +30,7 @@ function ForgetPasswordUtils(props) {
     <>
       <ForgetPasswordView
         inputField = {inputField}
+        org = {props.org}
         
         handleChange = {(e)=>handleChange(e)}
         handleSubmit = {(e)=>handleSubmit(e)}

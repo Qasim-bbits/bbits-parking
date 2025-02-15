@@ -156,7 +156,7 @@ function ParkingRateForm(props) {
           {props.literals.total_incl_GST}:
         </Typography>
         <Typography variant='caption' align='left' sx={{color: 'primary.main'}} >
-          CA${(props.rateCycle[props.steps].rate/100).toFixed(2)}
+          ${(props.rateCycle[props.steps].rate/100).toFixed(2)}
         </Typography>
       </Box>
       <Box sx={{display: 'flex', width: '80%', marginTop: 2, justifyContent: 'space-between', alignItems: 'flex-end', color: 'black'}}>
@@ -164,17 +164,17 @@ function ParkingRateForm(props) {
           {props.literals.service_fee}:
         </Typography>
         <Typography variant='caption' align='left' sx={{color: 'primary.main'}} >
-          CA${(props.rateCycle[props.steps].service_fee/100).toFixed(2)}
+          ${(props.rateCycle[props.steps].service_fee/100).toFixed(2)}
         </Typography>
       </Box>
       <Box sx={{width: '80%', textAlign: 'center', position: 'relative', my: 2}}>
-        <Grid sx={{position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50% , -50%)', webkitTransform: 'translate(-50%, -10%)'}}>
+        {/* <Grid sx={{position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50% , -50%)', webkitTransform: 'translate(-50%, -10%)'}}>
           <Grid>
             <Typography variant='h6' color={darken(theme.palette.primary.main,0.25)}>${value}</Typography>
             <Typography variant='caption' color="primary">{props.rateCycle[props.steps].time_diff}</Typography>
           </Grid>
-        </Grid>
-        <CircleSlider
+        </Grid> */}
+        {/* <CircleSlider
           min={0} max={(props.stepData.length === 1) ? 1 : props.stepData.length-1} stepSize={1} 
           circleWidth={30} progressWidth={30} knobRadius={17}
           gradientColorFrom={lighten(theme.palette.primary.main,0.5)}
@@ -183,7 +183,23 @@ function ParkingRateForm(props) {
           shadow={true}
           // showTooltip={true}
           onChange={(value)=>{setValue(props.stepData[(props.stepData.length === 1) ? 0 : value]);handleWheelChange(props.stepData[value])}}
-          />;
+          /> */}
+          <Grid container spacing={2} sx={{textAlign: 'center'}}>
+            {props.rateCycle.map((x,index)=>{
+              return(
+                <Grid item xs={6}>
+                  <Button
+                    variant={(props.steps === index) ? 'contained' : 'outlined'}
+                    size='small'
+                    sx={{width: '90%', px: 0, py:1}}
+                    onClick={()=>{props.handleChange(index);setShowPayment(false);}}
+                  >
+                    ${(x.rate/100)} | {moment(x.time_desc, "MMMM Do YYYY, hh:mm a").format("hh:mm a")}
+                  </Button>
+                </Grid>
+              )
+            })}
+          </Grid>
         {/* <CircularSlider
             label={props.rateCycle[props.steps].time_diff}
             labelSize
@@ -221,7 +237,7 @@ function ParkingRateForm(props) {
           magentTolerance={40}
         ></CircularSlider> */}
       </Box>
-      <Box sx={{width:'80%', my: 1}}>
+      <Box sx={{width:'90%', my: 1}}>
         <form onSubmit={purchaseParking} style={{width:'100%',marginTop: '16px'}}>
           {!showPayment &&
           <Button 

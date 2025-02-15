@@ -12,6 +12,8 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 export default function ConfirmDiallog(prop) {
+  const dialogTitle = 'Are you sure you want to delete this item?';
+  const dialogContent = 'This item will no longer be stored and may effect other pages.';
   return (
     <div>
       <Dialog
@@ -21,10 +23,10 @@ export default function ConfirmDiallog(prop) {
         onClose={prop.closeDialog}
         aria-describedby="alert-dialog-slide-description"
       >
-        <DialogTitle>{"Are you sure you want to delete this item?"}</DialogTitle>
+        <DialogTitle>{prop.dialogTitle || dialogTitle}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
-            This item will no longer be stored and may effect other pages.
+            {prop.dialogContent || dialogContent}
           </DialogContentText>
         </DialogContent>
         <DialogActions>

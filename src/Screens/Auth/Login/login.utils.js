@@ -6,6 +6,7 @@ import SnackAlert from '../../../Common/Alerts';
 import authServices from '../../../services/auth-service';
 import Spinner from '../../../Common/Spinner';
 import helpers from '../../../Helpers/Helpers';
+import ZebraBrowserPrintWrapper from 'zebra-browser-print-wrapper';
 
 function LoginUtils(props) {
   let navigate = useNavigate();
@@ -16,8 +17,23 @@ function LoginUtils(props) {
   const [inputField, setInputField] = useState({language: '', rememberMe: false, email: '', password: ''});
   const [resetPassword, setResetPassword] = useState(false);
   const [userId, setUserId] = useState("");
+  const [notVerified, setNotVerified] = useState(false);
 
-  useEffect(()=>{
+  useEffect(async ()=>{
+    // const browserPrint =  new ZebraBrowserPrintWrapper();
+    // console.log(browserPrint)
+
+    //     // Select default printer
+    //     const defaultPrinter =  await browserPrint.getDefaultPrinter();
+    //     console.log(defaultPrinter)
+    
+    //     // Set the printer
+    //     browserPrint.setPrinter(defaultPrinter);
+
+    //     // Check printer status
+    //     const printerStatus = await browserPrint.checkPrinterStatus();
+        console.log('printerStatusw')
+        
     let creds = JSON.parse(localStorage.getItem("loginCreds"));
     if(creds !== null){
       setInputField(creds);
@@ -42,6 +58,7 @@ function LoginUtils(props) {
   const handleSubmit = async(e)=> {
     e.preventDefault();
     setShowSpinner(true);
+    setNotVerified(false);
     inputField['org_id'] = props.org._id;
     const res = await authServices.login(inputField);
     if(res.data.auth){
@@ -67,6 +84,7 @@ function LoginUtils(props) {
         navigate(router.main);
       }
     }else{
+      if(res.data.not_verified) setNotVerified(true);
       setAlertMessage(res.data.msg);
       setSeverity('error');
       setShowAlert(true);
@@ -97,6 +115,14 @@ function LoginUtils(props) {
     setShowSpinner(false);
   }
 
+  const resend = async () => {
+    console.log(inputField);
+    const res = await authServices.resend({email: inputField.email, org: props.org._id});
+    setSeverity(res.data.success ? 'success' : 'error');
+    setAlertMessage(res.data.msg);
+    setShowAlert(true);
+  }
+
   return (
     <>
       {Object.keys(props.literals).length > 0 && <LoginView
@@ -104,12 +130,14 @@ function LoginUtils(props) {
         resetPassword = {resetPassword}
         org = {props.org}
         literals = {props.literals}
+        notVerified = {notVerified}
         
         handleChange = {(e)=>handleChange(e)}
         handleChecked = {(e)=>handleChecked(e)}
         handleSubmit = {(e)=>handleSubmit(e)}
         handleChangePassword = {(e)=>handleChangePassword(e)}
         setResetPassword = {()=>setResetPassword(true)}
+        resend = {()=>resend()}
       />}
       <SnackAlert
         alertMessage = {alertMessage}

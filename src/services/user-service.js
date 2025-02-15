@@ -28,6 +28,11 @@ export class UserServices {
     return res;
   }
 
+  editProfile(body){
+    const res = AxiosServices.post(endpoints.main.editProfile,body);
+    return res;
+  }
+
 }
 const userServices = new UserServices();
 export default userServices;

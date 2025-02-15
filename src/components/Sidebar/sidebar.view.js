@@ -20,6 +20,8 @@ import mainService from '../../services/main-service';
 import CurrentParking from './CurrentParking.view';
 import { config } from '../../Constants';
 import ParkIn from '../Icons/ParkIn';
+import parkingService from '../../services/parking-service';
+import SnackAlert from '../../shared/SnackAlert';
 const moment = require('moment-timezone');
 moment.tz.setDefault("America/New_York");
 
@@ -34,6 +36,9 @@ export const SidebarView = (props) => {
   const [selectedParking, setSelectedParking] = useState({});
   const [showSpinner, setShowSpinner] = useState(false);
   const [showParkings ,setShowParkings] = useState(false);
+  const [msg, setMsg] = useState("");
+  const [alert, setAlert] = useState(false);
+  const [severity, setSeverity] = useState("");
 
   useEffect(()=>{
     getCurrentParking();
@@ -54,7 +59,7 @@ export const SidebarView = (props) => {
       const res = await mainService.getCurrentParkingsByPlate({plates: plates});
       setParking(res.data)
       setSelectedParking(res.data[0]);
-      if(res.data.length > 0 && showDrawer == null){
+      if(res.data.length > 0 && showDrawer == null && !res.data[0].zone.is_business_pass){
         sessionStorage.setItem("showParking", true)
         setShowParkings(true)
       }
@@ -62,6 +67,21 @@ export const SidebarView = (props) => {
     setShowSpinner(false);
   }
 
+  const endSession = async () => {
+    setShowSpinner(true);
+    await parkingService.editParking({id: selectedParking._id, to: moment().toDate()});
+    setMsg(props.literals.session_end_successfully);
+    setSeverity('success');
+    setAlert(true);
+    setParking(parking.filter(x => x._id !== selectedParking._id));
+    if(parking[1]){
+      setSelectedParking(parking[1]);
+    }else{
+      setShowParkings(false)
+    }
+    setShowSpinner(false);
+
+  }
   const calculateDuration = eventTime => moment.duration(Math.max(eventTime - (Math.floor(moment().toDate() / 1000)), 0), 'seconds');
 
   function Countdown({ eventTime, interval }) {
@@ -129,7 +149,7 @@ export const SidebarView = (props) => {
             my: 1
           }}
         />
-        {parking.length > 0 && 
+        {parking.length > 0 && !parking[0].zone.is_business_pass && 
           <Button 
             onClick={()=>{setShowParkings(true);}}
             sx={{
@@ -182,10 +202,10 @@ export const SidebarView = (props) => {
             style={({ isActive }) => (isActive ?
               {color: '#14a7e0', textDecoration: 'none'} : {color: theme.palette.primary.main, textDecoration: 'none'})}
           >
-            <ListItemButton>
+            {!props.org.hide_login_button && <ListItemButton>
                 {<Login/>} &nbsp;
                 <ListItemText primary={props.literals.sign_up + ' / ' + props.literals.log_in}/>
-            </ListItemButton>
+            </ListItemButton>}
           </NavLink>
         }
       </Box>
@@ -246,6 +266,7 @@ export const SidebarView = (props) => {
           parkings = {parking}
           literals = {props.literals}
 
+          endSession={()=>endSession()}
           back = {()=>setShowParkings(false)}
           seletecPlate = {(e)=>{setSelectedParking(e)}}
           
@@ -254,6 +275,13 @@ export const SidebarView = (props) => {
       </Drawer>
       <Spinner
           spinner = {showSpinner}
+      />
+      <SnackAlert
+        msg = {msg}
+        alert = {alert}
+        severity = {severity}
+        
+        closeAlert = {()=>setAlert(!alert)}
       />
     </>
   );

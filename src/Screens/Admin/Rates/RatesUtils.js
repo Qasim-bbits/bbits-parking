@@ -87,7 +87,6 @@ export default function RatesUtils(props) {
   }
 
   const handleAddCheck =  (e)=> {
-    console.log(e.target.name, e.target.value,e.target.checked)
     setInputAddField({...inputAddField, [e.target.name] : e.target.checked});
   }
 
@@ -122,9 +121,11 @@ export default function RatesUtils(props) {
 
   const handleAddSubmit = async(e, steps)=> {
     e.preventDefault();
-    // setSpinner(true);
+    setSpinner(true);
     let body = {};
     body['rate_name']= inputAddField["rate_name"];
+    body['enable_custom_rate']= inputAddField["enable_custom_rate"];
+    body['is_visitor_pass']= inputAddField["is_visitor_pass"];
     body['zone_id']= selectedZone._id;
     body['rate_type']= 0;
     body['qr_code']= false;

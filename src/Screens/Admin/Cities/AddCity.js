@@ -2,6 +2,7 @@ import React from "react";
 import { Box, Grid, Typography, TextField, Button, IconButton, Autocomplete } from "@mui/material";
 import Map from "../../../components/Map";
 import { Close } from "@mui/icons-material";
+import moment from 'moment-timezone';
 
 export default function AddCity(props) {
 
@@ -45,6 +46,19 @@ export default function AddCity(props) {
                 required
                 fullWidth
               />
+          </Grid>
+          <Grid item xs={12} align="right">
+            <Autocomplete
+              disablePortal
+              id="combo-box-demo"
+              options={moment.tz.names()}
+              getOptionLabel={(option) => option}
+              value={props.selectedTimeZone}
+              onChange={(event, newValue)=>props.setSelectedTimeZone(newValue)}
+              renderInput={(params) => (
+              <TextField {...params} label={props.literals.time_zone} color="primary" size="small" required/>
+              )}
+            />
           </Grid>
           <Grid item xs={12}>
             <Map

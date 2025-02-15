@@ -8,7 +8,9 @@ export var parking = [
     {key: 'parking_id', name: 'Parking ID'},
     {key: 'user', name: 'User'},
     {key: 'from', name: 'Start Date'},
+    {key: 'from', name: 'Start Time'},
     {key: 'to', name:'End Date'},
+    {key: 'to', name:'End Time'},
 ];
 
 export var tickets_issued = [
@@ -36,6 +38,10 @@ export var dateOperator = [
     {key: '$lte', name: 'less than or equal'},
     {key: '$eq', name: 'equal to'},
     {key: '$ne', name: 'not equal to'}
+];
+
+export var timeOperator = [
+    {key: 'time', name: 'between'}
 ];
 
 export var objectIDOperator = [

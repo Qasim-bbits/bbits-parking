@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import Box from "@mui/material/Box";
-import {Button, Divider, IconButton, Popover, Typography, useMediaQuery, useTheme} from "@mui/material";
+import {Button, Checkbox, Divider, FormControlLabel, FormGroup, Grid, IconButton, Popover, Typography, useMediaQuery, useTheme} from "@mui/material";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import LocalParkingIcon from '@mui/icons-material/LocalParking';
 import InfoIcon from '@mui/icons-material/Info';
@@ -27,7 +27,7 @@ function SelectTariff(props) {
     setAnchorEl(null);
   };
 
-
+console.log(props.literals)
   const open = Boolean(anchorEl);
   return (
     <Box sx={{
@@ -59,10 +59,33 @@ function SelectTariff(props) {
           {props.literals.select_rate}
         </Typography>
       </Box>
+      {props.caption_en && <Box sx={{display: 'flex', width: '80%', mt: 2, justifyContent: 'space-between', alignItems: 'flex-end', color: 'black'}}>
+        <FormGroup>
+          <FormControlLabel control={
+            <Checkbox 
+              name="select_caption"
+              onChange={props.handleCheck}
+              checked={props.inputField['select_caption']}
+              required
+            />} label={
+              <Typography variant="subtitle1" color="primary" className="font-gray">
+                {(props.literals.add == "Add") ? props.caption_en : props.caption_fr}
+              </Typography>
+            }/>
+        </FormGroup>
+      </Box>}
       <Box sx={{display: 'flex', flexDirection: 'row', flexWrap: 'wrap', marginTop: '2%', width: '80%'}}>
         {props.tarif.map(x=>{
           return(
-            <Button variant='contained' onClick={()=>props.onTarifSelect(x)} style={parkingRateButton} fullWidth sx={{justifyContent: 'flex-start'}}>
+            <Button
+              variant='contained'
+              disabled={
+                (props.caption_en && !props.inputField['select_caption']) ? true : false
+              }
+              onClick={()=>props.onTarifSelect(x)}
+              style={parkingRateButton}
+              fullWidth
+              sx={{justifyContent: 'flex-start'}}>
               <IconButton
                 onMouseEnter={handlePopoverOpen}
                 onMouseLeave={handlePopoverClose}

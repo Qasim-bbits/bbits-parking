@@ -22,6 +22,7 @@ export default function Cities(props) {
   const [cities, setCities] = useState([])
   const [organizations, setOrganizations] = useState([])
   const [selectedOrg, setSelectedOrg] = useState(null)
+  const [selectedTimeZone, setSelectedTimeZone] = useState(null)
   const [editId, setEditId] = useState('');
   const [btn, setBtn] = useState(props.literals.add);
   const user = JSON.parse(sessionStorage.getItem('userLogged'));
@@ -64,6 +65,7 @@ export default function Cities(props) {
     setSpinner(true);
     inputField['polygon'] = polygon;
     inputField['org'] = selectedOrg._id;
+    inputField['time_zone'] = selectedTimeZone;
     if(btn === props.literals.add){
       await cityServices.addCity(inputField);
       setMsg(props.literals.city_added_successfully);
@@ -99,6 +101,8 @@ export default function Cities(props) {
   }
 
   const onEdit = async(e)=> {
+    setSelectedOrg(e.org);
+    setSelectedTimeZone(e.time_zone)
     inputField["city_name"] = e.city_name;
     setOpenDrawer(true);
     setPolygon(e.polygon);
@@ -140,10 +144,12 @@ export default function Cities(props) {
         btn={btn}
         organizations={organizations}
         selectedOrg={selectedOrg}
+        selectedTimeZone={selectedTimeZone}
         user={user}
         literals = {props.literals}
 
         setSelectedOrg={(e)=>setSelectedOrg(e)}
+        setSelectedTimeZone={(e)=>setSelectedTimeZone(e)}
         setPolygon={(e)=>setPolygon(e)}
         setCenter={(e)=>setCenter(e)}
         setZoom={(e)=>setZoom(e)}

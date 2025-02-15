@@ -189,6 +189,7 @@ export default function Ticket(props) {
         addInput={()=>addInput()}
         delInput={(e)=>delInput(e)}
         handleInputChange={(e)=>handleInputChange(e)}
+        onTicketType={(e)=>setInputField({ ...inputField, ['ticket_type']: e.target.value })}
       />
       </Drawer>
 

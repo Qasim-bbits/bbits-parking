@@ -1,8 +1,9 @@
 import React from 'react';
 import {Button, Grid, Typography, TextField, Paper} from "@mui/material";
+import InputMask from 'react-input-mask';
 
 function ProfileView(props) {
-  console.log(props)
+  
   return (
     <Paper elevation={2} sx={{ width: '100%',p: 3, height: '80vh' }}>
         <Typography variant="h6" color="primary">
@@ -37,17 +38,21 @@ function ProfileView(props) {
               />
             </Grid>
             <Grid item xs={12} sm={12} md={6} lg={6} alignSelf={"center"}>
-              <TextField
-                label={props.literals.phone_no}
-                color="primary"
-                type="number"
-                name="mobile_no"
-                value={props.inputField["mobile_no"]}
-                onChange={props.handleChange}
-                size="small"
-                InputLabelProps={{ shrink: true }}
-                fullWidth
-              />
+              <InputMask
+                  mask="+1 (999) 999-9999"
+                  maskChar=""
+                  value={props.inputField['mobile_no']}
+                  onChange={props.handleChange}
+              >
+                {() => <TextField
+                  label={props.literals.phone_no}
+                  color="primary"
+                  name="mobile_no"
+                  size="small"
+                  InputLabelProps={{ shrink: true }}
+                  fullWidth
+                />}
+              </InputMask>
             </Grid>
             <Grid item xs={12} sm={12} md={6} lg={6} alignSelf={"center"}>
               <TextField

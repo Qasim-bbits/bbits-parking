@@ -1,0 +1,31 @@
+{
+  "files": {
+    "main.css": "/static/css/main.f5fea992.css",
+    "main.js": "/static/js/main.c8205792.js",
+    "static/js/703.01860555.chunk.js": "/static/js/703.01860555.chunk.js",
+    "static/js/513.f42dc85a.chunk.js": "/static/js/513.f42dc85a.chunk.js",
+    "static/js/787.80a98667.chunk.js": "/static/js/787.80a98667.chunk.js",
+    "static/media/receipt_top.png": "/static/media/receipt_top.06845d9b24054215b22f.png",
+    "static/media/logo.jpeg": "/static/media/logo.001048d4adc1331a4a30.jpeg",
+    "static/media/logo.svg": "/static/media/logo.855f12a13b9b43fc99753db08e368069.svg",
+    "static/media/amount.png": "/static/media/amount.f66270e675b55d35b475.png",
+    "static/media/clock.png": "/static/media/clock.bb6b43c4d0365949673f.png",
+    "static/media/receipt_bottom.png": "/static/media/receipt_bottom.79688037901e9af8398d.png",
+    "static/media/red_cross.png": "/static/media/red_cross.fbaf74174a58b760b0e7.png",
+    "static/media/tick.png": "/static/media/tick.95ef9d4284baf42337a4.png",
+    "static/media/mastercard.svg": "/static/media/mastercard.b5110c27b87da76a89ac48c8d29bcb0f.svg",
+    "static/media/amex.svg": "/static/media/amex.c70deea379a77e3a53ed141bc2d0f6f4.svg",
+    "static/media/jcb.svg": "/static/media/jcb.75a83d53bb63f45fe1ec28c1cc4b7de1.svg",
+    "static/media/visa.svg": "/static/media/visa.a5dd028f54512666e9b8e6bead476f29.svg",
+    "index.html": "/index.html",
+    "main.f5fea992.css.map": "/static/css/main.f5fea992.css.map",
+    "main.c8205792.js.map": "/static/js/main.c8205792.js.map",
+    "703.01860555.chunk.js.map": "/static/js/703.01860555.chunk.js.map",
+    "513.f42dc85a.chunk.js.map": "/static/js/513.f42dc85a.chunk.js.map",
+    "787.80a98667.chunk.js.map": "/static/js/787.80a98667.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.f5fea992.css",
+    "static/js/main.c8205792.js"
+  ]
+}

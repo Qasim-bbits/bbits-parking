@@ -22,6 +22,11 @@ export class AuthServices {
     return res;
   }
 
+  resend(body){    
+    const res = AxiosServices.post(endpoints.auth.resend, body);    
+    return res;
+  }
+
   login(body){    
     const res = AxiosServices.post(endpoints.auth.login, body);    
     return res;
@@ -55,6 +60,11 @@ export class AuthServices {
   externalParking(body){ 
     body.headers = this.headers();  
     const res = AxiosServices.post(config.url.API_URL+ 'externalParking', body);    
+    return res;
+  }
+
+  agentLogin(body){    
+    const res = AxiosServices.post(endpoints.auth.agentLogin, body);    
     return res;
   }
 

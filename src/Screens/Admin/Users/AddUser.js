@@ -4,6 +4,7 @@ import {
   FormLabel, Drawer, Button, TextField, useTheme, Grid, Typography, IconButton, Autocomplete, Divider
 } from "@mui/material";
 import { AddCircleOutlined, Close, Delete, Edit, EditOff, Visibility, VisibilityOff } from "@mui/icons-material";
+import InputMask from 'react-input-mask';
 
 export default function AddUser(props) {
   const theme = useTheme();
@@ -102,18 +103,20 @@ export default function AddUser(props) {
             />
           </Grid>
           <Grid item xs={12} >
-            <TextField
-              id="standard-error-helper-text"
-              label={props.literals.phone_no}
-              color="primary"
-              type="number"
-              name="mobile_no"
-              value={props.inputField["mobile_no"]}
-              onChange={props.handleChange}
-              size="small"
-              // required
-              fullWidth
-            />
+            <InputMask
+                mask="+1 (999) 999-9999"
+                maskChar=""
+                value={props.inputField['mobile_no']}
+                onChange={props.handleChange}
+            >
+              {() => <TextField
+                label={props.literals.phone_no}
+                color="primary"
+                name="mobile_no"
+                size="small"
+                fullWidth
+              />}
+            </InputMask>
           </Grid>
           <Grid item xs={12} >
             <TextField
@@ -125,6 +128,7 @@ export default function AddUser(props) {
               value={props.inputField["email"]}
               onChange={props.handleChange}
               size="small"
+              disabled={props.btn == props.literals.update}
               required
               fullWidth
             />
@@ -201,7 +205,7 @@ export default function AddUser(props) {
               <Autocomplete
                 multiple
                 options={props.cities}
-                getOptionLabel={(option) => option.city_name}
+                getOptionLabel={(option) => option.city_name + ' - ' + option.org?.org_name}
                 value={props.selectedCities}
                 onChange={(event, newValue)=>props.setSelectedCities(newValue)}
                 renderInput={(params) => (
