@@ -39,10 +39,51 @@ export const SidebarView = (props) => {
   const [msg, setMsg] = useState("");
   const [alert, setAlert] = useState(false);
   const [severity, setSeverity] = useState("");
+  const [editPlateModal, setEditPlateModal] = useState(false);
+  const [inputField, setInputField] = useState({});
 
   useEffect(()=>{
     getCurrentParking();
   },[])
+
+  const handleChange = (e) => {
+    setInputField({ ...inputField, [e.target.name]: e.target.value.toUpperCase() });
+  };
+
+  const handleEditPlate = async (e) => {
+      e.preventDefault();
+      setShowSpinner(true);
+      const res = await parkingService.editParkingPlate({parking_id: selectedParking._id, plate: inputField.plate});
+      if(res.data.status == 'error'){
+        setMsg(props.literals[res.data.message]);
+        setSeverity('error');
+        setAlert(true);
+      }else if(res.data.status == 'b_error'){
+        setMsg(res.data.message);
+        setSeverity('error');
+        setAlert(true);
+      } else{
+        setMsg(props.literals.plate_edited_successfully);
+        setSeverity('success');
+        setAlert(true);
+        setParking(parking.map(x=>{
+          if(x._id == selectedParking._id){
+            x.plate = inputField.plate;
+            x.no_of_times_plate_edited = res.data.no_of_times_plate_edited;
+          }
+          return x;
+        }))
+        let plate = JSON.parse(localStorage.getItem('plates'));
+        if (plate !== null && !plate.find(x => x == inputField.plate )) {
+          plate.push(inputField['plate'].toUpperCase())
+          localStorage.setItem('plates', JSON.stringify(plate));
+        }
+        setSelectedParking({...selectedParking, plate: inputField.plate, no_of_times_plate_edited: res.data.no_of_times_plate_edited});
+        setShowSpinner(false);
+        setEditPlateModal(false);
+      }
+
+  }
 
   const getCurrentParking = async()=>{
     setShowSpinner(true);
@@ -265,11 +306,17 @@ export const SidebarView = (props) => {
           selectedList = {selectedParking}
           parkings = {parking}
           literals = {props.literals}
+          editPlateModal= {editPlateModal}
+          inputField = {inputField}
 
           endSession={()=>endSession()}
           back = {()=>setShowParkings(false)}
           seletecPlate = {(e)=>{setSelectedParking(e)}}
-          
+          openEditPlateModal = {()=>setEditPlateModal(true)}
+          closeEditPlateModal = {()=>setEditPlateModal(false)}
+          handleChange={(e)=>handleChange(e)}
+          handleEditPlate={(e)=>handleEditPlate(e)}
+
           Countdown = {<Countdown eventTime={moment(selectedParking?.to).unix()} interval={1000} />}
         />
       </Drawer>

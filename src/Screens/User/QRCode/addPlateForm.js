@@ -3,6 +3,7 @@ import Box from "@mui/material/Box";
 import {Button, IconButton, TextField, Typography, useMediaQuery, useTheme} from "@mui/material";
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { constants } from '../../../constants/app.constants';
 
 function AddPlateForm(props) {
   const theme = useTheme();
@@ -56,7 +57,12 @@ function AddPlateForm(props) {
             size="small"
             name="plate"
             value={props.inputPlateField["plate"]}
-            onChange={props.handlePlateChange}
+            onChange={(e) => {
+              if (e.target.value !== "" && !constants.regexPatterns.alphaNumeric.test(e.target.value) ) {
+                return;
+              }
+              props.handlePlateChange(e);
+            }}
             required
             fullWidth
           />

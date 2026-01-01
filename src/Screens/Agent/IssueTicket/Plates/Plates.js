@@ -21,7 +21,6 @@ export default function Plates(props) {
         setSpinner(true);
         const res = await parkingService.getParkingsByCity({city_id: props.inputField.city});
         const getScanPlates = await scanPlateServices.getScanPlatesByToken(user.token);
-        console.log(getScanPlates)
         let flatPlates = [];
         let allPlates = [];
         res.data.forEach(element => {
@@ -48,7 +47,6 @@ export default function Plates(props) {
             }
             allPlates.push(tempPlate);
         });
-        console.log(allPlates)
         setPlates(allPlates);
         setParkings(flatPlates);
         setFiteredPlates(flatPlates);
@@ -85,13 +83,13 @@ export default function Plates(props) {
                 let allParkings = [...parkings];
                 x.map((obj)=>{
                     allParkings[allParkings.findIndex(z => z.plate == obj.plate)].checked_status = 'Shared Violation';
-                    allParkings[allParkings.findIndex(z => z.plate == item.plate)].checked_status = 'Paid';
+                    allParkings[allParkings.findIndex(z => z.plate == item.plate)].checked_status = item.zone._id == props.inputField.zone ? 'Paid' : 'Paid in another zone';
                     obj.checked_status = 'Shared Violation';
                     obj.plateChecked = true;
                     return obj;
                 })
                 setParkings(allParkings)
-                allPlates[index][findIndex].checked_status = 'Paid';
+                allPlates[index][findIndex].checked_status = item.zone._id == props.inputField.zone ? 'Paid' : 'Paid in another zone';
             }
         })
         setPlates(allPlates);

@@ -43,7 +43,7 @@ export const Layout = (props) => {
           {children}
         </Box>
       </LayoutRoot>
-      <HeaderView onSidebarOpen={() => setSidebarOpen(true)} />
+      <HeaderView onSidebarOpen={() => setSidebarOpen(true)} zone={props.zone} getLiterals = {props.getLiterals} selectedLanguage ={props.selectedLanguage}/>
       <SidebarView
         org={props.org}
         literals = {props.literals}

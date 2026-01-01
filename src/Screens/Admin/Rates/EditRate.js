@@ -3,6 +3,7 @@ import {
   Box, FormControlLabel, Checkbox, Grid, Typography, Drawer, Button, TextField, FormGroup
 } from "@mui/material";
 import {Close} from "@mui/icons-material";
+import moment from "moment-timezone";
 
 export default function EditRate(props) {
   const checkBoxes = [
@@ -81,8 +82,18 @@ export default function EditRate(props) {
                 color="primary"
                 type="datetime-local"
                 name="start_date"
-                value={props.inputField["start_date"]}
-                onChange={props.handleChange}
+                value={props.inputField.start_date
+                  ? moment.utc(props.inputField.start_date).format("YYYY-MM-DDTHH:mm") // display UTC
+                  : ""}
+                onChange={(e) => {
+                  const value = e.target.value; // treat as UTC
+                  const utcValue = moment.utc(value, "YYYY-MM-DDTHH:mm").toISOString(); // convert to ISO UTC
+
+                  props.setInputField({
+                    ...props.inputField,
+                    start_date: utcValue, // store UTC
+                  });
+                }}
                 InputLabelProps={{ shrink: true }}
                 size="small"
                 required
@@ -96,8 +107,18 @@ export default function EditRate(props) {
                 color="primary"
                 type="datetime-local"
                 name="end_date"
-                value={props.inputField["end_date"]}
-                onChange={props.handleChange}
+                value={props.inputField.end_date
+                  ? moment.utc(props.inputField.end_date).format("YYYY-MM-DDTHH:mm") // display UTC
+                  : ""}
+                onChange={(e) => {
+                  const value = e.target.value; // treat as UTC
+                  const utcValue = moment.utc(value, "YYYY-MM-DDTHH:mm").toISOString(); // convert to ISO UTC
+
+                  props.setInputField({
+                    ...props.inputField,
+                    end_date: utcValue, // store UTC
+                  });
+                }}
                 size="small"
                 InputLabelProps={{ shrink: true }}
                 required

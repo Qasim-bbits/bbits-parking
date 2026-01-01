@@ -41,8 +41,11 @@ export default function Zones(props) {
                 onChange={(e)=> props.setInputField({
                     org: props.inputField.org,
                     org_name: props.inputField.org_name,
+                    ticket_format: props.inputField.ticket_format,
                     city: props.inputField.city,
                     city_name: props.inputField.city_name,
+                    enable_custom_public_notes: props.inputField.enable_custom_public_notes,
+                    enable_custom_private_notes: props.inputField.enable_custom_private_notes,
                     ...e
                 })}
             />

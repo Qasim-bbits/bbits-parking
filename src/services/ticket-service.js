@@ -38,6 +38,11 @@ export class TicketServices {
     return res;
   }
 
+  getTicketIssuedDetail(id){
+    const res = AxiosServices.get(`${endpoints.ticket.IssuedTicket}/${id}`);
+    return res;
+  }
+
   searchTicket(body){
     const res = AxiosServices.post(endpoints.ticket.searchTicket, body);
     return res;
@@ -60,6 +65,11 @@ export class TicketServices {
 
   getTicketsIssuedByAgent(body){
     const res = AxiosServices.post(endpoints.ticket.getTicketsIssuedByAgent, body);
+    return res;
+  }
+
+  addPrintedTicket(body){
+    const res = AxiosServices.post(endpoints.ticket.addPrintedTicket, body);
     return res;
   }
 }

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button, Card, Grid, IconButton, TextField, Typography, useTheme } from "@mui/material";
 import { ArrowBack, PinDropOutlined } from '@mui/icons-material';
+import { constants } from '../../../constants/app.constants';
 
 export default function PlateConfirmation(props) {
     const theme = useTheme();
@@ -9,16 +10,16 @@ export default function PlateConfirmation(props) {
             container
             spacing={0}
         >
-        <IconButton
-            sx={{ marginLeft: '20px', position: 'absolute', left: 'unset', top: '12px', zIndex: 10000, color: 'white', background: theme.palette.primary.main }}
-            edge="end"
-            onClick={props.back}
-        >
-            <ArrowBack />
-        </IconButton>
+            <IconButton
+                sx={{ marginLeft: '20px', position: 'absolute', left: 'unset', top: '12px', zIndex: 10000, color: 'white', background: theme.palette.primary.main }}
+                edge="end"
+                onClick={props.back}
+            >
+                <ArrowBack />
+            </IconButton>
             <Grid item xs={12} sx={{ height: 'calc(100vh - 115px)' }}>
                 <Card component={'form'} onSubmit={props.handlePlateSubmit} sx={{ p: 3, height: '100%', display: 'flex', flexDirection: 'column' }}>
-                    <Grid container spacing={3} sx={{placeContent: 'center', flex: '0 0 auto' }}>
+                    <Grid container spacing={3} sx={{ placeContent: 'center', flex: '0 0 auto' }}>
                         <Grid item xs={12}>
                             <Typography variant='h5' align='center' sx={{ fontWeight: 'bold' }} >
                                 {props.literals.plate_confirmation}
@@ -33,7 +34,12 @@ export default function PlateConfirmation(props) {
                                 size="small"
                                 name="plate"
                                 value={props.inputPlateField["plate"]}
-                                onChange={props.handlePlateChange}
+                                onChange={(e) => {
+                                    if (e.target.value !== "" && !constants.regexPatterns.alphaNumeric.test(e.target.value)) {
+                                        return;
+                                    }
+                                    props.handlePlateChange(e);
+                                }}
                                 required
                                 fullWidth
                             />

@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { Box, Grid, Typography, TextField, Button, IconButton, Autocomplete, Divider, useTheme} from "@mui/material";
+import { Box, Grid, Typography, TextField, Button, IconButton, Autocomplete, Divider, useTheme, FormGroup, FormControlLabel, Checkbox} from "@mui/material";
 import { Add, Close, DeleteForeverOutlined } from "@mui/icons-material";
 import InputMask from 'react-input-mask';
 
 export default function AddTenentPlates(props) {
   const theme = useTheme();
-  console.log(props.plates)
+  
   return (
       <Box component="form" onSubmit={props.handleSubmit} sx={{p:3}}>
         <Grid container spacing={3} sx={{placeContent: "center"}}>
@@ -46,6 +46,47 @@ export default function AddTenentPlates(props) {
               )}
             />
           </Grid>
+          <Grid item xs={12} align="right">
+            <Autocomplete
+              disablePortal
+              id="combo-box-demo"
+              options={props.rates}
+              getOptionLabel={(option) => option.rate_name}
+              value={props.selectedRate}
+              onChange={(event, newValue)=>props.setSelectedRate(newValue)}
+              renderInput={(params) => (
+              <TextField {...params} label={props.literals.select_rate} color="primary" size="small" required/>
+              )}
+            />
+          </Grid>
+          {!props.selectedZone?.tenant_and_visitor && <Grid item xs={12}>
+              <TextField
+                id="standard-error-helper-text"
+                label={props.literals.email}
+                color="primary"
+                type="email"
+                name="email"
+                value={props.inputField["email"]}
+                onChange={props.handleChange}
+                size="small"
+                InputProps={{
+                  readOnly: props.btn == props.literals.update,
+                }}
+                fullWidth
+              />
+          </Grid>}
+          <Grid item xs={12}>
+              <TextField
+                id="standard-error-helper-text"
+                label={props.literals.notes}
+                color="primary"
+                name="notes"
+                value={props.inputField["notes"]}
+                onChange={props.handleChange}
+                size="small"
+                fullWidth
+              />
+          </Grid>
           {props.selectedZone?.tenant_and_visitor && <>
             <Grid item xs={12}>
               <TextField
@@ -82,13 +123,13 @@ export default function AddTenentPlates(props) {
                   value={props.inputField['mobile_no']}
                   onChange={props.handleChange}
               >
-                {() => <TextField
+                <TextField
                   label={props.literals.phone_no}
                   color="primary"
                   name="mobile_no"
                   size="small"
                   fullWidth
-                />}
+                />
               </InputMask>
             </Grid>
             <Grid item xs={12}>
@@ -380,6 +421,20 @@ export default function AddTenentPlates(props) {
                 fullWidth
               />
           </Grid>}
+          <Grid item xs={12}>
+            <FormGroup>
+              <FormControlLabel control={
+                <Checkbox
+                  name="park_now"
+                  onChange={props.handleCheck}
+                  checked={props.inputField['park_now']}
+                />} label={
+                  <Typography variant="subtitle1" color="primary" className="font-gray">
+                    {props.literals.park_now}
+                  </Typography>
+                } />
+            </FormGroup>
+          </Grid>
           <Grid item xs={12} align="right">
             <Button 
               type="button"

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Divider, Typography, useTheme, Card, TextField, Button, Paper } from '@mui/material';
 import Grid from '@mui/material/Grid';
-import moment from 'moment';
+import moment from 'moment-timezone';
 
 export default function HistoryView(props) {
     let theme = useTheme();
@@ -72,7 +72,7 @@ export default function HistoryView(props) {
                                         <Grid container spacing={1}>
                                             <Grid item xs={12} textAlign={'end'}>
                                                 <Typography variant="caption" sx={{ fontStyle: 'italic' }}>
-                                                    {moment(x.issued_at).format('MMMM Do YYYY, hh:mm a')}
+                                                    {moment(x.issued_at).tz(x?.city.time_zone ? x?.city.time_zone : 'America/New_York' ).format('MMMM Do YYYY, hh:mm a')}
                                                 </Typography>
                                             </Grid>
                                             <Grid item xs={6}>

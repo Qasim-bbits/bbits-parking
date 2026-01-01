@@ -112,7 +112,7 @@ export default function MainUtils(props) {
     setSteps(0);
     setShowSpinner(true);
     setSelectedTariff(e);
-    const res = await mainService.getRateSteps({id: e._id, plate: selectedPlate, rate_type: e.rate_type, org: selectedZone.org})
+    const res = await mainService.getRateSteps({id: e._id, plate: selectedPlate, rate_type: e.rate_type, org: selectedZone.org, zone: selectedZone._id })
     setRateCycle(res.data);
     if(res.data.length > 0){
       var data = res.data.map(function(item) {
@@ -214,6 +214,7 @@ export default function MainUtils(props) {
         color = {props.org.color}
         org={props.org}
         literals = {props.literals}
+        getLiterals = {props.getLiterals}
 
         onSelectedCity = {(e)=>onSelectedCity(e)}
         onSelectedZone = {(e)=>onSelectedZone(e)}
@@ -273,6 +274,7 @@ export default function MainUtils(props) {
           stepData = {stepData}
           org = {props.org}
           literals = {props.literals}
+          selectedLanguage={props.selectedLanguage}
 
           showMoneris = {()=>setDrawerComponent(5)}
           setDrawerOpen={toggleDrawer} 
@@ -310,6 +312,7 @@ export default function MainUtils(props) {
             selectedTariff = {selectedTariff}
             parking = {parking}
             literals = {props.literals}
+            selectedLanguage={props.selectedLanguage}
             
             setDrawerOpen = {toggleDrawer}
             emailReciept = {()=>emailReciept()}

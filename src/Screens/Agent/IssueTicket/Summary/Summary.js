@@ -24,6 +24,7 @@ export default function Summary(props) {
                 literals={props.literals}
                 aging={aging}
                 inputField={props.inputField}
+                setTicketIssued={(e)=>props.setTicketIssued(e)}
             />
             <Spinner
                 spinner = {spinner}

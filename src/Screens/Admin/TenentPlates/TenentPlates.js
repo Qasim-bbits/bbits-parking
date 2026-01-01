@@ -8,6 +8,9 @@ import AddTenentPlates from "./AddTenentPlates";
 import TenentPlatesView from "./TenentPlatesView";
 import organizationServices from "../../../services/organization-service";
 import cityServices from "../../../services/city-service";
+import rateServices from "../../../services/rate-service";
+import mainService from "../../../services/main-service";
+import parkingService from "../../../services/parking-service";
 
 export default function TenentPlates(props) {
   const [openDialog, setOpenDialog] = useState(false);
@@ -20,8 +23,10 @@ export default function TenentPlates(props) {
   const [tenantPlates, setTenantPlates] = useState([])
   const [organizations, setOrganizations] = useState([])
   const [zones, setZones] = useState([])
+  const [rates, setRates] = useState([])
   const [selectedOrg, setSelectedOrg] = useState(null)
   const [selectedZone, setSelectedZone] = useState(null)
+  const [selectedRate, setSelectedRate] = useState(null)
   const [plates, setPlates] = useState(1)
   const [editId, setEditId] = useState('');
   const [btn, setBtn] = useState(props.literals.add);
@@ -37,6 +42,15 @@ export default function TenentPlates(props) {
     setSpinner(true);
     const res = await cityServices.getZones({org_id: props.org._id});
     setZones(res.data)
+    setSpinner(false);
+  }
+
+  const getWhitelistRateByZone = async(e, rate)=>{
+    setSpinner(true);
+    const res = await rateServices.getWhitelistRateByZone({zone_id: e._id});
+    if(rate)
+      setSelectedRate(res.data.find(x=>x._id == rate));
+    setRates(res.data);
     setSpinner(false);
   }
 
@@ -64,15 +78,24 @@ export default function TenentPlates(props) {
     setInputField({ ...inputField, [e.target.name]: e.target.value });
   };
 
+  const handleCheck = (e) => {
+    setInputField({ ...inputField, [e.target.name]: e.target.checked });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSpinner(true);
     inputField['org'] = selectedOrg._id;
     inputField['zone'] = selectedZone._id;
+    inputField['rate'] = selectedRate._id;
     inputField['city'] = selectedZone.city_id;
     inputField['tenant_and_visitor'] = selectedZone.tenant_and_visitor;
     if(btn === props.literals.add){
       const res = await tenentPlateServices.addTenentPlate(inputField);
+      if(inputField.park_now && res.data.status !== 'error'){
+        purchaseParking(res);
+        return;
+      }
       setMsg(props.literals[res.data?.msg]);
       setSeverity(res.data?.status);
       setAlert(true);
@@ -91,7 +114,6 @@ export default function TenentPlates(props) {
   };
 
   const delItem=async()=>{
-    setSpinner(true);
     const res = await tenentPlateServices.delTenentPlate({id: editId});
     if(res.data.deletedCount === 1)
     setTenantPlates(tenantPlates.filter(function( obj ) {
@@ -109,6 +131,7 @@ export default function TenentPlates(props) {
     setSelectedOrg(org);
     let zone = zones.find(x=>x._id == e.zone._id);
     setSelectedZone(zone);
+    await getWhitelistRateByZone(zone, e.rate);
     let obj = {
       fname: e.user?.fname,
       lname: e.user?.lname,
@@ -130,6 +153,8 @@ export default function TenentPlates(props) {
       model_three: e?.model_three,
       color_three: e?.color_three,
       user: e.user?._id,
+      email: e.email,
+      notes: e.notes
     }
     setInputField(obj);
     setOpenDrawer(true);
@@ -140,6 +165,56 @@ export default function TenentPlates(props) {
   const reset = ()=>{
     setInputField({});
     setBtn(props.literals.add);
+  }
+
+  const purchaseParking = async (tenantRes)=>{
+    const res = await mainService.getRateSteps({ id: selectedRate._id, plate: inputField.plate, rate_type: selectedRate.rate_type, org: selectedZone.org._id, time_zone: selectedZone.city_id.time_zone, zone: selectedZone._id })
+    if(res.data.length){
+      if(res.data[0].total > 0){
+        setMsg(props.literals.cannot_park_amount_is_greater_than_0);
+        setSeverity('error');
+        setAlert(true);
+      }else{
+        let body = {
+          paymentMethod: '',
+          amount: (res.data[0].total/100).toFixed(2),
+          plate: inputField.plate.toUpperCase(),
+          zone: selectedZone._id,
+          city: selectedZone.city_id._id,
+          from: res.data[0].current_time,
+          to: res.data[0].time_desc,
+          coord: '',
+          rate: selectedRate._id,
+          service_fee: res.data[0].service_fee,
+          org: selectedZone.org._id,
+          email: tenantRes.data.response?.email
+        }
+        const parkingRes = await parkingService.buyParking(body);
+        if(!parkingRes.data.message){
+          inputField['id'] = editId;
+          await tenentPlateServices.editTenentPlate({
+            id: tenantRes.data.response?._id,
+            plate: tenantRes.data.response?.plate,
+            parking: parkingRes.data._id
+          });
+          setMsg(props.literals[tenantRes.data?.msg]);
+          setSeverity(tenantRes.data?.status);
+          setAlert(true);
+        }else{
+          setMsg(parkingRes.data.message);
+          setSeverity('error');
+          setAlert(true);
+        }
+      }
+    }else{
+      setMsg('Parking not allowed during these hours');
+      setSeverity('error');
+      setAlert(true);
+    }
+    getTenantPlates();
+    setInputField({});
+    setOpenDrawer(false);
+    setSpinner(false);
   }
 
   return (
@@ -174,17 +249,21 @@ export default function TenentPlates(props) {
         organizations={organizations}
         selectedOrg={selectedOrg}
         zones={zones}
+        rates={rates}
         selectedZone={selectedZone}
+        selectedRate={selectedRate}
         user={user}
         plates={plates}
         
         setSelectedOrg={(e)=>setSelectedOrg(e)}
-        setSelectedZone={(e)=>setSelectedZone(e)}
+        setSelectedZone={(e)=>{setSelectedZone(e); getWhitelistRateByZone(e)}}
+        setSelectedRate={(e)=>setSelectedRate(e)}
         handleChange={(e)=>handleChange(e)}
         handleSubmit={(e)=>handleSubmit(e)}
         onClose={()=>{setOpenDrawer(false)}}
         addPlate={()=>{setPlates(plates+1)}}
         delPlate={()=>{setPlates(plates-1)}}
+        handleCheck={(e)=>handleCheck(e)}
       />
       </Drawer>
 

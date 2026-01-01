@@ -1,5 +1,5 @@
 import React from 'react';
-import {Box, Fade, IconButton, Menu, MenuItem, Toolbar} from '@mui/material';
+import {Box, Fade, Grid, IconButton, Menu, MenuItem, Toolbar} from '@mui/material';
 import { styled } from '@mui/material/styles';
 import MenuIcon from '@mui/icons-material/Menu';
 import { router } from '../Routes/routhPaths';
@@ -47,14 +47,21 @@ export const AgentHeader = (props) => {
             sx={{
               minHeight: 64,
               maxHeight: 0,
-              px: 4,
               justifyContent: 'space-between',
+              px: 2,
+              pt: 1
             }}
           >
-            <img src={config.url.file_url+props.org.logo} variant='square' style={{height: "100%"}}/>
-            <IconButton onClick={handleClick}>
-              <MenuIcon />
-            </IconButton>
+            <Grid container spacing={2}>
+              <Grid item xs={8} sx={{height: '64px', placeContent: 'center'}}>
+                <img src={config.url.file_url+props.org.logo} variant='square' style={{width: '150px', maxHeight: '48px', objectFit: 'cover'}}/>
+              </Grid>
+              <Grid item xs={4} textAlign={'right'} sx={{placeContent: 'center'}}>
+                <IconButton onClick={handleClick}>
+                  <MenuIcon />
+                </IconButton>
+              </Grid>
+            </Grid>
             <Menu
               anchorEl={anchorEl}
               open={open}

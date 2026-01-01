@@ -1,7 +1,7 @@
 import React from 'react';
 import Box from "@mui/material/Box";
-import {Button, IconButton, Typography, useMediaQuery, Divider, useTheme} from "@mui/material";
-import { ArrowBack } from '@mui/icons-material';
+import {Button, IconButton, Typography, useMediaQuery, Divider, useTheme, Modal, Grid, TextField} from "@mui/material";
+import { ArrowBack, Close, EditOutlined } from '@mui/icons-material';
 import moment from 'moment-timezone';
 import List from "../Icons/List"
 import Location from "../Icons/Location"
@@ -13,8 +13,22 @@ import Amount from '../Icons/Amount';
 import Clock from '../Icons/Clock';
 import Percantage from '../Icons/Percantage';
 import PDFDownloader from '../PDFDownloader/PDFDownloader';
+import { constants } from '../../constants/app.constants';
 
 const iconStyle = {width: '25px', marginRight: '7px',  marginLeft: '7px'}
+
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+};
+
 function CurrentParking(props) {
   moment.tz.setDefault(moment.tz.guess());
   const theme = useTheme();
@@ -53,12 +67,14 @@ function CurrentParking(props) {
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
               {props.parkings.map((x,index)=>{
                 return(
-                  <Button 
-                    size="small" 
-                    variant={(x.parking_id === props.selectedList?.parking_id) ? 'outlined': ''} 
-                    onClick={()=> props.seletecPlate(x)}>
-                      {x.plate} {x.plate_two ? ', '+ x.plate_two : ''} {x.plate_three ? ', '+ x.plate_three : ''}
-                  </Button>
+                  <>
+                    <Button 
+                      size="small" 
+                      variant={(x.parking_id === props.selectedList?.parking_id) ? 'outlined': ''} 
+                      onClick={()=> props.seletecPlate(x)}>
+                        {x.plate} {x.plate_two ? ', '+ x.plate_two : ''} {x.plate_three ? ', '+ x.plate_three : ''}
+                    </Button>
+                  </> 
                 )
               })}
             </Box>
@@ -138,6 +154,12 @@ function CurrentParking(props) {
                 {props.selectedList?.plate_three ? ', '+ props.selectedList?.plate_three : ''}
               </Box>
             </Typography>
+            {props.selectedList.zone?.is_plate_editable && props.selectedList.zone?.no_of_times_plate_can_edit > props.selectedList.no_of_times_plate_edited && <Button 
+              size="small" 
+              variant={'outlined'} 
+              onClick={()=> props.openEditPlateModal()}>
+                <EditOutlined/>
+            </Button>}
           </Box>
           <Divider sx={{width: '90%'}}/>
           <Box sx={{display: 'flex', width: '90%', marginTop: 1, justifyContent: 'space-between', alignItems: 'flex-end', color: 'black'}}>
@@ -196,6 +218,52 @@ function CurrentParking(props) {
           </Box>}
         </Box>
       </Box>
+      <Modal
+        open={props.editPlateModal}
+        onClose={props.closeEditPlateModal}
+      >
+        <Box component="form" onSubmit={props.handleEditPlate} sx={style}>
+          <Grid container spacing={3} sx={{ placeContent: "center" }}>
+            <Grid item xs={6}>
+              <Typography variant="subtitle1" color="primary" className="font-bold m-2 font-gray">
+                {props.literals.edit_plate}
+              </Typography>
+            </Grid>
+            <Grid item xs={6} align='right'>
+              <IconButton color="primary" component="label" onClick={props.closeEditPlateModal}>
+                <Close />
+              </IconButton>
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label={props.literals.plate}
+                color="primary"
+                name="plate"
+                value={props.inputField.plate}
+                onChange={(e) => {
+                  if (e.target.value !== "" && !constants.regexPatterns.alphaNumeric.test(e.target.value) ) {
+                    return;
+                  }
+                  props.handleChange(e);
+                }}
+                size="small"
+                required
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={12} align='right'>
+              <Button
+                type="submit"
+                color="primary"
+                variant="contained"
+                size="small"
+              >
+                {props.literals.submit}
+              </Button>
+            </Grid>
+          </Grid>
+        </Box>
+      </Modal>
     </div>
   );
 }

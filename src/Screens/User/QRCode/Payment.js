@@ -52,7 +52,7 @@ function Payment(props) {
   const [dialogTitle, setDialogTitle] = useState('');
   const [dialogContent, setDialogContent] = useState('');
   const user = JSON.parse(sessionStorage.getItem('userLogged'))
-
+  
   useEffect(() => {
     if (stripe) {
       const pr = stripe.paymentRequest({
@@ -90,7 +90,8 @@ function Payment(props) {
           service_fee: props.props.rateCycle[props.props.steps].service_fee,
           org: props.props.org._id,
           tenant_visitor_zone: props.props.tenant_visitor_zone,
-          no_of_visitors: props.props.no_of_visitor
+          no_of_visitors: props.props.no_of_visitor,
+          parking: props.props.rateCycle[props.props.steps].parking
         }
         if(user?.result?._id){
           body.user= user.result._id;
@@ -111,6 +112,10 @@ function Payment(props) {
           setDialogContent(`Are you sure, you want to kickout this ${res.data.parkings[0].plate} plate`)
           setKickOutParking(res.data.parkings);
           setOpenDialog(true);
+        }else if(res.data.message == 'parking_limit_exceed'){
+          setAlertMessage(props.props.literals.parking_limit_exceed)
+          setSeverity('error');
+          setShowAlert(true);
         }else{
           setAlertMessage(res.data.message);
           setSeverity('error');
@@ -157,7 +162,8 @@ function Payment(props) {
               rate: props.props.selectedTariff._id,
               org: props.props.org._id,
               tenant_visitor_zone: props.props.tenant_visitor_zone,
-              no_of_visitors: props.props.no_of_visitor
+              no_of_visitors: props.props.no_of_visitor,
+              parking: props.props.rateCycle[props.props.steps].parking
             }
             
             if(user?.result?._id){
@@ -165,15 +171,19 @@ function Payment(props) {
               body.added_by= user.result._id;
             }
             const res = await parkingService.buyParking(body);
-            console.log(res.data)
             if(!res.data.message){
               props.props.showReciept();
               props.props.setParking(res.data)
               // sessionStorage.removeItem("showParking")
               // window.location.reload();
+            }else if(res.data.message == 'parking_limit_exceed'){
+              setAlertMessage(props.props.literals.parking_limit_exceed)
+              setSeverity('error');
+              setShowAlert(true);
             }else if(res.data.message == 'kickOutZone'){
-              setDialogTitle(props.props.literals.parking_already_purchased)
-              setDialogContent(`Are you sure, you want to kick out this ${res.data.parkings[0].plate} plate`)
+              setDialogTitle('Replace existing plate')
+              setDialogContent(`Parking is already active for plate ${res.data.parkings[0].plate} in this zone. Would you like to replace it
+              with your current vehicle?`)
               setKickOutParking(res.data.parkings);
               setOpenDialog(true);
             }else{
@@ -203,11 +213,11 @@ function Payment(props) {
       org: kickOutParking[0].org,
       parking: kickOutParking[0]._id,
       kicked_out_plate: kickOutParking[0].plate,
-      kicked_out_By: props.plate
+      kicked_out_By: props.props.plate
     }
     setSpinner(true);
     await parkingServices.kickOutPlate(body);
-    setAlertMessage(props.props.literals.plate_kickout_purchase_now);
+    setAlertMessage('Previous vehicle removed. You can now start your parking session. Click below.');
     setSeverity('success');
     setShowAlert(true);
     setSpinner(false);
@@ -281,7 +291,8 @@ function Payment(props) {
               variant='contained'
               sx={{borderRadius: 8, width: '100%',my: 2}}
             >
-              ${(props.props.rateCycle[props.props.steps].total/100).toFixed(2)}
+              {props.props.selectedTariff?.enable_custom_rate ? 'Click Here to Start Parking Session — $'+(props.props.rateCycle[props.props.steps].total/100).toFixed(2)
+                : '$'+(props.props.rateCycle[props.props.steps].total/100).toFixed(2)}
             </Button>
           </Paper>
         </form>}

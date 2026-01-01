@@ -138,7 +138,7 @@ function ParkingRateForm(props) {
           <Typography variant='caption' align='left' 
             sx={{background: theme.palette.primary.main, color: '#fff', padding: '0 23px', borderRadius: '17px'}} 
           >
-            {props.rateCycle[props.steps].day}
+            {props.selectedLanguage == 'fr' ? props.rateCycle[props.steps].day_fr : props.rateCycle[props.steps].day}
           </Typography>
         </Box>
         <Box sx={{display: 'flex', marginTop: 2, justifyContent: 'space-between', alignItems: 'flex-end', color: 'black'}}>

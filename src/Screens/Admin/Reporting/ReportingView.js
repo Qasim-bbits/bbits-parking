@@ -9,8 +9,9 @@ import {
 } from "@mui/material";
 import { createTheme , ThemeProvider } from "@mui/material/styles";
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
-import moment from "moment";
 import { FileDownloadOutlined, FilterAltOutlined } from "@mui/icons-material";
+import GoogleSheet from '../../../assets/icons/google-spreadsheets.png'
+const moment = require('moment-timezone');
 
 const theme = createTheme({
   palette: {
@@ -38,7 +39,6 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 
 export default function ReportingView(props) {
   const [anchorEl, setAnchorEl] = React.useState(null);
-    
     return (
       <Grid container spacing={3} sx={{placeContent: "center", py: 2}}>
         <Grid item xs={6}>
@@ -72,6 +72,12 @@ export default function ReportingView(props) {
             <MenuItem onClick={()=>props.exportPDF()}>PDF</MenuItem>
             <MenuItem onClick={()=>props.exportCSV()}>CSV</MenuItem>
           </Menu>
+          {props.org.reporting_url && <IconButton 
+            type="button"
+            variant="contained"
+          >
+            <a href={props.org.reporting_url} target="_blank"><img src={GoogleSheet}/></a>
+          </IconButton>}
           <Button 
               type="button"
               variant="contained"
@@ -125,7 +131,7 @@ export default function ReportingView(props) {
                                           <TableCell>$ {(parseInt(row.service_fee)/100).toFixed(2)}</TableCell>
                                           <TableCell>$ {(row.amount/100).toFixed(2)}</TableCell>
                                           {!props.selectedGroup && <>
-                                            <TableCell>{moment(row.from).format('MMM Do YY, hh:mm a')} - {moment(row.to).format('MMM Do YY, hh:mm a')}</TableCell>
+                                            <TableCell>{moment(row.from).tz(row?.city?.time_zone ? row?.city?.time_zone : 'America/New_York' ).format('ll hh:mm a')} - {moment(row.to).tz(row?.city?.time_zone ? row?.city?.time_zone : 'America/New_York' ).format('ll hh:mm a')}</TableCell>
                                           </>}
                                       </TableRow>
                                   </>
@@ -217,8 +223,8 @@ export default function ReportingView(props) {
                                             {row.ticket_status}
                                           </Button>
                                         </TableCell>
-                                        <TableCell>{moment(row.issued_at).format('MMM Do YY, hh:mm a')}</TableCell>
-                                        <TableCell>{moment(row.paid_at).format('MMM Do YY, hh:mm a')}</TableCell>
+                                        <TableCell>{moment(row.issued_at).format('ll hh:mm a')}</TableCell>
+                                        <TableCell>{moment(row.paid_at).format('ll hh:mm a')}</TableCell>
                                     </TableRow>
                                 </>
                             );

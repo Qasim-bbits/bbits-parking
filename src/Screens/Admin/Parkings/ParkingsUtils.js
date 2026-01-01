@@ -11,20 +11,26 @@ moment.tz.setDefault("America/New_York");
 
 export default function ParkingsUtils(props) {
   let {id} = useParams();
+  const PAGE_CONFIG = { pageSize: 25, page: 0 };
   const [spinner, setSpinner] = useState(false);
   const [msg, setMsg] = useState('');
   const [alert, setAlert] = useState(false);
   const [severity, setSeverity] = useState('');
   const [inputField, setInputField] = useState({});
-  const [parking, setParking] = useState([]);
+  const [parking, setParking] = useState({ data: [], pagination: { ...PAGE_CONFIG, total: 0 } });
   const [searched, setSearched] = useState("");
   const [rows, setRows] = useState([]);
+  const [paramFilter, setParamFilter] = useState({});
+  const [pagination, setPagintion] = useState(PAGE_CONFIG)
+  const [sort, setSort] = useState({ sortBy: '_id', sort: -1 })
   const [filter, setFilter] = useState({});
   const [openDialog, setOpenDialog] = useState(false);
   const [editId, setEditId] = useState('');
   const [kickOutParking, setKickOutParking] = useState({});
   const [dialogTitle, setDialogTitle] = useState('');
   const [dialogContent, setDialogContent] = useState('');
+  const [editPlateModal, setEditPlateModal] = useState(false);
+  const [selectedParking, setSelectedParking] = useState({});
 
   useEffect(()=>{
     getFilter();
@@ -41,23 +47,60 @@ export default function ParkingsUtils(props) {
       body = {}
     }else if(id === 'paid'){
       body = {
-        service_fee: { $ne: '0' }
+        amount: { $ne: '0' }
       }
     }else if(id === 'free'){
       body = {
-        service_fee: '0'
+        amount: '0'
       }
     }
-    setFilter(body);
-    getParkings(body);
+    setParamFilter(body);
+    getParkings(body, { ...PAGE_CONFIG, ...sort });
   }
 
-  const getParkings = async(e)=>{
+  const convertObjectToQueryString = (obj) => {
+    return `?${Object.keys(obj)
+      .map((key) => `${key}=${obj[key]}`)
+      .join("&")}`;
+  }
+
+  const getParkings = async(e, query)=>{
     setSpinner(true);
-    const res = await parkingServices.getParkings({...e, ...{org: props.org._id}});
+    const queryString = convertObjectToQueryString(query);
+    const res = await parkingServices.getParkings({ ...e, ...{ org: props.org._id }}, queryString);
     setParking(res.data)
     setRows(res.data);
     setSpinner(false);
+  }
+
+  const onFilter = (obj) => {
+    setFilter(obj);
+    let queryObj = {
+      ...pagination,
+      ...sort,
+      ...obj,
+    };
+    getParkings(paramFilter, queryObj);
+  }
+
+  const onPageChange = (obj) => {
+    setPagintion(obj);
+    let queryObj = {
+      ...filter,
+      ...sort,
+      ...obj,
+    };
+    getParkings(paramFilter, queryObj);
+  }
+
+  const onSort = (obj) => {
+    setSort(obj);
+    let queryObj = {
+      ...filter,
+      ...pagination,
+      ...obj,
+    };
+    getParkings(paramFilter, queryObj);
   }
 
   const requestSearch = (searchedVal) => {
@@ -74,33 +117,32 @@ export default function ParkingsUtils(props) {
     });
     setSearched(searchedVal);
     setParking(filteredRows);
-};
+  };
 
-const handleParkings = (e)=>{
-  console.log(filter);
-  let body = filter;
-  body["parking_type"] = e;
-  getParkings(body);
-}
-
-const onResetParking = async (e)=>{
-  let body = {
-    zone: e.zone,
-    plate: e.plate
+  const handleParkings = (e)=>{
+    let body = paramFilter;
+    body["parking_type"] = e;
+    getParkings(body);
   }
-  setSpinner(true);
-  await parkingServices.resetParkingLimit(body);
-  setMsg(props.literals.parking_limit_reset_successfully);
-  setSeverity('success');
-  setAlert(true);
-  setSpinner(false);
-}
+
+  const onResetParking = async (e)=>{
+    let body = {
+      zone: e.zone,
+      plate: e.plate
+    }
+    setSpinner(true);
+    await parkingServices.resetParkingLimit(body);
+    setMsg(props.literals.parking_limit_reset_successfully);
+    setSeverity('success');
+    setAlert(true);
+    setSpinner(false);
+  }
 
   const endSession = async (e) => {
-    if(editId){
+    if(selectedParking?.plate){
       setSpinner(true);
-      await parkingService.editParking({id: editId, to: moment().toDate()});
-      setEditId('');
+      await parkingService.exitParking({plate: selectedParking.plate, zone: selectedParking.zone._id});
+      setSelectedParking({});
       setMsg(props.literals.session_end_successfully);
       setSeverity('success');
       setAlert(true);
@@ -131,6 +173,38 @@ const onResetParking = async (e)=>{
     setOpenDialog(false);
   }
 
+  const handleChange = (e) => {
+    setInputField({ ...inputField, [e.target.name]: e.target.value.toUpperCase() });
+  };
+
+  const handleEditPlate = async (e) => {
+      e.preventDefault();
+      setSpinner(true);
+      const res = await parkingService.editParkingPlate({parking_id: selectedParking._id, plate: inputField.plate});
+      if(res.data.status == 'error'){
+        setMsg(props.literals[res.data.message]);
+        setSeverity('error');
+        setAlert(true);
+      }else if(res.data.status == 'b_error'){
+        setMsg(res.data.message);
+        setSeverity('error');
+        setAlert(true);
+      } else{
+        setMsg(props.literals.plate_edited_successfully);
+        setSeverity('success');
+        setAlert(true);
+        setParking(parking.map(x=>{
+          if(x._id == selectedParking._id){
+            x.plate = inputField.plate;
+            x.no_of_times_plate_edited = res.data.no_of_times_plate_edited;
+          }
+          return x;
+        }))
+        setSpinner(false);
+        setEditPlateModal(false);
+      }
+  }
+
   return (
     <>
       <ParkingsView
@@ -138,11 +212,15 @@ const onResetParking = async (e)=>{
         parking = {parking}
         searched = {searched}
         literals = {props.literals}
+        editPlateModal= {editPlateModal}
 
+        onPageChange={onPageChange}
+        onFilter={onFilter}
+        onSort={onSort}
         requestSearch = {(e)=>requestSearch(e)}
         handleParkings = {(e)=>handleParkings(e)}
         onResetParking = {(e)=>onResetParking(e)}
-        endSession = {(e) => {setEditId(e._id); setOpenDialog(true)}}
+        endSession = {(e) => {setSelectedParking(e); setOpenDialog(true)}}
         conFirmKickOutPlate = {(e) => {
           setKickOutParking(e);
           setOpenDialog(true);
@@ -150,6 +228,11 @@ const onResetParking = async (e)=>{
           setDialogContent(`Are you sure, you want to kick out this ${e.plate} plate`)
         }}
         kickOutPlate = {(e) => kickOutPlate(e)}
+        openEditPlateModal = {(e)=>{setSelectedParking(e); setEditPlateModal(true)}}
+        closeEditPlateModal = {()=>setEditPlateModal(false)}
+        handleChange={(e)=>handleChange(e)}
+        handleEditPlate={(e)=>handleEditPlate(e)}
+        setSpinner={(e) => setSpinner(e)}
       />
       <SnackAlert
         msg = {msg}

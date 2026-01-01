@@ -62,6 +62,13 @@ function Receipt(props) {
           </Typography>
         </Box> */}
         <Divider sx={{width: '80%'}}/>
+        {props.zone.enable_parking_limit && props.parking.parkings_left > -1 && <Box sx={{display: 'flex', width: '80%', marginTop: 1, justifyContent: 'center', alignItems: 'center', color: 'black'}}>
+          <Typography variant='subtitle1' align='left' sx={{border: '1px solid '+theme.palette.primary.main, padding: '6px 12px', borderRadius: '25px'}} >
+            <Box sx={{ fontWeight: 'bold', display: 'flex', alignItems: 'center' }}>
+              {props.literals.parkings_left_for_plate} {props.parking.parkings_left}
+            </Box>
+          </Typography>
+        </Box>}
         <Box sx={{display: 'flex', width: '80%', marginTop: 1, justifyContent: 'space-between', alignItems: 'center', color: 'black'}}>
           <Typography variant='subtitle1' align='left' sx={{color: 'primary.main'}} >
             <Box sx={{ fontWeight: 'bold', textTransform: 'uppercase', display: 'flex', alignItems: 'center' }}>
@@ -83,10 +90,10 @@ function Receipt(props) {
               <ParkIn color={theme.palette.primary.main} width={'46'}/>
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              {moment(props.rateCycle[props.steps].current_time, 'MMMM Do YYYY, hh:mm a').format('ll')}
+              {moment(props.rateCycle[props.steps].current_time, 'MMMM Do YYYY, hh:mm a', 'en').locale(props.selectedLanguage).format('ll')}
             </Box>
             <Box sx={{ fontWeight: 'bold', textTransform: 'uppercase', display: 'flex', alignItems: 'center', placeContent: 'center' }}>
-              {moment(props.rateCycle[props.steps].current_time, 'MMMM Do YYYY, hh:mm a').format('hh:mm a')}
+              {moment(props.rateCycle[props.steps].current_time, 'MMMM Do YYYY, hh:mm a', 'en').locale(props.selectedLanguage).format('hh:mm a')}
             </Box>
           </Typography>
           <Typography variant='subtitle1' align='left' sx={{color: 'primary.main'}} >
@@ -101,10 +108,10 @@ function Receipt(props) {
               <ParkOut color={theme.palette.primary.main}/>
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              {moment(props.rateCycle[props.steps].time_desc, 'MMMM Do YYYY, hh:mm a').format('ll')}
+              {moment(props.rateCycle[props.steps].time_desc, 'MMMM Do YYYY, hh:mm a', 'en').locale(props.selectedLanguage).format('ll')}
             </Box>
             <Box sx={{ fontWeight: 'bold', textTransform: 'uppercase', display: 'flex', alignItems: 'center', placeContent: 'center' }}>
-              {moment(props.rateCycle[props.steps].time_desc, 'MMMM Do YYYY, hh:mm a').format('hh:mm a')}
+              {moment(props.rateCycle[props.steps].time_desc, 'MMMM Do YYYY, hh:mm a', 'en').locale(props.selectedLanguage).format('hh:mm a')}
             </Box>
           </Typography>
         </Box>

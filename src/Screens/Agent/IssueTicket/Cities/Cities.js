@@ -41,6 +41,9 @@ export default function Cities(props) {
                 onChange={(e)=> props.setInputField({
                     org: props.inputField.org,
                     org_name: props.inputField.org_name,
+                    ticket_format: props.inputField.ticket_format,
+                    enable_custom_public_notes: props.inputField.enable_custom_public_notes,
+                    enable_custom_private_notes: props.inputField.enable_custom_private_notes,
                     ...e
                 })}
             />

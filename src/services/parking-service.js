@@ -8,8 +8,8 @@ export class ParkingService {
     return res;
   }
 
-  getParkings(body){
-    const res = AxiosServices.post(endpoints.parking.getParkings, body);
+  getParkings(body, queryString){
+    const res = AxiosServices.post(`${endpoints.parking.getParkings}${queryString}`, body);
     return res;
   }
 
@@ -40,7 +40,10 @@ export class ParkingService {
     const res = AxiosServices.post(endpoints.parking.exitParking, body);
     return res;
   }
-
+  editParkingPlate(body){    
+    const res = AxiosServices.post(endpoints.parking.editParkingPlate, body);
+    return res;
+  }
 }
 const parkingService = new ParkingService();
 export default parkingService;

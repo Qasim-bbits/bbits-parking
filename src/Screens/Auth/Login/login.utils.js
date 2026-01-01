@@ -6,7 +6,6 @@ import SnackAlert from '../../../Common/Alerts';
 import authServices from '../../../services/auth-service';
 import Spinner from '../../../Common/Spinner';
 import helpers from '../../../Helpers/Helpers';
-import ZebraBrowserPrintWrapper from 'zebra-browser-print-wrapper';
 
 function LoginUtils(props) {
   let navigate = useNavigate();
@@ -20,20 +19,7 @@ function LoginUtils(props) {
   const [notVerified, setNotVerified] = useState(false);
 
   useEffect(async ()=>{
-    // const browserPrint =  new ZebraBrowserPrintWrapper();
-    // console.log(browserPrint)
 
-    //     // Select default printer
-    //     const defaultPrinter =  await browserPrint.getDefaultPrinter();
-    //     console.log(defaultPrinter)
-    
-    //     // Set the printer
-    //     browserPrint.setPrinter(defaultPrinter);
-
-    //     // Check printer status
-    //     const printerStatus = await browserPrint.checkPrinterStatus();
-        console.log('printerStatusw')
-        
     let creds = JSON.parse(localStorage.getItem("loginCreds"));
     if(creds !== null){
       setInputField(creds);
@@ -125,6 +111,7 @@ function LoginUtils(props) {
 
   return (
     <>
+    
       {Object.keys(props.literals).length > 0 && <LoginView
         inputField = {inputField}
         resetPassword = {resetPassword}

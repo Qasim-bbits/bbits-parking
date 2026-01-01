@@ -109,13 +109,13 @@ export default function AddUser(props) {
                 value={props.inputField['mobile_no']}
                 onChange={props.handleChange}
             >
-              {() => <TextField
+              <TextField
                 label={props.literals.phone_no}
                 color="primary"
                 name="mobile_no"
                 size="small"
                 fullWidth
-              />}
+              />
             </InputMask>
           </Grid>
           <Grid item xs={12} >

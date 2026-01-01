@@ -7,6 +7,7 @@ import AddRate from "./AddRate";
 import RatesView from "./RatesView";
 import rateServices from "../../../services/rate-service";
 import cityServices from "../../../services/city-service";
+import moment from "moment-timezone";
 
 export default function RatesUtils(props) {
   const [spinner, setSpinner] = useState(false);
@@ -31,7 +32,7 @@ export default function RatesUtils(props) {
   const [editId, setEditId] = useState('');
   const inputArr = [{rate: 0, time: 0}];
   const stepsArr = [{
-    rate_type_name: '', start_time: '', end_time: '', flat_rate: false,
+    rate_type_period: '', end_of_year_month: false, rate_type_name: '', start_time: '', end_time: '', flat_rate: false,
     Monday: false, Tuesday: false, Wednesday: false, 
     Thursday: false, Friday: false, Saturday: false, Sunday: false, 
     rate_steps: inputArr
@@ -109,7 +110,11 @@ export default function RatesUtils(props) {
         time : y[y._id+"_time"]
       }
     })
-    obj['rate_step'] = rate_step
+    obj['rate_step'] = rate_step;
+    if(obj.start_date !== undefined && obj.end_date !== undefined){
+      obj.start_date = moment.utc(obj.start_date).toISOString();
+      obj.end_date = moment.utc(obj.end_date).toISOString();
+    }
     const stepRes = await rateServices.bulkEditSteps(obj);
     setMsg(props.literals.rate_updated_successfully);
     setSeverity('success');
@@ -126,6 +131,7 @@ export default function RatesUtils(props) {
     body['rate_name']= inputAddField["rate_name"];
     body['enable_custom_rate']= inputAddField["enable_custom_rate"];
     body['is_visitor_pass']= inputAddField["is_visitor_pass"];
+    body['is_whitelist']= inputAddField["is_whitelist"];
     body['zone_id']= selectedZone._id;
     body['rate_type']= 0;
     body['qr_code']= false;
@@ -175,10 +181,7 @@ export default function RatesUtils(props) {
   }
 
   const convertToDatetime = (dt) =>{
-    console.log(dt)
-    var now = new Date(dt);
-    now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-    return now.toISOString().slice(0,16);
+    return moment.utc(dt, "YYYY-MM-DDTHH:mm").toISOString().slice(0,16);
   }
 
   const delItem = async ()=>{
@@ -226,7 +229,7 @@ export default function RatesUtils(props) {
 
   const addStep = () => {
     setSteps(s => {return [ ...s,{
-        rate_type_name: '', start_time: '', end_time: '', 
+        rate_type_period: '', end_of_year_month: false, rate_type_name: '', start_time: '', end_time: '', 
         Monday: false, Tuesday: false, Wednesday: false, 
         Thursday: false, Friday: false, Saturday: false, Sunday: false, 
         rate_steps: inputArr
@@ -241,8 +244,13 @@ export default function RatesUtils(props) {
   }
 
   const handleStepChange = (e) => {
-    const index = e.target.id;
-    console.log(e.target.checked, e.target.value)
+    let index = e.target.id;
+    if(!index){
+      index = e.target.name.split('-')[1];
+      e.target.name = e.target.name.split('-')[0];
+    }
+    console.log(e.target.name.split('-'), index)
+    
     setSteps(s => {
       const newArr = s.slice();
       newArr[index][e.target.name] =  e.target.checked || e.target.value;
@@ -281,6 +289,7 @@ export default function RatesUtils(props) {
         handleSubmit = {(e)=>handleSubmit(e)}
         setOpenDrawer = {()=> setOpenDrawer(!openDrawer)}
         setSelectedZone = {(e)=> setSelectedZone(e)}
+        setInputField = {(e)=>setInputField(e)}
       />
       <AddRate
         zones = {zones}
@@ -309,6 +318,7 @@ export default function RatesUtils(props) {
         inputChange = {(e, index)=> inputChange(e, index)}
         delInput = {(e, index)=> delInput(e, index)}
         addInput = {(e, index)=> addInput(e, index)}
+        setInputAddField = {(e)=> setInputAddField(e)}
         
       />
       <Alert

@@ -42,6 +42,11 @@ export class RateServices {
     const res = AxiosServices.get(`${endpoints.rate.visitorPassRate}/${zone_id}`);
     return res;
   }
+
+  getWhitelistRateByZone(body){
+    const res = AxiosServices.post(endpoints.rate.getWhitelistRateByZone, body);
+    return res;
+  }
 }
 const rateServices = new RateServices();
 export default rateServices;

@@ -70,6 +70,7 @@ export const endpoints = {
     editParking : config.url.API_URL + 'editParking',
     kickOutPlate : config.url.API_URL + 'kickOutPlate',
     exitParking : config.url.API_URL + 'exitParking',
+    editParkingPlate : config.url.API_URL + 'editParkingPlate',
   },
 
   ///---User service--///
@@ -97,6 +98,26 @@ export const endpoints = {
     editTenentPlate : config.url.API_URL + 'editTenentPlate',
     addTenentPlate : config.url.API_URL + 'addTenentPlate',
     delTenentPlate : config.url.API_URL + 'delTenentPlate',
+  },
+
+  ///---Email Templete service--///
+
+  email_template : {
+    getEmailTemplates : config.url.API_URL + 'getEmailTemplates',
+    editEmailTemplate : config.url.API_URL + 'editEmailTemplate',
+    addEmailTemplate : config.url.API_URL + 'addEmailTemplate',
+    delEmailTemplate : config.url.API_URL + 'delEmailTemplate',
+  },
+
+    ///---Virtual Meter Ad service--///
+
+  virtual_meter_ads : {
+    getVirtualMeterAds : config.url.API_URL + 'getVirtualMeterAds',
+    getVirtualMeterAdById : config.url.API_URL + 'getVirtualMeterAdById',
+    editVirtualMeterAd : config.url.API_URL + 'editVirtualMeterAd',
+    addVirtualMeterAd : config.url.API_URL + 'addVirtualMeterAd',
+    delVirtualMeterAd : config.url.API_URL + 'delVirtualMeterAd',
+    upload_compaign : config.url.API_URL + 'upload_compaign',
   },
 
   ///---Business Pass Plates service--///
@@ -143,6 +164,7 @@ export const endpoints = {
     getRateByZone : config.url.API_URL + 'getRateByZone',
     delRateType : config.url.API_URL + 'delRateType',
     visitorPassRate : config.url.API_URL + 'visitorPassRate',
+    getWhitelistRateByZone : config.url.API_URL + 'getWhitelistRateByZone',
   },
 
   ///---Organization service--///
@@ -188,6 +210,8 @@ export const endpoints = {
     getTicketsByOrg : config.url.API_URL + 'getTicketsByOrg',
     IssueTicket : config.url.API_URL + 'IssueTicket',
     getTicketsIssuedByAgent : config.url.API_URL + 'getTicketsIssuedByAgent',
+    addPrintedTicket : config.url.API_URL + 'addPrintedTicket',
+    IssuedTicket : config.url.API_URL + 'IssuedTicket',
   },
 
   ///---Permissions service--///
@@ -227,9 +251,22 @@ export const endpoints = {
     generateReport : config.url.API_URL + 'generateReport',
     exportPDF : config.url.API_URL + 'exportPDF',
     generateTicketIssuedReport : config.url.API_URL + 'generateTicketIssuedReport',
+    lookups : config.url.API_URL + 'lookups',
+    reports_v2 : config.url.API_URL + 'reports_v2',
   },
 
   kickOutPlate : {
     getKickOutPlates : config.url.API_URL + 'getKickOutPlates',
   },
+
+  ///---Notes service--///
+
+  notes : {
+    addNote : config.url.API_URL + 'addNote',
+    editNote : config.url.API_URL + 'editNote',
+    delNote : config.url.API_URL + 'delNote',
+    getNotes : config.url.API_URL + 'getNotes',
+    getNotesByOrg : config.url.API_URL + 'getNotesByOrg',
+    getNotesByType : config.url.API_URL + 'getNotesByType',
+  }
 }

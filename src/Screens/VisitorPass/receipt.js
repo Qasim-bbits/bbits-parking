@@ -87,10 +87,10 @@ function Receipt(props) {
                             <ParkIn color={theme.palette.primary.main} width={'46'}/>
                           </Box>
                           <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                            {moment(props.parking?.from).format('ll')}
+                            {moment(props.rateStep?.current_time, "MMMM Do YYYY, hh:mm a").format('ll')}
                           </Box>
                           <Box sx={{ fontWeight: 'bold', textTransform: 'uppercase', display: 'flex', alignItems: 'center', placeContent: 'center' }}>
-                            {moment(props.parking?.from).format('hh:mm a')}
+                            {moment(props.rateStep?.current_time, "MMMM Do YYYY, hh:mm a").format('hh:mm a')}
                           </Box>
                         </Typography>
                         <Typography variant='subtitle1' align='left' sx={{color: 'primary.main'}} >
@@ -105,10 +105,10 @@ function Receipt(props) {
                             <ParkOut color={theme.palette.primary.main}/>
                           </Box>
                           <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                            {moment(props.parking?.to).format('ll')}
+                            {moment(props.rateStep?.time_desc, "MMMM Do YYYY, hh:mm a").format('ll')}
                           </Box>
                           <Box sx={{ fontWeight: 'bold', textTransform: 'uppercase', display: 'flex', alignItems: 'center', placeContent: 'center' }}>
-                            {moment(props.parking?.to).format('hh:mm a')}
+                            {moment(props.rateStep?.time_desc, "MMMM Do YYYY, hh:mm a").format('hh:mm a')}
                           </Box>
                         </Typography>
                       </Box>

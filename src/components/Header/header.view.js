@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import {AppBar, IconButton, Toolbar } from '@mui/material';
+import {AppBar, Box, FormControl, IconButton, InputLabel, MenuItem, Select, Toolbar, Typography } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { useNavigate } from 'react-router-dom';
@@ -35,17 +35,15 @@ export const HeaderView = (props) => {
           disableGutters
           sx={{
             minHeight: 64,
-            left: 20,
-            px: 4,
-            justifyContent: 'flex-end',
+            px: 2,
+            justifyContent: 'space-between',
           }}
         >
           <IconButton
             onClick={onSidebarOpen}
             sx={{
-              position: 'none',
               display: {
-                xs: 'inline-flex',
+                xs: 'flex',
                 lg: 'none'
               },
               color: '#fff',
@@ -53,9 +51,42 @@ export const HeaderView = (props) => {
           >
             <MenuIcon fontSize="small" />
           </IconButton>
-          <IconButton sx={{color: '#fff', marginLeft: '85%'}} onClick={()=>logout()}>
-            <LogoutIcon />
-          </IconButton>
+          {props.zone && <Typography variant='subtitle1'>
+            {props.zone?.zone_name}
+          </Typography>}
+          <Box sx={{display: 'flex', alignItems: 'center'}}>
+            <FormControl variant="standard">
+              <Select
+                sx={{
+                  color: '#fff', // text color
+                  '& .MuiOutlinedInput-notchedOutline': {
+                    borderColor: '#fff', // border color
+                  },
+                  '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                    borderColor: '#fff',
+                  },
+                  '&:hover .MuiOutlinedInput-notchedOutline': {
+                    borderColor: '#fff',
+                  },
+                  '& .MuiSvgIcon-root': {
+                    color: '#fff', // icon color
+                  },
+                }}
+                labelId="demo-simple-select-standard-label"
+                id="demo-simple-select-standard"
+                label="Language"
+                name={'language'}
+                value={props.selectedLanguage}
+                onChange={(e)=>props.getLiterals(e.target.value)}
+              >
+                <MenuItem value={'en'}>En</MenuItem>
+                <MenuItem value={'fr'}>Fr</MenuItem>
+              </Select>
+            </FormControl>
+            <IconButton sx={{color: '#fff'}} onClick={()=>logout()}>
+              <LogoutIcon />
+            </IconButton>
+          </Box>
         </Toolbar>
       </DashboardNavbarRoot>
     </>

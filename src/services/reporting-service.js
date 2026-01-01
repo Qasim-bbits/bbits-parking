@@ -29,6 +29,15 @@ export class ReportingServices {
     return res;
   }
 
+  getLookups(body){
+    const res = AxiosServices.get(endpoints.reporting.lookups, body);
+    return res;
+  }
+  
+  generateReportV2(filters, groupByZone){
+    const res = AxiosServices.post(endpoints.reporting.reports_v2, { filters, groupByZone });
+    return res;
+  }
 }
 const reportingServices = new ReportingServices();
 export default reportingServices;

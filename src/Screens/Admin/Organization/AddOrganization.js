@@ -181,6 +181,62 @@ export default function AddOrganization(props) {
                 fullWidth
               />
           </Grid>
+          
+          <Grid item xs={12}>
+            <TextField
+                id="standard-error-helper-text"
+                label={props.literals.literal_sheet_url}
+                color="primary"
+                type="text"
+                name="literal_sheet_url"
+                value={props.inputField["literal_sheet_url"]}
+                onChange={props.handleChange}
+                size="small"
+                fullWidth
+              />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+                id="standard-error-helper-text"
+                label={props.literals.reporting_url}
+                color="primary"
+                type="text"
+                name="reporting_url"
+                value={props.inputField["reporting_url"]}
+                onChange={props.handleChange}
+                size="small"
+                fullWidth
+              />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+                id="standard-error-helper-text"
+                label={props.literals.whatsapp_no}
+                color="primary"
+                type="number"
+                name="whatsapp_no"
+                value={props.inputField["whatsapp_no"]}
+                onChange={props.handleChange}
+                size="small"
+                fullWidth
+              />
+          </Grid>
+          
+          <Grid item xs={12}>
+            <TextField
+                id="standard-error-helper-text"
+                label={props.literals.ticket_format}
+                color="primary"
+                type="text"
+                name="ticket_format"
+                value={props.inputField["ticket_format"]}
+                onChange={props.handleChange}
+                size="small"
+                multiline
+                rows={6}
+                fullWidth
+              />
+          </Grid>
           <Grid item xs={12}>
             <TextField
                 id="standard-error-helper-text"
@@ -197,35 +253,6 @@ export default function AddOrganization(props) {
                 fullWidth
               />
           </Grid>
-          
-          <Grid item xs={12}>
-            <TextField
-                id="standard-error-helper-text"
-                label={props.literals.literal_sheet_url}
-                color="primary"
-                type="text"
-                name="literal_sheet_url"
-                value={props.inputField["literal_sheet_url"]}
-                onChange={props.handleChange}
-                size="small"
-                fullWidth
-              />
-          </Grid>
-          
-          <Grid item xs={12}>
-            <TextField
-                id="standard-error-helper-text"
-                label={props.literals.whatsapp_no}
-                color="primary"
-                type="number"
-                name="whatsapp_no"
-                value={props.inputField["whatsapp_no"]}
-                onChange={props.handleChange}
-                size="small"
-                fullWidth
-              />
-          </Grid>
-          
           <Grid item xs={12}>
             <TextField
                 id="standard-error-helper-text"
@@ -414,6 +441,29 @@ export default function AddOrganization(props) {
                   onChange={props.handleCheck}
                   checked={props.inputField['hide_login_button']}
                 />
+              </FormGroup>
+            </Grid>
+            <Grid item xs={5}>
+              <Typography variant="subtitle1" sx={{color: theme.palette.tertiary.main}}>
+                {props.literals.agent_can_add_custom}
+              </Typography>
+            </Grid>
+            <Grid item xs={7} align="center">
+              <FormGroup sx={{flexFlow: 'row'}}>
+                <FormControlLabel sx={{color: theme.palette.primary.main}} control={
+                  <Checkbox
+                    name="enable_custom_public_notes"
+                    onChange={props.handleCheck}
+                    checked={props.inputField['enable_custom_public_notes']}
+                  />
+                } label={props.literals.public_note} />
+                <FormControlLabel sx={{color: theme.palette.primary.main}} control={
+                  <Checkbox
+                    name="enable_custom_private_notes"
+                    onChange={props.handleCheck}
+                    checked={props.inputField['enable_custom_private_notes']}
+                  />
+                } label={props.literals.private_note} />
               </FormGroup>
             </Grid>
             <Grid item xs={12}>

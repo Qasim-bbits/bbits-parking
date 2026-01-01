@@ -15,6 +15,9 @@ export default function TicketIssued(props) {
   const [ticketsIssued, setTicketsIssued] = useState([])
   const [aging, setAging] = useState([])
   const [editId, setEditId] = useState('');
+  const [ticketDetailModel, setTicketDetailModel] = useState(false);
+  const [ticketDetail, setTicketDetail] = useState({});
+  const [photoIndex, setPhotoIndex] = useState(0);
 
   useEffect(()=>{
     getTicketsIssued();
@@ -68,17 +71,37 @@ export default function TicketIssued(props) {
     setSpinner(false);
   }
 
+  const getTicketDetail = async(e) => {
+    setSpinner(true);
+    const res = await ticketServices.getTicketIssuedDetail(e);
+    setTicketDetail(res.data);
+    if(res.data.images.length > 0)
+      setTicketDetailModel(true);
+    else{
+      setMsg(props.literals.no_image_found)
+      setSeverity('info')
+      setAlert(true)
+    }
+    setSpinner(false);
+  }
+
   return (
     <>
       <TicketsIssuedView
         ticketsIssued = {ticketsIssued}
         literals={props.literals}
         aging={aging}
+        ticketDetailModel={ticketDetailModel}
+        ticketDetail={ticketDetail}
+        photoIndex={photoIndex}
 
         // onEdit={(e)=>onEdit(e)}
         delItem={(id) => {setEditId(id); setOpenDialog(true)}}
         setOpenDrawer={()=>{setOpenDrawer(!openDrawer)}}
         getAgingByTicket={(e)=>getAgingByTicket(e)}
+        closeTicketDetailModel = {()=>setTicketDetailModel(false)}
+        getTicketDetail = {(e)=>getTicketDetail(e)}
+        setPhotoIndex = {(index)=>setPhotoIndex(index)}
       />
       <SnackAlert
         msg = {msg}

@@ -2,6 +2,7 @@ import React from 'react';
 import { Box, Button, Card, Divider, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, TextField, Typography, useTheme } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import { config } from '../../Constants';
+import { constants } from '../../constants/app.constants';
 
 export default function VisitorPassView(props) {
     const theme = useTheme();
@@ -37,7 +38,7 @@ export default function VisitorPassView(props) {
                         <Grid item xs={12} textAlign={'center'}>
                             <Typography variant='body' color="primary" sx={{ fontWeight: 'bold' }}>
                                 {props.rateStep.time ?
-                                    ('REGISTER YOUR VEHICLE FOR '+timeConvert(props.rateStep.time)+' OF FREE PARKING') :
+                                    ('REGISTER YOUR VEHICLE FOR ' + timeConvert(props.rateStep.time) + ' OF FREE PARKING') :
                                     'PARKING NOT ALLOWED DURING THESE HOURS'
                                 }
                             </Typography>
@@ -55,7 +56,12 @@ export default function VisitorPassView(props) {
                                 type="text"
                                 name="plate"
                                 value={props.inputField["plate"]}
-                                onChange={props.onChange}
+                                onChange={(e) => {
+                                    if (e.target.value !== "" && !constants.regexPatterns.alphaNumeric.test(e.target.value)) {
+                                        return;
+                                    }
+                                    props.onChange(e);
+                                }}
                                 size="small"
                                 required
                                 fullWidth
@@ -67,16 +73,18 @@ export default function VisitorPassView(props) {
                             <FormControl>
                                 <FormLabel sx={{ fontWeight: 'bold' }}>Parking Options</FormLabel>
                                 <RadioGroup>
-                                    {props.rates.map(x=>{return(
-                                        <>
-                                            <FormControlLabel value="female" control={
-                                                <Radio
-                                                    checked={x._id === props.selectedRate._id}
-                                                    onChange={()=>props.onRateChange(x)}
-                                                    size="small"
-                                                />} label={x.rate_name} />
-                                        </>
-                                    )})}
+                                    {props.rates.map(x => {
+                                        return (
+                                            <>
+                                                <FormControlLabel value="female" control={
+                                                    <Radio
+                                                        checked={x._id === props.selectedRate._id}
+                                                        onChange={() => props.onRateChange(x)}
+                                                        size="small"
+                                                    />} label={x.rate_name} />
+                                            </>
+                                        )
+                                    })}
                                 </RadioGroup>
                             </FormControl>
                         </Grid>

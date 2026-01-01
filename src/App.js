@@ -50,16 +50,25 @@ import PrivacyPolicy from './Screens/PrivacyPolicy';
 import NoAuthHeader from './layout/NoAuthHeader';
 import KickOutPlates from './Screens/Admin/KickOutPlates/KickOutPlates';
 import { FloatingWhatsApp } from 'react-floating-whatsapp'
+import globalRouter from './Helpers/GlobalRouter';
+import moment from 'moment';
+import 'moment/locale/fr';
+import EmailTemplate from './Screens/Admin/EmailTemplate/EmailTemplate';
+import VirtualMeterAd from './Screens/Admin/VirtualMeterAds/VirtualMeterAd';
+import PublicPrivateNotes from './Screens/Admin/PublicPrivateNotes/PublicPrivateNotes';
+import ReportPage from './Screens/Admin/Reporting/ReportPage';
 
 const App = () => {
   const location = useLocation();
   let navigate = useNavigate();
+  globalRouter.navigate = navigate;
   const defaultColor = '#ddd';
   const [primaryColor, setPrimaryColor] = React.useState(defaultColor);
   const [showSpinner, setShowSpinner] = React.useState(false);
   const [apiCalled, setApiCalled] = React.useState(false);
   const [org, setOrg] = React.useState({});
   const [literals, setLiterals] = React.useState({});
+  const [selectedLanguage, setSelectedLanguage] = React.useState('en');
 
   const theme = React.useMemo(
     () =>
@@ -109,6 +118,12 @@ const App = () => {
 
   const getLiterals = async (language, literal_sheet_url) => {
     setShowSpinner(true);
+    setSelectedLanguage(language);
+    if (language === 'fr') {
+      moment.locale('fr');
+    } else {
+      moment.locale('en');
+    }
     let res = await helpers.getSheetData(language, literal_sheet_url);
     setLiterals(res);
     setShowSpinner(false);
@@ -172,7 +187,7 @@ const App = () => {
           />
           <Route exact path={router.main} element={
             <PrivateRoute>
-              <MainUtils apiCalled={apiCalled} org={org} literals={literals} />
+              <MainUtils apiCalled={apiCalled} org={org} literals={literals} getLiterals={(e) => getLiterals(e, org.literal_sheet_url)} selectedLanguage={selectedLanguage}/>
             </PrivateRoute>}
           />
           <Route exact path={router.profile} element={
@@ -185,7 +200,7 @@ const App = () => {
               <Visitors org={org} literals={literals} />
             </PrivateRoute>}
           />
-          <Route exact path={router.zone + '/:id'} element={<QRCodeUtils apiCalled={apiCalled} org={org} literals={literals} />} />
+          <Route exact path={router.zone + '/:id'} element={<QRCodeUtils apiCalled={apiCalled} org={org} literals={literals} getLiterals={(e) => getLiterals(e, org.literal_sheet_url)} selectedLanguage={selectedLanguage}/>} />
           <Route exact path={router.pay_ticket} element={<PayTicket org={org} literals={literals} />} />
           <Route path={router.admin} element={
             <AdminRoute>
@@ -194,7 +209,10 @@ const App = () => {
           }>
             <Route exact path={router.dashboard} element={<Dashboard org={org} literals={literals} />} />
             <Route exact path={router.module} element={<Module literals={literals} />} />
+            <Route exact path={router.emailTemplate} element={<EmailTemplate org={org} literals={literals} />} />
+            <Route exact path={router.virtualMeterAd} element={<VirtualMeterAd org={org} literals={literals} />} />
             <Route exact path={router.ticket} element={<Ticket org={org} literals={literals} />} />
+            <Route exact path={router.public_private_note} element={<PublicPrivateNotes org={org} literals={literals} />} />
             <Route exact path={router.tickets_issued} element={<TicketIssued org={org} literals={literals} />} />
             <Route exact path={router.external_parking_config} element={<ExternalParkingConfig org={org} literals={literals} />} />
             <Route exact path={router.permission} element={<Permissions literals={literals} />} />
@@ -207,7 +225,8 @@ const App = () => {
             <Route exact path={router.tenentPlates} element={<TenentPlates literals={literals} org={org} />} />
             <Route exact path={router.businessPassPlates} element={<BusinessPassPlates literals={literals} org={org} />} />
             <Route exact path={router.residantPlate} element={<ResidantPlates literals={literals} org={org} />} />
-            <Route exact path={router.reporting} element={<Reporting literals={literals} org={org} />} />
+            {/* <Route exact path={router.reporting} element={<Reporting literals={literals} org={org} />} /> */}
+            <Route exact path={router.reporting} element={<ReportPage literals={literals} org={org} />} />
             <Route exact path={router.kickOutPlates} element={<KickOutPlates literals={literals} org={org} />} />
             <Route exact path={router.parkings + "/:id"} element={<ParkingsUtils org={org} literals={literals} />} />
           </Route>

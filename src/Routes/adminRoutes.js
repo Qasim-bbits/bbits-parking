@@ -2,7 +2,10 @@ import {
   DashboardOutlined, DirectionsCar, BackupTableOutlined, Public, 
   MapOutlined, Inventory2Outlined, Business, ViewModuleOutlined, 
   LockOpenOutlined, ConfirmationNumberOutlined, Settings, Report, LocationOnOutlined, PinDropOutlined, LocalOfferOutlined, PeopleAltOutlined, LocalParkingOutlined,
-  East, 
+  East,
+  EmailOutlined,
+  CampaignOutlined,
+  NotesOutlined, 
 } from "@mui/icons-material";
 import {router} from "./routhPaths";
 
@@ -83,6 +86,11 @@ const adminRoutes = [
     value: "manage_tickets",
   },
   {
+    path: router.public_private_note,
+    icon: <NotesOutlined />,
+    value: "manage_notes",
+  },
+  {
     path: router.tickets_issued,
     icon: <LocalOfferOutlined />,
     value: "tickets_issued",
@@ -96,6 +104,16 @@ const adminRoutes = [
     path: router.reporting,
     icon: <Report />,
     value: "reporting",
+  },
+  {
+    path: router.emailTemplate,
+    icon: <EmailOutlined />,
+    value: "email_templates",
+  },
+  {
+    path: router.virtualMeterAd,
+    icon: <CampaignOutlined />,
+    value: "virtual_meter_ads",
   },
 ];
 

@@ -1,10 +1,18 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Divider, List, ListItem, ListItemText, ListItemButton, TextField, Typography, ListItemIcon, useTheme } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import { Done } from '@mui/icons-material';
 
 export default function CitiesView(props) {
     let theme = useTheme();
+    const [cities, setCities] = useState([]);
+    
+    useEffect(() => {
+        const agentCities = JSON.parse(sessionStorage.getItem('userLogged')).result?.cities || [];
+        setCities(agentCities.filter(
+            (agentCity) => props.cities.some((orgCity) => orgCity._id === agentCity._id))
+        )
+    }, [props.cities])
 
     return (
         <Grid container>
@@ -18,11 +26,11 @@ export default function CitiesView(props) {
                 />
             </Grid>
             <Grid item xs={12}>
-                {!props.cities.length && 
+                {!cities.length && 
                     <Typography variant="subtitle1" color="secondary" sx={{textAlign: 'center'}}>{props.literals.no_record_found}</Typography>
                 }
                 <List>
-                    {props.cities.map(x => {
+                    {cities.map(x => {
                         return (
                             <>
                                 <ListItem disablePadding>

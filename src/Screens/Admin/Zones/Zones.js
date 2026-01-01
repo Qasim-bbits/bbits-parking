@@ -6,6 +6,7 @@ import ConfirmDiallog from "../../../shared/ConfirmDiallog";
 import cityServices from "../../../services/city-service";
 import ZonesView from "./ZonesView";
 import AddZone from "./AddZone";
+import moment from "moment";
 
 export default function Zones(props) {
   const [openDialog, setOpenDialog] = useState(false);
@@ -44,7 +45,7 @@ export default function Zones(props) {
   }
 
   const handleChange = (e) => {
-    setInputField({ ...inputField, [e.target.name]: e.target.value });
+    setInputField({ ...inputField, [e.target.name]: e.target.name == 'zone_code' ? e.target.value.toUpperCase() : e.target.value });
   };
 
   const handleCheck = (e) => {
@@ -53,6 +54,12 @@ export default function Zones(props) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if(inputField.start_parking_limit_date && moment(inputField.start_parking_limit_date).format('yyyy-MM-DD') > moment(inputField.end_parking_limit_date).format('yyyy-MM-DD')){
+      setMsg(props.literals.start_parking_limit_date_must_be_greater);
+      setSeverity('error');
+      setAlert(true);
+      return;
+    }
     if(polygon.length === 0){
       setMsg(props.literals.please_draw_polygon);
       setSeverity('error');
@@ -66,17 +73,33 @@ export default function Zones(props) {
     inputField['city_id'] = selectedCity._id;
     inputField['org'] = selectedCity.org;
     if(btn === props.literals.add){
-      await cityServices.addZone(inputField);
-      setMsg(props.literals.zone_added_successfully);
-      setSeverity('success');
-      setAlert(true);
+      const res = await cityServices.addZone(inputField);
+      if(res.data.msg){
+        setMsg(props.literals[res.data.msg]);
+        setSeverity(res.data.status);
+        setAlert(true);
+        setSpinner(false);
+        return;
+      }else{
+        setMsg(props.literals.zone_added_successfully);
+        setSeverity('success');
+        setAlert(true);
+      }
     }else{
       inputField['id'] = editId;
-      await cityServices.editZone(inputField);
-      setBtn(props.literals.add)
-      setMsg(props.literals.zone_updated_successfully);
-      setSeverity('success');
-      setAlert(true);
+      const res = await cityServices.editZone(inputField);
+      if(res.data.msg){
+        setMsg(props.literals[res.data.msg]);
+        setSeverity(res.data.status);
+        setAlert(true);
+        setSpinner(false);
+        return;
+      }else{
+        setBtn(props.literals.add)
+        setMsg(props.literals.zone_updated_successfully);
+        setSeverity('success');
+        setAlert(true);
+      }
     }
     getZones();
     setInputField({});
@@ -100,14 +123,19 @@ export default function Zones(props) {
   }
 
   const onEdit = async(e)=> {
-    setInputField(e);
-    if(e.caption_en !== undefined){
-      setInputField({...inputField, add_caption: true})
+    if(e.start_parking_limit_date){
+      e.start_parking_limit_date = moment(e.start_parking_limit_date).format('yyyy-MM-DD');
+      e.end_parking_limit_date = moment(e.end_parking_limit_date).format('yyyy-MM-DD');
     }
+    if(e.caption_en !== undefined){
+      e.add_caption = true;
+    }
+    setInputField(e);
     setSelectedCity({
       ...e.city_id,
       org: e.org
     });
+    console.log(inputField)
     setOpenDrawer(true);
     setPolygon(e.polygon);
     setCenter(e.polygon[0]);

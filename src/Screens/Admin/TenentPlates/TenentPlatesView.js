@@ -69,7 +69,7 @@ export default function TenentPlatesView(props) {
     { field: 'org', headerName: 'Organization', valueGetter: (params) => params.row?.org?.org_name, width: 150, headerClassName: 'header' },
     { field: 'zone', headerName: 'Zone', valueGetter: (params) => params.row?.zone?.zone_name, width: 250, headerClassName: 'header' },
     { field: 'user', headerName: 'User Name', valueGetter: (params) => params.row?.user?.fname, width: 250, headerClassName: 'header' },
-    { field: 'email', headerName: 'User Email', valueGetter: (params) => params.row?.user?.email, width: 250, headerClassName: 'header' },
+    { field: 'email', headerName: 'User Email', valueGetter: (params) => params.row?.user?.email || params.row?.email, width: 250, headerClassName: 'header' },
     { field: 'plate', headerName: 'Plate One', valueGetter: (params) => params.row?.plate, width: 150, headerClassName: 'header' },
     { field: 'car_make', headerName: 'Vehicle 1 Car Make', valueGetter: (params) => params.row?.car_make, width: 150, headerClassName: 'header' },
     { field: 'model', headerName: 'Vehicle 1 Model', valueGetter: (params) => params.row?.model, width: 150, headerClassName: 'header' },
@@ -82,6 +82,7 @@ export default function TenentPlatesView(props) {
     { field: 'car_make_three', headerName: 'Vehicle 3 Car Make', valueGetter: (params) => params.row?.car_make_three, width: 150, headerClassName: 'header' },
     { field: 'model_three', headerName: 'Vehicle 3 Model', valueGetter: (params) => params.row?.model_three, width: 150, headerClassName: 'header' },
     { field: 'color_three', headerName: 'Vehicle 3 Color', valueGetter: (params) => params.row?.color_three, width: 150, headerClassName: 'header' },
+    { field: 'notes', headerName: 'Notes', valueGetter: (params) => params.row?.notes, width: 250, headerClassName: 'header' },
     {
       field: 'action',
       headerName: props.literals.action,
@@ -99,7 +100,7 @@ export default function TenentPlatesView(props) {
           </Button>
           <Button
               type="button"
-              disabled={helpers.abilityByModuleKey('tenant_plates').can_edit == false}
+              disabled={helpers.abilityByModuleKey('tenant_plates').can_edit == false || params.row?.park_now == true}
               onClick={()=>{props.onEdit(params.row)}}
               sx={{color: '#027c92', background: '#027c924d', p: '2px', minWidth: 0, m: 1}}
           >

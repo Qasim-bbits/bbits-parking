@@ -63,7 +63,7 @@ export default function VisitorPass(props) {
 
     const getRateSteps = async (rate_id, time_zone) => {
         setShowSpinner(true);
-        const res = await mainService.getRateSteps({id: rate_id, time_zone: time_zone});
+        const res = await mainService.getRateSteps({id: rate_id, plate: inputField.plate, org: props.org._id, zone: zone._id, time_zone: time_zone});
         setShowSpinner(false);
         return res.data;
     }
@@ -103,7 +103,8 @@ export default function VisitorPass(props) {
             to: rateSteps[0].time_desc,
             rate: selectedRate._id,
             service_fee: 0,
-            org: props.org._id
+            org: props.org._id,
+            parking: rateSteps[0].parking
           }
           const res = await parkingService.buyVisitorPass(body);
           if(res.data.msg){
@@ -146,6 +147,7 @@ export default function VisitorPass(props) {
             {showReceipt &&<Receipt
                 parking={parking}
                 selectedRate={selectedRate}
+                rateStep={rateStep}
                 literals={props.literals}
 
                 reset={reset}

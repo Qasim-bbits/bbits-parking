@@ -27,7 +27,6 @@ function SelectTariff(props) {
     setAnchorEl(null);
   };
 
-console.log(props.literals)
   const open = Boolean(anchorEl);
   return (
     <Box sx={{

@@ -89,6 +89,11 @@
   visibility: hidden;
 }
 
+.ql-editor {
+  color: black;
+  background-color: white;
+}
+
 /* code{
   color: #2c3680 !important;
 } */

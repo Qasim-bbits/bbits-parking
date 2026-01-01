@@ -1,7 +1,9 @@
 import React from "react";
-import { Box, Grid, Typography, TextField, Button, IconButton, Autocomplete, FormGroup, FormControlLabel, Checkbox } from "@mui/material";
+import { Box, Grid, Typography, TextField, Button, IconButton, Autocomplete, FormGroup, FormControlLabel, Checkbox, FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import Map from "../../../components/Map";
 import { Close } from "@mui/icons-material";
+import InputMask from "react-input-mask";
+import { constants } from "../../../constants/app.constants";
 
 export default function AddZone(props) {
 
@@ -57,19 +59,36 @@ export default function AddZone(props) {
             fullWidth
           />
         </Grid>
-        <Grid item xs={4}>
-          <FormGroup>
-            <FormControlLabel control={
-              <Checkbox
-                name="tenant_zone"
-                onChange={props.handleCheck}
-                checked={props.inputField['tenant_zone']}
-              />} label={
-                <Typography variant="subtitle1" color="primary" className="font-gray">
-                  {props.literals.tenant_zone}
-                </Typography>
-              } />
-          </FormGroup>
+        <Grid item xs={12}>
+          <TextField
+            id="standard-error-helper-text"
+            label={props.literals.zone_code}
+            color="primary"
+            name="zone_code"
+            value={props.inputField["zone_code"]}
+            onChange={(e) => {
+              if (e.target.value !== "" && !constants.regexPatterns.alphaNumeric.test(e.target.value) ) {
+                return;
+              }
+              props.handleChange(e);
+            }}
+            size="small"
+            required
+            fullWidth
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <TextField
+            id="standard-error-helper-text"
+            label={props.literals.owner_email}
+            color="primary"
+            type="email"
+            name="owner_email"
+            value={props.inputField["owner_email"]}
+            onChange={props.handleChange}
+            size="small"
+            fullWidth
+          />
         </Grid>
         <Grid item xs={4}>
           <FormGroup>
@@ -99,7 +118,7 @@ export default function AddZone(props) {
               } />
           </FormGroup>
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={4}>
           <FormGroup>
             <FormControlLabel control={
               <Checkbox
@@ -109,6 +128,20 @@ export default function AddZone(props) {
               />} label={
                 <Typography variant="subtitle1" color="primary" className="font-gray">
                   {props.literals.can_user_kick_out}
+                </Typography>
+              } />
+          </FormGroup>
+        </Grid>
+        <Grid item xs={8}>
+          <FormGroup>
+            <FormControlLabel control={
+              <Checkbox
+                name="enable_extension"
+                onChange={props.handleCheck}
+                checked={props.inputField['enable_extension']}
+              />} label={
+                <Typography variant="subtitle1" color="primary" className="font-gray">
+                  {props.literals.enable_extension}
                 </Typography>
               } />
           </FormGroup>
@@ -149,28 +182,102 @@ export default function AddZone(props) {
           <FormGroup>
             <FormControlLabel control={
               <Checkbox
-                name="enable_parking_limit"
+                name="is_plate_editable"
                 onChange={props.handleCheck}
-                checked={props.inputField['enable_parking_limit']}
+                checked={props.inputField['is_plate_editable']}
               />} label={
                 <Typography variant="subtitle1" color="primary" className="font-gray">
-                  {props.literals.enable_parking_limit}
+                  {props.literals.is_plate_editable}
                 </Typography>
               } />
           </FormGroup>
         </Grid>
         <Grid item xs={8}>
-          {props.inputField.enable_parking_limit && <TextField
-            label={props.literals.no_of_parking_per_plate}
+          {props.inputField.is_plate_editable && <TextField
+            label={props.literals.no_of_times_plate_can_edit}
             color="primary"
             type="number"
-            name="no_of_parking_per_plate"
-            value={props.inputField["no_of_parking_per_plate"]}
+            name="no_of_times_plate_can_edit"
+            value={props.inputField["no_of_times_plate_can_edit"]}
             onChange={props.handleChange}
             size="small"
             required
             fullWidth
           />}
+        </Grid>
+        <Grid item xs={12}>
+          <Grid container spacing={3}>
+            <Grid item xs={4}>
+              <FormGroup>
+                <FormControlLabel control={
+                  <Checkbox
+                    name="enable_parking_limit"
+                    onChange={props.handleCheck}
+                    checked={props.inputField['enable_parking_limit']}
+                  />} label={
+                    <Typography variant="subtitle1" color="primary" className="font-gray">
+                      {props.literals.enable_parking_limit}
+                    </Typography>
+                  } />
+              </FormGroup>
+            </Grid>
+            {props.inputField.enable_parking_limit && <Grid item xs={8}>
+              <TextField
+                label={props.literals.no_of_parking_per_plate}
+                color="primary"
+                type="number"
+                name="no_of_parking_per_plate"
+                value={props.inputField["no_of_parking_per_plate"]}
+                onChange={props.handleChange}
+                size="small"
+                required
+                fullWidth
+              />
+            </Grid>}
+            {props.inputField.enable_parking_limit && <Grid item md={4} sm={12}>
+              <FormControl fullWidth>
+                <InputLabel>{props.literals.parking_limit_type}</InputLabel>
+                <Select
+                  name={"parking_limit_type"}
+                  value={props.inputField["parking_limit_type"]}
+                  label="parking_limit_type"
+                  size="small"
+                  onChange={props.handleChange}
+                  required
+                >
+                  <MenuItem value={'yearly'}>Yearly</MenuItem>
+                  <MenuItem value={'monthly'}>Monthly</MenuItem>
+                  <MenuItem value={'custom'}>Custom</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>}
+            {props.inputField.enable_parking_limit && props.inputField.parking_limit_type == 'custom' && <Grid item md={4} sm={12}>
+              <TextField
+                label={props.literals.start_parking_limit_date}
+                color="primary"
+                type="date"
+                name="start_parking_limit_date"
+                value={props.inputField["start_parking_limit_date"]}
+                onChange={props.handleChange}
+                size="small"
+                InputLabelProps={{ shrink: true }}
+                required
+                fullWidth/>
+            </Grid>}
+            {props.inputField.enable_parking_limit && props.inputField.parking_limit_type == 'custom' && <Grid item md={4} sm={12}>
+              <TextField
+                label={props.literals.end_parking_limit_date}
+                color="primary"
+                type="date"
+                name="end_parking_limit_date"
+                value={props.inputField["end_parking_limit_date"]}
+                onChange={props.handleChange}
+                size="small"
+                InputLabelProps={{ shrink: true }}
+                required
+                fullWidth/>
+            </Grid>}
+          </Grid>
         </Grid>
         <Grid item xs={4}>
           <FormGroup>

@@ -1,12 +1,13 @@
 import React from 'react';
 import Box from "@mui/material/Box";
-import {Button, IconButton, TextField, Typography, useMediaQuery, useTheme} from "@mui/material";
+import { Button, IconButton, TextField, Typography, useMediaQuery, useTheme } from "@mui/material";
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { constants } from '../../../constants/app.constants';
 
 function AddPlateForm(props) {
   const theme = useTheme();
-  const btnstyle={margin:'8% 0', width: '100%', borderRadius: 20}
+  const btnstyle = { margin: '8% 0', width: '100%', borderRadius: 20 }
 
   const smDown = useMediaQuery((theme) => theme.breakpoints.down('sm'), {
     defaultMatches: true,
@@ -23,7 +24,7 @@ function AddPlateForm(props) {
       backgroundColor: '#fff',
       height: '100%'
     }}>
-      <Box sx={{display: 'flex', backgroundColor: theme.palette.primary.main, width: '100%'}}>
+      <Box sx={{ display: 'flex', backgroundColor: theme.palette.primary.main, width: '100%' }}>
         <IconButton
           color="inherit"
           edge="end"
@@ -32,8 +33,8 @@ function AddPlateForm(props) {
           <ArrowBackIcon />
         </IconButton>
       </Box>
-      <Box sx={{display: 'flex', width: '80%', justifyContent: 'space-between', alignItems: 'flex-end', color: 'black'}}>
-        <Typography variant='h5' align='left' sx={{marginTop: 5, color: 'primary.main'}} >
+      <Box sx={{ display: 'flex', width: '80%', justifyContent: 'space-between', alignItems: 'flex-end', color: 'black' }}>
+        <Typography variant='h5' align='left' sx={{ marginTop: 5, color: 'primary.main' }} >
           <IconButton
             color="inherit"
             edge="start"
@@ -43,11 +44,11 @@ function AddPlateForm(props) {
           {props.btn}
         </Typography>
       </Box>
-      <Box sx={{display: 'flex', flexDirection: 'row', flexWrap: 'wrap', marginTop: '10%', padding: '0 8% 0 8%'}}>
-        <Typography variant= 'body1' color='primary' marginBottom='5%'>
+      <Box sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', marginTop: '10%', padding: '0 8% 0 8%' }}>
+        <Typography variant='body1' color='primary' marginBottom='5%'>
           {props.literals.add_many_cars}
         </Typography>
-        <form onSubmit = {props.handlePlateSubmit} style={{width: '100%'}}>
+        <form onSubmit={props.handlePlateSubmit} style={{ width: '100%' }}>
           <TextField
             id="standard-error-helper-text"
             label={props.literals.new_plate}
@@ -56,7 +57,12 @@ function AddPlateForm(props) {
             size="small"
             name="plate"
             value={props.inputPlateField["plate"]}
-            onChange={props.handlePlateChange}
+            onChange={(e) => {
+              if (e.target.value !== "" && !constants.regexPatterns.alphaNumeric.test(e.target.value)) {
+                return;
+              }
+              props.handlePlateChange(e);
+            }}
             required
             fullWidth
           />

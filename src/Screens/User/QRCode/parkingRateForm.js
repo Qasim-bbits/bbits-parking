@@ -15,6 +15,7 @@ import { config } from '../../../Constants';
 import helpers from '../../../Helpers/Helpers';
 import ConfirmDiallog from '../../../shared/ConfirmDiallog';
 import parkingServices from "../../../services/parking-service";
+import { constants } from '../../../constants/app.constants';
 
 function ParkingRateForm(props) {
   const theme = useTheme();
@@ -25,10 +26,6 @@ function ParkingRateForm(props) {
   const [alertMessage, setAlertMessage] = useState('');
   const [pk, setPk] = useState();
   const [stripePromise, setStripePromise] = useState(null);
-  const [openDialog, setOpenDialog] = useState(false);
-  const [kickOutParking, setKickOutParking] = useState([]);
-  const [dialogTitle, setDialogTitle] = useState('');
-  const [dialogContent, setDialogContent] = useState('');
   const [customRate, setCustomRate] = useState('');
   
   useEffect(() => {
@@ -74,7 +71,8 @@ function ParkingRateForm(props) {
         coord: props.center,
         rate: props.selectedTariff._id,
         service_fee: props.rateCycle[props.steps].service_fee,
-        org: props.org._id
+        org: props.org._id,
+        parking: props.rateCycle[props.steps].parking
       }
       const res = await parkingService.buyParking(body);
       setSpinner(false);
@@ -83,11 +81,15 @@ function ParkingRateForm(props) {
         props.setParking(res.data)
         sessionStorage.removeItem("showParking")
         // window.location.reload();
+      }else if(res.data.message == 'parking_limit_exceed'){
+        setAlertMessage(props.literals.parking_limit_exceed)
+        setSeverity('error');
+        setShowAlert(true);
       }else if(res.data.message == 'kickOutZone'){
-        setDialogTitle(props.literals.parking_already_purchased)
-        setDialogContent(`Are you sure, you want to kick out this ${res.data.parkings[0].plate} plate`)
-        setKickOutParking(res.data.parkings);
-        setOpenDialog(true);
+        props.setDialogTitle(props.literals.parking_already_purchased)
+        props.setDialogContent(`Are you sure, you want to kick out this ${res.data.parkings[0].plate} plate`)
+        props.setKickOutParking(res.data.parkings);
+        props.setOpenDialog(true);
       }else{
         setAlertMessage(res.data.message);
         setSeverity('error');
@@ -101,24 +103,6 @@ function ParkingRateForm(props) {
       props.setShowPayment(true);
     }
     setSpinner(false);
-  }
-
-  const kickOutPlate = async () =>{ 
-    let body = {
-      zone: kickOutParking[0].zone,
-      city: kickOutParking[0].city,
-      org: kickOutParking[0].org,
-      parking: kickOutParking[0]._id,
-      kicked_out_plate: kickOutParking[0].plate,
-      kicked_out_By: props.plate
-    }
-    setSpinner(true);
-    await parkingServices.kickOutPlate(body);
-    setAlertMessage(props.literals.plate_kickout_purchase_now);
-    setSeverity('success');
-    setShowAlert(true);
-    setSpinner(false);
-    setOpenDialog(false);
   }
 
   return (
@@ -154,7 +138,7 @@ function ParkingRateForm(props) {
       <Box sx={{width: '80%', background: '#f8f8f8'}}>
         <Box sx={{display: 'flex', marginTop: 2, justifyContent: 'space-between', alignItems: 'flex-end', color: 'black'}}>
           <Typography variant='caption' align='left' sx={{color: 'primary.main'}} >
-            {props.rateCycle[props.steps].current_time}
+            {moment(props.rateCycle[props.steps].current_time, "MMMM Do YYYY, hh:mm a", 'en').locale(props.selectedLanguage).format("MMMM Do YYYY, hh:mm a")}
           </Typography>
         </Box>
         <Divider/>
@@ -165,15 +149,15 @@ function ParkingRateForm(props) {
           <Typography variant='caption' align='left' 
             sx={{background: theme.palette.primary.main, color: '#FFF', padding: '0 23px', borderRadius: '17px'}} 
           >
-            {props.rateCycle[props.steps].day}
+            {props.selectedLanguage == 'fr' ? props.rateCycle[props.steps].day_fr : props.rateCycle[props.steps].day}
           </Typography>
         </Box>
         <Box sx={{display: 'flex', marginTop: 2, justifyContent: 'space-between', alignItems: 'flex-end', color: 'black'}}>
           <Typography variant='subtitle1' align='left' sx={{color: 'primary.main'}} >
-            {moment(props.rateCycle[props.steps].time_desc, "MMMM Do YYYY, hh:mm a").format("MMM Do YYYY")}
+            {moment(props.rateCycle[props.steps].time_desc, "MMMM Do YYYY, hh:mm a", 'en').locale(props.selectedLanguage).format("MMMM Do YYYY")}
           </Typography>
           <Typography variant='h4' align='left' sx={{color: 'primary.main'}} >
-            {moment(props.rateCycle[props.steps].time_desc, "MMM Do YYYY, hh:mm a").format("hh:mm a")}
+            {moment(props.rateCycle[props.steps].time_desc, "MMM Do YYYY, hh:mm a", 'en').locale(props.selectedLanguage).format("hh:mm a")}
           </Typography>
         </Box>
       </Box>
@@ -221,7 +205,7 @@ function ParkingRateForm(props) {
                   sx={{width: '90%', px: 0, py:1}}
                   onClick={()=>{props.handleChange(index);props.setShowPayment(false);}}
                 >
-                  ${(x.rate/100)} | {moment(x.time_desc, "MMMM Do YYYY, hh:mm a").format("hh:mm a")}
+                  {x.rate == 0 ? '' : '$'+x.rate/100+' |'} {moment(x.time_desc, "MMMM Do YYYY, hh:mm a").format("hh:mm a")}
                 </Button>
               </Grid>
             )
@@ -282,7 +266,7 @@ function ParkingRateForm(props) {
               variant='contained'
               sx={{borderRadius: 8, width: '100%',my: 2}}
             >
-              {props.literals.confrim_to_park || '$'+(props.rateCycle[props.steps].total/100).toFixed(2)}
+              {props.selectedTariff.enable_custom_rate ? 'Click Here to Start Parking Session — $'+(props.rateCycle[props.steps].total/100).toFixed(2) : (props.literals.confrim_to_park || '$'+(props.rateCycle[props.steps].total/100).toFixed(2))}
             </Button>}
         </form>
         {props.showPayment &&
@@ -323,7 +307,12 @@ function ParkingRateForm(props) {
                 color="primary"
                 type="number"
                 value={customRate}
-                onChange={(e)=> setCustomRate(e.target.value)}
+                onChange={(e) => {
+                  if (e.target.value !== "" && !constants.regexPatterns.numberOnly.test(e.target.value) ) {
+                    return;
+                  }
+                  setCustomRate(e.target.value);
+                }}
                 size="small"
                 required
                 fullWidth
@@ -352,12 +341,12 @@ function ParkingRateForm(props) {
         </Box>
       </Modal>
       <ConfirmDiallog
-        openDialog = {openDialog}
-        dialogTitle = {dialogTitle}
-        dialogContent = {dialogContent}
+        openDialog = {props.openDialog}
+        dialogTitle = {props.dialogTitle}
+        dialogContent = {props.dialogContent}
 
-        closeDialog = {()=>setOpenDialog(false)}
-        delItem = {()=>kickOutPlate()}
+        closeDialog = {()=>props.setOpenDialog(false)}
+        delItem = {()=>props.kickOutPlate()}
       />
     </Box>
   );

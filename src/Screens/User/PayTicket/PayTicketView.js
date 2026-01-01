@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Stepper, Step, StepLabel, Button, Typography, Autocomplete, Grid, TextField, Table, TableBody, TableRow, TableCell, useTheme, Divider, ImageList, ImageListItem, Accordion, AccordionSummary, AccordionDetails, Checkbox } from '@mui/material';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import helpers from '../../../Helpers/Helpers';
@@ -218,6 +218,19 @@ export default function PayTicketView(props) {
                         {x?.ticketIssued?.ticket?.ticket_name}
                       </Typography>
                     </Grid>
+                    {x?.ticketIssued?.public_note && <>
+                      <Grid item xs={12}><Divider width="100%" /></Grid>
+                      <Grid item xs={12} sm={12} md={6} lg={6}>
+                        <Typography variant="subtitle2">
+                          {props.literals.public_note}:
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={12} sm={12} md={6} lg={6} align='end'>
+                        <Typography variant="subtitle2">
+                          {x?.ticketIssued?.public_note}
+                        </Typography>
+                      </Grid>
+                    </>}
                     {x?.ticketIssued?.parking !== undefined &&
                       <>
                         <Grid item xs={12}><Divider width="100%" /></Grid>
@@ -239,7 +252,7 @@ export default function PayTicketView(props) {
                         </Grid>
                         <Grid item xs={12} sm={12} md={6} lg={6} align='end'>
                           <Typography variant="subtitle2">
-                            {moment(x?.ticketIssued?.parking?.from).format('MMM Do YY, hh:mm a')} - {moment(x?.ticketIssued?.parking?.to).format('MMM Do YY, hh:mm a')}
+                            {moment(x?.ticketIssued?.parking?.from).tz(x?.ticketIssued?.city.time_zone ? x?.ticketIssued?.city.time_zone : 'America/New_York' ).format('MMM Do YY, hh:mm a')} - {moment(x?.ticketIssued?.parking?.to).tz(x?.ticketIssued?.city.time_zone ? x?.ticketIssued?.city.time_zone : 'America/New_York' ).format('MMM Do YY, hh:mm a')}
                           </Typography>
                         </Grid>
                       </>
@@ -252,7 +265,7 @@ export default function PayTicketView(props) {
                     </Grid>
                     <Grid item xs={6} align='end'>
                       <Typography variant="subtitle2">
-                        {moment(x?.ticketIssued?.issued_at).format('MMM Do YY, hh:mm a')}
+                        {moment(x?.ticketIssued?.issued_at).tz(x?.ticketIssued?.city.time_zone ? x?.ticketIssued?.city.time_zone : 'America/New_York' ).format('MMM Do YY, hh:mm a')}
                       </Typography>
                     </Grid>
                     <Grid item xs={12}><Divider width="100%" /></Grid>

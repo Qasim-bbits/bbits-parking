@@ -57,7 +57,7 @@ export default function MainView(props) {
   const btnStyle={width: smDown ? '60%' : '36%', borderRadius: 20}
 
   return (
-    <Layout org={props.org} literals = {props.literals}>
+    <Layout org={props.org} literals = {props.literals} getLiterals = {props.getLiterals}>
       <div style={{position: 'relative'}}>
         {props.selectedZone !== null && <div style={{position: 'absolute', zIndex: 1, top: '43%', left: '49%'}}>
           <img src={Marker} width="30px"/>

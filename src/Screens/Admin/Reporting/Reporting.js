@@ -461,6 +461,7 @@ export default function Reporting(props) {
         total = {total}
         literals={props.literals}
         selectedGroup={selectedGroup}
+        org={props.org}
 
         setOpenDrawer={()=>{setOpenDrawer(!openDrawer)}}
         exportPDF={()=>exportPDF()}

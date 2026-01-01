@@ -44,14 +44,14 @@ function ProfileView(props) {
                   value={props.inputField['mobile_no']}
                   onChange={props.handleChange}
               >
-                {() => <TextField
+                <TextField
                   label={props.literals.phone_no}
                   color="primary"
                   name="mobile_no"
                   size="small"
                   InputLabelProps={{ shrink: true }}
                   fullWidth
-                />}
+                />
               </InputMask>
             </Grid>
             <Grid item xs={12} sm={12} md={6} lg={6} alignSelf={"center"}>

@@ -26,7 +26,7 @@ export default function OrganizationsView(props) {
                         return (
                             <>
                                 <ListItem disablePadding>
-                                    <ListItemButton sx={{color: props.inputField.org == x._id && theme.palette.primary.main}} onClick={()=>props.onChange({org: x._id, org_name: x.org_name})}>
+                                    <ListItemButton sx={{color: props.inputField.org == x._id && theme.palette.primary.main}} onClick={()=>props.onChange({org: x._id, org_name: x.org_name, ticket_format: x.ticket_format, enable_custom_public_notes: x.enable_custom_public_notes, enable_custom_private_notes: x.enable_custom_private_notes})}>
                                         {props.inputField.org == x._id && <ListItemIcon>
                                             <Done color="primary"/>
                                         </ListItemIcon>}

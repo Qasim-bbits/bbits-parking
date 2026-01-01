@@ -57,7 +57,7 @@ export default function Visitors(props) {
   const onSelectedRateType = async (e, zone)=>{
     setSelectedRateType(e);
     setShowSpinner(true);
-    const res = await mainService.getRateSteps({id: e._id, rate_type: e.rate_type, org: props.org._id, time_zone: zone.city_id?.time_zone})
+    const res = await mainService.getRateSteps({id: e._id, rate_type: e.rate_type, org: props.org._id, time_zone: zone.city_id?.time_zone, zone: zone._id })
     setShowSpinner(false);
     let arr = [...res.data];
     let result = [];

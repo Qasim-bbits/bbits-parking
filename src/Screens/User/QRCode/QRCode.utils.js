@@ -44,6 +44,10 @@ export default function QRCodeUtils(props) {
   const [showPayment, setShowPayment] = useState(false);
   const [isExitParking, setIsExitParking] = useState(false);
   const [isSessionEnd, setIsSessionEnd] = useState(false);
+  const [kickOutParking, setKickOutParking] = useState([]);
+  const [dialogTitle, setDialogTitle] = useState('');
+  const [dialogContent, setDialogContent] = useState('');
+  const [openDialog, setOpenDialog] = useState(false);
 
   useEffect(() => {
     getZonebyId();
@@ -79,11 +83,11 @@ export default function QRCodeUtils(props) {
     }
   }
 
-  const onTarifSelect = async (e) => {
+  const onTarifSelect = async (e, plate) => {
     setSteps(0);
     setShowSpinner(true);
     setSelectedTariff(e);
-    const res = await mainService.getRateSteps({ id: e._id, plate: selectedPlate, rate_type: e.rate_type, qr_code: e.qr_code, org: zones[0].org._id, time_zone: zones[0].city_id.time_zone })
+    const res = await mainService.getRateSteps({ id: e._id, plate: plate, rate_type: e.rate_type, qr_code: e.qr_code, org: zones[0].org._id, time_zone: zones[0].city_id.time_zone, zone: zones[0]._id })
     setRateCycle(res.data);
     if (res.data.length > 0) {
       var data = res.data.map(function (item) {
@@ -110,11 +114,12 @@ export default function QRCodeUtils(props) {
     if (res.data.success != false) {
       setTarif(res.data);
       if(res.data.length == 1)
-        onTarifSelect(res.data[0]);
+        onTarifSelect(res.data[0], e);
       else
         setDrawerComponent(0);
     } else {
       if(res.data.msg == 'plate_not_register_as_employee'){
+        setInputPlateField({});
         setDrawerComponent(6);
       }else{
         setAlertMessage(res.data.msg);
@@ -186,7 +191,8 @@ export default function QRCodeUtils(props) {
       onPlateSelect(inputPlateField.plate.toUpperCase());
   }
 
-  const handleCustomRate = (customRate) => {
+  const handleCustomRate = async (customRate) => {
+    console.log('cistm')
     const customRateInMin = customRate * 24 * 60;
     const customRateAmount = rateCycle[0].rate / rateCycle[0].time * customRateInMin;
     const timeDesc = moment(rateCycle[0].current_time, 'MMMM Do YYYY, hh:mm a').add(customRateInMin, 'minutes').format('MMMM Do YYYY, hh:mm a');
@@ -205,14 +211,78 @@ export default function QRCodeUtils(props) {
     handleChange(allSteps.length - 1);
     setOpenCustomRateModal(false);
     setShowPayment(false);
+    setShowSpinner(true);
+    purchaseKickOutParking(allSteps[allSteps.length - 1]);
+  }
+
+  const purchaseKickOutParking = async (cycle) => {
+    if(cycle.rate == 0){
+      let body = {
+        paymentMethod: '',
+        amount: (cycle.total/100).toFixed(2),
+        plate: selectedPlate,
+        zone: zones[0]._id,
+        city: zones[0].city_id,
+        from: cycle.current_time,
+        to: cycle.time_desc,
+        rate: selectedTariff._id,
+        service_fee: cycle.service_fee,
+        org: props.org._id,
+        parking: cycle.parking
+      }
+      const res = await parkingService.buyParking(body);
+      setShowSpinner(false);
+      if(!res.data.message){
+        setDrawerComponent(4);
+        setParking(res.data)
+        sessionStorage.removeItem("showParking")
+        // window.location.reload();
+      }else if(res.data.message == 'kickOutZone'){
+        setDialogTitle('Replace existing plate')
+        setDialogContent(`Parking is already active for plate ${res.data.parkings[0].plate} in this zone. Would you like to replace it
+        with your current vehicle?`)
+        setKickOutParking(res.data.parkings);
+        setOpenDialog(true);
+      }else{
+        setAlertMessage(res.data.message);
+        setSeverity('error');
+        setShowAlert(true);
+      }
+    }else{
+      if(props.org.payment_gateway == 'moneris'){
+        setDrawerComponent(5);
+        return;
+      }
+      setShowPayment(true);
+    }
+    setShowSpinner(false);
+  }
+
+  const kickOutPlate = async () =>{ 
+    let body = {
+      zone: kickOutParking[0].zone,
+      city: kickOutParking[0].city,
+      org: kickOutParking[0].org,
+      parking: kickOutParking[0]._id,
+      kicked_out_plate: kickOutParking[0].plate,
+      kicked_out_By: selectedPlate
+    }
+    setShowSpinner(true);
+    await parkingService.kickOutPlate(body);
+    // setAlertMessage('Previous vehicle removed. You can now start your parking session. Click below.');
+    // setSeverity('success');
+    // setShowAlert(true);
+    purchaseKickOutParking(rateCycle[steps]);
+    setShowSpinner(false);
+    setOpenDialog(false);
   }
 
   const showPlateConfirmation = (e) => {
     setIsExitParking(e)
     let plate = JSON.parse(localStorage.getItem('plates'));
-    if(plate)
-      onPlateEdit(plate[0], 0);
-    else
+    // if(plate)
+    //   onPlateEdit(plate[0], 0);
+    // else
       setDrawerComponent(1);
   }
 
@@ -236,6 +306,7 @@ export default function QRCodeUtils(props) {
       const res = await parkingService.buyParking(body);
       setShowSpinner(false);
       if(!res.data.message){
+        setInputPlateField({});
         setDrawerComponent(7);
         setZones([
           { ...zones[0], available_passes: zones[0].available_passes - 1}
@@ -254,6 +325,7 @@ export default function QRCodeUtils(props) {
   const endSession = async () => {
     setShowSpinner(true);
     const res = await parkingService.exitParking({plate: inputPlateField.plate.toUpperCase(), zone: zones[0]._id});
+    setInputPlateField({});
     if(res.data.status == 'success'){
       setZones([
         { ...zones[0], available_passes: zones[0].available_passes + 1}
@@ -269,7 +341,7 @@ export default function QRCodeUtils(props) {
 
   return (
     <>
-      <Layout org={props.org} literals={props.literals}>
+      <Layout org={props.org} literals={props.literals} zone={zones[0]} getLiterals = {props.getLiterals} selectedLanguage={props.selectedLanguage}>
         {zones.length && !zones[0]?.is_business_pass && <>
           {drawerComponent === 0 && <SelectTariff
             tarif={tarif}
@@ -280,7 +352,7 @@ export default function QRCodeUtils(props) {
 
             handleCheck={(e) => handleCheck(e)}
             handleChange={(e) => handleChange(e)}
-            onTarifSelect={(e) => onTarifSelect(e)}
+            onTarifSelect={(e) => onTarifSelect(e, selectedPlate)}
             back={() => setDrawerComponent(2)}
           />}
           {drawerComponent === 1 && <AddPlateForm
@@ -302,6 +374,7 @@ export default function QRCodeUtils(props) {
             addPlateDrawer={() => { setDrawerComponent(1) }}
           />}
           {drawerComponent === 3 && rateCycle.length > 0 && <ParkingRateForm
+            selectedLanguage={props.selectedLanguage}
             steps={steps}
             rateCycle={rateCycle}
             plate={selectedPlate}
@@ -314,6 +387,10 @@ export default function QRCodeUtils(props) {
             literals={props.literals}
             customRateModal={openCustomRateModal}
             showPayment={showPayment}
+            kickOutParking={kickOutParking}
+            dialogTitle={dialogTitle}
+            dialogContent={dialogContent}
+            openDialog={openDialog}
 
             setShowPayment={(e) => setShowPayment(e)}
             closeCustomRateModal={() => setOpenCustomRateModal(false)}
@@ -324,6 +401,11 @@ export default function QRCodeUtils(props) {
             showMoneris={() => setDrawerComponent(5)}
             handleChange={(e) => handleChange(e)}
             setParking={(e) => setParking(e)}
+            setDialogTitle={(e) => setDialogTitle(e)}
+            setDialogContent={(e) => setDialogContent(e)}
+            setKickOutParking={(e) => setKickOutParking(e)}
+            setOpenDialog={(e) => setOpenDialog(e)}
+            kickOutPlate={() => kickOutPlate()}
           />}
           {drawerComponent === 5 && <Moneris
             steps={steps}
@@ -350,7 +432,7 @@ export default function QRCodeUtils(props) {
             selectedTariff={selectedTariff}
             parking={parking}
             literals={props.literals}
-
+            selectedLanguage={props.selectedLanguage}
           />}
         </>}
         {zones[0]?.is_business_pass && <>
@@ -382,16 +464,16 @@ export default function QRCodeUtils(props) {
             literals={props.literals}
             zone={zones[0]}
 
-            continue={() => setDrawerComponent(2)}
-            back={() => setDrawerComponent(2)}
+            continue={() => window.location.reload()}
+            back={() => window.location.reload()}
           />}
           {drawerComponent === 8 && <SessionEnd
             literals={props.literals}
             zone={zones[0]}
             isSessionEnd={isSessionEnd}
 
-            continue={() => setDrawerComponent(2)}
-            back={() => isSessionEnd ? setDrawerComponent(2) : setDrawerComponent(1)}
+            continue={() => window.location.reload()}
+            back={() => isSessionEnd ? window.location.reload() : setDrawerComponent(1)}
           />}
         </>}
         <SnackAlert

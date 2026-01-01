@@ -98,13 +98,13 @@ function SignUpView(props) {
                 value={props.inputField['mobile_no']}
                 onChange={props.handleChange}
             >
-              {() => <TextField
+              <TextField
                 label={props.literals.phone_no}
                 color="primary"
                 variant="standard"
                 name="mobile_no"
                 fullWidth
-              />}
+              />
             </InputMask>
             <TextField
               id="standard-error-helper-text"
