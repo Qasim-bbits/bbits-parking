@@ -23,6 +23,8 @@ export default function IssueTicket(props) {
     }, [])
 
     const configurePrinter = (displayErrorMsg) => {
+        const ticketZPL = helpers.stringFormat(inputField.ticket_format,ticketIssued);
+        console.log(ticketZPL)
         if (window.BrowserPrint) {
             setSpinner(true);
             window.BrowserPrint.getDefaultDevice("printer", function (device) {
@@ -69,6 +71,7 @@ export default function IssueTicket(props) {
 
     const printTicket = async () => {
         const ticketZPL = helpers.stringFormat(inputField.ticket_format,ticketIssued);
+        console.log(ticketZPL)
         if (printer) {
             setSpinner(true);
             const zpl = "^XA^FO50,50^ADN,36,20^FDHello Zebra!^FS^XZ";

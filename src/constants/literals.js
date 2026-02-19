@@ -364,6 +364,8 @@ export const literals = {
     "no_image_found": "Image not found",
     "enabled_from_utc": "Enabled From UTC",
     "enabled_to_utc": "Enabled To UTC",
+    "parking_limit_exceed": "Parking limit exceed, you cannot park in this zone",
+    "parkings_left_for_plate": "Number of Parking Passes Remaining for this license plate"
   },
   "fr": {
     "action": "Action",
@@ -730,5 +732,7 @@ export const literals = {
     "no_image_found": "Image not found",
     "enabled_from_utc": "Enabled From UTC",
     "enabled_to_utc": "Enabled To UTC",
+    "parking_limit_exceed": "Parking limit exceed, you cannot park in this zone",
+    "parkings_left_for_plate": "Nombre de laissez-passer restants pour ce numéro de plaque"
   }
 }

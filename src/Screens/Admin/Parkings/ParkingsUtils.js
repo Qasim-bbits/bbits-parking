@@ -127,7 +127,7 @@ export default function ParkingsUtils(props) {
 
   const onResetParking = async (e)=>{
     let body = {
-      zone: e.zone,
+      org: e.org,
       plate: e.plate
     }
     setSpinner(true);

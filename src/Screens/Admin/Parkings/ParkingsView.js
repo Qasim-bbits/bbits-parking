@@ -52,7 +52,7 @@ export default function ParkingsView(props) {
       minWidth: 200,
       renderCell: (params) => (
         <>
-          {params.row.zone?.enable_parking_limit &&
+          {params.row.org?.enable_parking_limit &&
             <Button 
               variant="outlined"
               color="primary"

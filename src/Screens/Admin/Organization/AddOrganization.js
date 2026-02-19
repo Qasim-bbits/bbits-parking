@@ -2,7 +2,10 @@ import React, { useState } from "react";
 import {
   Box, Grid, Typography, TextField, Button, IconButton, InputAdornment,
   FormControlLabel, Radio, RadioGroup, FormLabel, useTheme, Divider, FormControl, FormGroup, Switch,
-  Checkbox
+  Checkbox,
+  Select,
+  MenuItem,
+  InputLabel
 } from "@mui/material";
 import { AddCircleOutlined, Close, Delete, Edit, EditOff, Visibility, VisibilityOff } from "@mui/icons-material";
 import { config } from "../../../Constants";
@@ -19,7 +22,7 @@ export default function AddOrganization(props) {
 
   return (
       <Box component="form" onSubmit={props.handleSubmit} sx={{p:3}}>
-        <Grid container spacing={3} sx={{placeContent: "center"}}>
+        <Grid container spacing={3}>
           <Grid item xs={6}>
             <Typography variant="subtitle1" color="primary" className="font-bold m-2 font-gray">
               {props.btn} {props.literals.organization}
@@ -269,6 +272,76 @@ export default function AddOrganization(props) {
                 fullWidth
               />
           </Grid>
+          <Grid item xs={4}>
+            <FormGroup>
+              <FormControlLabel control={
+                <Checkbox
+                  name="enable_parking_limit"
+                  onChange={props.handleCheck}
+                  checked={props.inputField['enable_parking_limit']}
+                />} label={
+                  <Typography variant="subtitle1" color="primary" className="font-gray">
+                    {props.literals.enable_parking_limit}
+                  </Typography>
+                } />
+            </FormGroup>
+          </Grid>
+          {props.inputField.enable_parking_limit && <Grid item xs={8}>
+            <TextField
+              label={props.literals.no_of_parking_per_plate}
+              color="primary"
+              type="number"
+              name="no_of_parking_per_plate"
+              value={props.inputField["no_of_parking_per_plate"]}
+              onChange={props.handleChange}
+              size="small"
+              required
+              fullWidth
+            />
+          </Grid>}
+          {props.inputField.enable_parking_limit && <Grid item md={4} sm={12}>
+            <FormControl fullWidth>
+              <InputLabel>{props.literals.parking_limit_type}</InputLabel>
+              <Select
+                name={"parking_limit_type"}
+                value={props.inputField["parking_limit_type"]}
+                label="parking_limit_type"
+                size="small"
+                onChange={props.handleChange}
+                required
+              >
+                <MenuItem value={'yearly'}>Yearly</MenuItem>
+                <MenuItem value={'monthly'}>Monthly</MenuItem>
+                <MenuItem value={'custom'}>Custom</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>}
+          {props.inputField.enable_parking_limit && props.inputField.parking_limit_type == 'custom' && <Grid item md={4} sm={12}>
+            <TextField
+              label={props.literals.start_parking_limit_date}
+              color="primary"
+              type="date"
+              name="start_parking_limit_date"
+              value={props.inputField["start_parking_limit_date"]}
+              onChange={props.handleChange}
+              size="small"
+              InputLabelProps={{ shrink: true }}
+              required
+              fullWidth/>
+          </Grid>}
+          {props.inputField.enable_parking_limit && props.inputField.parking_limit_type == 'custom' && <Grid item md={4} sm={12}>
+            <TextField
+              label={props.literals.end_parking_limit_date}
+              color="primary"
+              type="date"
+              name="end_parking_limit_date"
+              value={props.inputField["end_parking_limit_date"]}
+              onChange={props.handleChange}
+              size="small"
+              InputLabelProps={{ shrink: true }}
+              required
+              fullWidth/>
+          </Grid>}
           <>
             <Grid item xs={12}>
               <FormLabel id="demo-radio-buttons-group-label">{props.literals.payment_gateway}</FormLabel>
