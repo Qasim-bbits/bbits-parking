@@ -16,8 +16,24 @@ export default function Cities(props) {
     const getCities = async()=>{
         setSpinner(true);
         const res = await cityServices.getCities({org_id: props.inputField.org});
-        setCities(res.data.filter(x => x.org._id == props.inputField.org));
-        setFiteredCities(res.data.filter(x => x.org._id == props.inputField.org));
+        let cities = res.data.filter(x => x.org._id == props.inputField.org);
+        setCities(cities);
+        setFiteredCities(cities);
+        const agentCities = JSON.parse(sessionStorage.getItem('userLogged')).result?.cities || [];
+        const accessibleCities = agentCities.filter((agentCity) => cities.some((orgCity) => orgCity._id === agentCity._id));
+        if(accessibleCities.length == 1){
+            let obj = {
+                org: props.inputField.org,
+                org_name: props.inputField.org_name,
+                ticket_format: props.inputField.ticket_format,
+                enable_custom_public_notes: props.inputField.enable_custom_public_notes,
+                enable_custom_private_notes: props.inputField.enable_custom_private_notes,
+                city: accessibleCities[0]._id,
+                city_name: accessibleCities[0].city_name
+            };
+            props.setInputField({...obj});
+            props.handleNext();
+        }
         setSpinner(false);
     }
 

@@ -212,6 +212,7 @@ export const endpoints = {
     getTicketsIssuedByAgent : config.url.API_URL + 'getTicketsIssuedByAgent',
     addPrintedTicket : config.url.API_URL + 'addPrintedTicket',
     IssuedTicket : config.url.API_URL + 'IssuedTicket',
+    searchTicketByPlate : config.url.API_URL + 'searchTicketByPlate'
   },
 
   ///---Permissions service--///

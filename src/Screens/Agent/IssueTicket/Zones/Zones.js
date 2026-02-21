@@ -18,6 +18,15 @@ export default function Zones(props) {
         const res = await mainService.getZonesById({id: props.inputField.city});
         setZones(res.data);
         setFiteredZones(res.data);
+        if(res.data.length == 1){
+            let obj = {
+                ...props.inputField,
+                zone: res.data[0]._id,
+                zone_name: res.data[0].zone_name
+            };
+            props.setInputField(obj);
+            props.handleNext();
+        }
         setSpinner(false);
     }
 

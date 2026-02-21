@@ -125,6 +125,10 @@ export default function IssueTicket(props) {
             setActiveStep((prevActiveStep) => prevActiveStep - 1);
     }
 
+    const handleNext = () => {
+        setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    }
+
     return (
         <AgentHeader org={props.org}>
             <IssueTicketView
@@ -138,7 +142,7 @@ export default function IssueTicket(props) {
 
                 onChange={(e)=> setInputField({...inputField, [e.target.name] : e.target.value.toUpperCase()})}
                 handleBack={()=>handleBack()}
-                handleNext={()=>{setActiveStep((prevActiveStep) => prevActiveStep + 1)}}
+                handleNext={()=>handleNext()}
                 onTicketIssued={()=>onTicketIssued()}
                 printTicket={()=>printTicket()}
                 setTicketIssued={(e)=>setTicketIssued(e)}

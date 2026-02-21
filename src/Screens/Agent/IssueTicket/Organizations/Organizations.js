@@ -8,9 +8,22 @@ export default function Organizations(props) {
 
     useEffect(() => {
         let userDetail = sessionStorage.getItem('userLogged');
-        if(userDetail)
-            setOrganizations(JSON.parse(userDetail).result?.organizations)
-            setFiteredOrganizations(JSON.parse(userDetail).result?.organizations)
+        if(userDetail){
+            let orgs = JSON.parse(userDetail).result?.organizations;
+            setOrganizations(orgs)
+            setFiteredOrganizations(orgs)
+            if(orgs.length == 1){
+            let obj = {
+                    org: orgs[0]._id,
+                    org_name: orgs[0].org_name,
+                    ticket_format: orgs[0].ticket_format,
+                    enable_custom_public_notes: orgs[0].enable_custom_public_notes,
+                    enable_custom_private_notes: orgs[0].enable_custom_private_notes
+                };
+                props.setInputField({...obj});
+                props.handleNext();
+            }
+        }
     }, [])
 
     const handleSearch = (value) => {

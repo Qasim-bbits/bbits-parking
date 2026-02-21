@@ -11,6 +11,7 @@ import Image from './Image/Image';
 import { ArrowBack, LocalPrintshopOutlined } from '@mui/icons-material';
 import PublicNotes from './PublicNotes/PublicNotes';
 import PrivateNotes from './PrivateNotes/PrivateNotes';
+import TicketBreadcrumb from './TicketBreadcrumb';
 
 export default function IssueTicketView(props) {
     const steps = [props.literals.organization, props.literals.city, props.literals.zone, props.literals.plate, props.literals.tickets, props.literals.public_note, props.literals.private_note, props.literals.images, props.literals.summary];
@@ -87,9 +88,13 @@ export default function IssueTicketView(props) {
                                 <LocalPrintshopOutlined/> {props.literals.configure}
                             </Button>}
                         </Grid>
+                        <Grid item xs={12} sx={{mt:2, px: 2}}>
+                            <TicketBreadcrumb inputField={props.inputField}/>
+                        </Grid>
                         <Grid item xs={12} sx={{mt:2}}>
                             <Divider/>
                         </Grid>
+
                     </Grid>
                     <Grid container spacing={2} sx={{ flex: 1, overflow: 'auto' }}>
                         <Grid item xs={12}>
@@ -99,6 +104,7 @@ export default function IssueTicketView(props) {
                                     literals={props.literals}
                                     inputField={props.inputField}
                                     setInputField={props.setInputField}
+                                    handleNext={()=>props.handleNext()}
                                 />
                             }
                             {props.activeStep === 1 && 
@@ -107,6 +113,7 @@ export default function IssueTicketView(props) {
                                     literals={props.literals}
                                     inputField={props.inputField}
                                     setInputField={props.setInputField}
+                                    handleNext={()=>props.handleNext()}
                                 />
                             }
                             {props.activeStep === 2 && 
@@ -115,6 +122,7 @@ export default function IssueTicketView(props) {
                                     literals={props.literals}
                                     inputField={props.inputField}
                                     setInputField={props.setInputField}
+                                    handleNext={()=>props.handleNext()}
                                 />
                             }
                             {props.activeStep === 3 && 

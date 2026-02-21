@@ -7,11 +7,13 @@ import ticketServices from '../../../../services/ticket-service';
 
 export default function Tickets(props) {
     const [tickets, setTickets] = useState([]);
+    const [issuedTickets, setIssuedTickets] = useState([]);
     const [fiteredTickets, setFiteredTickets] = useState([]);
     const [spinner, setSpinner] = useState(false);
 
     useEffect(() => {
         getTickets();
+        searchTicketByPlate();
     }, [])
 
     const getTickets = async()=>{
@@ -19,6 +21,13 @@ export default function Tickets(props) {
         const res = await ticketServices.getTicketsByOrg({org_id: props.inputField.org});
         setTickets(res.data);
         setFiteredTickets(res.data);
+        setSpinner(false);
+    }
+
+    const searchTicketByPlate = async()=>{
+        setSpinner(true);
+        const res = await ticketServices.searchTicketByPlate({plate: props.inputField.plate, org: props.inputField.org});
+        setIssuedTickets(res.data);
         setSpinner(false);
     }
 
@@ -36,6 +45,7 @@ export default function Tickets(props) {
                 literals={props.literals}
                 tickets={fiteredTickets}
                 inputField={props.inputField}
+                issuedTickets={issuedTickets}
 
                 handleSearch={(e) => handleSearch(e.target.value)}
                 onChange={(e)=> props.setInputField({...props.inputField, ...e})}

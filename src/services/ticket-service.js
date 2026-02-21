@@ -72,6 +72,11 @@ export class TicketServices {
     const res = AxiosServices.post(endpoints.ticket.addPrintedTicket, body);
     return res;
   }
+
+  searchTicketByPlate(body){
+    const res = AxiosServices.post(endpoints.ticket.searchTicketByPlate, body);
+    return res;
+  }
 }
 const ticketServices = new TicketServices();
 export default ticketServices;
