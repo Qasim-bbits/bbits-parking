@@ -81,22 +81,22 @@ export default function IssueTicket(props) {
             }
             const res = await ticketServices.addPrintedTicket(body);
             setSpinner(false);
-            setIsTicketIssued(false);
+            // setIsTicketIssued(false);
             setSeverity('success');
             setShowAlert(true);
             setAlertMessage('Ticket Print successfully');
-            setActiveStep(3);
-            setInputField({
-                city: inputField.city,
-                city_name: inputField.city_name,
-                zone: inputField.zone,
-                zone_name: inputField.zone_name,
-                org: inputField.org,
-                org_name: inputField.org_name,
-                ticket_format: inputField.ticket_format,
-                enable_custom_public_notes: inputField.enable_custom_public_notes,
-                enable_custom_private_notes: inputField.enable_custom_private_notes
-            });
+            // setActiveStep(3);
+            // setInputField({
+            //     city: inputField.city,
+            //     city_name: inputField.city_name,
+            //     zone: inputField.zone,
+            //     zone_name: inputField.zone_name,
+            //     org: inputField.org,
+            //     org_name: inputField.org_name,
+            //     ticket_format: inputField.ticket_format,
+            //     enable_custom_public_notes: inputField.enable_custom_public_notes,
+            //     enable_custom_private_notes: inputField.enable_custom_private_notes
+            // });
           }, function (error) {
             setSpinner(false);
             setSeverity('error');
