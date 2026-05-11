@@ -91,8 +91,19 @@ export default function HistoryView(props) {
                                             <Grid item xs={12}>
                                                 <Typography variant="caption">{x.zone.zone_name}, {x.city.city_name}</Typography>
                                             </Grid>
-                                            <Grid item xs={12}>
+                                            <Grid item xs={6}>
                                                 <Typography variant="caption">{x.ticket.ticket_name}</Typography>
+                                            </Grid>
+                                            <Grid item xs={6} textAlign={'end'} alignSelf={'center'}>
+                                                <Button
+                                                    onClick={()=>props.printTicket(x)}
+                                                    type="button"
+                                                    variant="outlined"
+                                                    color="primary"
+                                                    size="small"
+                                                >
+                                                    {props.literals.print}
+                                                </Button>
                                             </Grid>
                                         </Grid>
                                     </Paper>
