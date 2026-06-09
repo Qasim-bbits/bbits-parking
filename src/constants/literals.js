@@ -364,6 +364,7 @@ export const literals = {
     "no_image_found": "Image not found",
     "enabled_from_utc": "Enabled From UTC",
     "enabled_to_utc": "Enabled To UTC",
+    "redirect_to": "Redirect To",
   },
   "fr": {
     "action": "Action",
@@ -730,5 +731,6 @@ export const literals = {
     "no_image_found": "Image not found",
     "enabled_from_utc": "Enabled From UTC",
     "enabled_to_utc": "Enabled To UTC",
+    "redirect_to": "Redirect To",
   }
 }

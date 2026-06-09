@@ -90,6 +90,19 @@ export default function AddZone(props) {
             fullWidth
           />
         </Grid>
+        <Grid item xs={12}>
+          <TextField
+            id="standard-error-helper-text"
+            label={props.literals.redirect_to}
+            color="primary"
+            type="text"
+            name="redirect_to"
+            value={props.inputField["redirect_to"]}
+            onChange={props.handleChange}
+            size="small"
+            fullWidth
+          />
+        </Grid>
         <Grid item xs={4}>
           <FormGroup>
             <FormControlLabel control={

@@ -58,6 +58,9 @@ export default function QRCodeUtils(props) {
     if (props.apiCalled) {
       setShowSpinner(true);
       const res = await mainService.getZonebyId({ id: id, org_id: props.org._id });
+      if(res.data[0]?.redirect_to){
+        window.location.href = res.data[0].redirect_to;
+      }
       setZones(res.data)
       if (res.data.length == 0) {
         navigate(router.login)
