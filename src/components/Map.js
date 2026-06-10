@@ -1,8 +1,9 @@
 import React, { useState, useRef, useCallback } from "react";
-import { LoadScript, GoogleMap, Polygon, Marker, DrawingManager, Autocomplete } from "@react-google-maps/api";
+import { LoadScript, GoogleMap, Polygon, Marker, Autocomplete } from "@react-google-maps/api";
 import Spinner from "../shared/Spinner";
+import { ClearOutlined, DoneOutlined, RectangleOutlined } from "@mui/icons-material";
 
-const libraries = ["drawing", "places"];
+const libraries = ["places"];
 const polygonOptions = {
   fillColor: "#fff",
   fillOpacity: 0.5,
@@ -20,6 +21,9 @@ export default function Map(props){
   // Define refs for Polygon instance and listeners
   const polygonRef = useRef(null);
   const listenersRef = useRef([]);
+
+  const [isDrawing, setIsDrawing] = useState(false);
+  const [drawingPath, setDrawingPath] = useState([]);
 
   const onPolygonComplete = (polygon, destroy = false) => {
     let coords = getPaths(polygon);
@@ -79,8 +83,35 @@ export default function Map(props){
 
   const [markers , setMarkers] = useState([]);
   const mapClick= (e)=>{
-    setMarkers(markers => [...markers, {lat: e.latLng.lat(), lng: e.latLng.lng()}])
+    // setMarkers(markers => [...markers, {lat: e.latLng.lat(), lng: e.latLng.lng()}])
+    const point = {
+      lat: e.latLng.lat(),
+      lng: e.latLng.lng()
+    };
+
+    if (isDrawing) {
+      setDrawingPath(prev => [...prev, point]);
+    } else {
+      setMarkers(prev => [...prev, point]);
+    }
   }
+
+  const finishPolygon = () => {
+    if (drawingPath.length < 3) {
+      alert("Polygon requires at least 3 points");
+      return;
+    }
+
+    props.setPolygon(drawingPath);
+
+    setDrawingPath([]);
+    setIsDrawing(false);
+  };
+
+  const cancelDrawing = () => {
+    setDrawingPath([]);
+    setIsDrawing(false);
+  };
 
   return (
     <div className="App" style={{height: props.height}}>
@@ -99,10 +130,46 @@ export default function Map(props){
           version="weekly"
           on
           options={{
-            mapTypeId: "satellite"
+            mapTypeId: "satellite",
+            draggableCursor: isDrawing ? "crosshair" : "grab"
           }}
           onClick={mapClick}
         >
+          {props.editable && (
+            <div
+              style={{
+                position: "absolute",
+                top: "10px",
+                left: "50%",
+                transform: "translateX(-50%)",
+                zIndex: 999
+              }}
+            >
+              <button
+                type='button'
+                onClick={() => {
+                  setDrawingPath([]);
+                  setIsDrawing(true);
+                }}
+              >
+                <RectangleOutlined/>
+              </button>
+
+              <button
+                type='button'
+                disabled={drawingPath.length < 3}
+                onClick={finishPolygon}
+              >
+                <DoneOutlined/>
+              </button>
+
+              <button 
+                type='button'
+                onClick={cancelDrawing}>
+                <ClearOutlined/>
+              </button>
+            </div>
+          )}
           {props.editable && 
           markers.map(x => {
             return(
@@ -141,6 +208,18 @@ export default function Map(props){
               }}
             />
           </Autocomplete>}
+          {isDrawing && drawingPath.length > 0 && (
+            <Polygon
+              path={drawingPath}
+              options={{
+                strokeColor: "#808080",
+                strokeOpacity: 0.8,
+                strokeWeight: 2,
+                fillColor: "#808080",
+                fillOpacity: 0.2
+              }}
+            />
+          )}
           {props.editable && <Polygon
             editable
             path={props.polygon}
@@ -155,7 +234,7 @@ export default function Map(props){
             path={props.polygon}
             options={polygonOptions}
           />}
-          {props.editable && mapLoad && <DrawingManager
+          {/* {props.editable && mapLoad && <DrawingManager
             options={{
               drawingControl: true,
               drawingControlOptions: {
@@ -164,7 +243,7 @@ export default function Map(props){
               },
             }}
             onPolygonComplete={(polygon) => onPolygonComplete(polygon, true)}
-          />}
+          />} */}
         </GoogleMap>
       </LoadScript>
       <Spinner
