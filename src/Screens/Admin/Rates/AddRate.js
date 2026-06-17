@@ -104,6 +104,38 @@ export default function AddRate(props) {
                   />} label={props.literals?.enable_custom_rate} />
               </FormGroup>
             </Grid>
+            {props.inputAddField.enable_custom_rate && <>
+              <Grid item xs={6}>
+                <TextField
+                  id="standard-error-helper-text"
+                  label={props.literals.max_custom_rate_in_minutes}
+                  color="primary"
+                  type="number"
+                  name="max_custom_rate_in_minutes"
+                  value={props.inputAddField["max_custom_rate_in_minutes"]}
+                  onChange={props.handleAddChange}
+                  size="small"
+                  required
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <FormControl fullWidth>
+                  <InputLabel>{props.literals.custom_rate_type}</InputLabel>
+                  <Select
+                    name={"custom_rate_type"}
+                    value={props.inputAddField["custom_rate_type"]}
+                    label="custom_rate_type"
+                    size="small"
+                    onChange={props.handleAddChange}
+                    required
+                  >
+                    <MenuItem value={'year'}>Yearly</MenuItem>
+                    <MenuItem value={'month'}>Monthly</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+            </>}
             <Grid item xs={12}>
               <RadioGroup
                 row

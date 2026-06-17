@@ -57,6 +57,15 @@ function ParkingRateForm(props) {
 
   const purchaseParking= async (e)=>{
     e.preventDefault();
+    const from = moment(props.rateCycle[props.steps].current_time, "MMMM Do YYYY, hh:mm a");
+    const to = moment(props.rateCycle[props.steps].time_desc, "MMMM Do YYYY, hh:mm a");
+    const minutes = to.diff(from, 'minutes');
+    if(props.rateCycle[props.steps].minutesLeft < minutes && props.rateCycle[props.steps].minutesLeft){
+      setAlertMessage('You can park only for '+props.rateCycle[props.steps].minutesLeft+' minutes due to parking limit');
+      setSeverity('error');
+      setShowAlert(true);
+      return;
+    }
     setSpinner(true);
     if(props.rateCycle[props.steps].rate == 0){
       let body = {
@@ -266,7 +275,8 @@ function ParkingRateForm(props) {
               variant='contained'
               sx={{borderRadius: 8, width: '100%',my: 2}}
             >
-              {props.selectedTariff.enable_custom_rate ? 'Click Here to Start Parking Session — $'+(props.rateCycle[props.steps].total/100).toFixed(2) : (props.literals.confrim_to_park || '$'+(props.rateCycle[props.steps].total/100).toFixed(2))}
+              {!props.rateCycle[props.steps].total ? props.literals.confirm : `$${(props.rateCycle[props.steps].total / 100).toFixed(2)} - ${props.literals.confirm}`}
+              {/* {props.selectedTariff.enable_custom_rate ? 'Click Here to Start Parking Session — $'+(props.rateCycle[props.steps].total/100).toFixed(2) : (props.literals.confrim_to_park || '$'+(props.rateCycle[props.steps].total/100).toFixed(2))} */}
             </Button>}
         </form>
         {props.showPayment &&
@@ -303,12 +313,15 @@ function ParkingRateForm(props) {
             <Grid item xs={12}>
               <TextField
                 id="standard-error-helper-text"
-                label={props.literals.how_many_days_wants_to_park}
+                label={'How long are you registering for (in minutes)?'}
                 color="primary"
                 type="number"
                 value={customRate}
                 onChange={(e) => {
-                  if (e.target.value !== "" && !constants.regexPatterns.numberOnly.test(e.target.value) ) {
+                  if (
+                    (e.target.value !== "" && !constants.regexPatterns.numberOnly.test(e.target.value)) ||
+                    parseInt(e.target.value) > props.rateCycle[0].minutesLeft 
+                  ){
                     return;
                   }
                   setCustomRate(e.target.value);

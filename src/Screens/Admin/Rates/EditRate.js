@@ -1,6 +1,6 @@
 import * as React from "react";
 import {
-  Box, FormControlLabel, Checkbox, Grid, Typography, Drawer, Button, TextField, FormGroup
+  Box, FormControlLabel, Checkbox, Grid, Typography, Drawer, Button, TextField, FormGroup, FormControl, InputLabel, Select, MenuItem
 } from "@mui/material";
 import {Close} from "@mui/icons-material";
 import moment from "moment-timezone";
@@ -61,6 +61,51 @@ export default function EditRate(props) {
                 fullWidth
               />
             </Grid>
+            <Grid item xs={12}>
+              <FormGroup>
+                <FormControlLabel sx={{ color: "#000000de" }} control={
+                  <Checkbox
+                    checked={props.inputField["enable_custom_rate"] === true}
+                    color="primary"
+                    onChange={props.handleCheck}
+                    value={props.inputField["enable_custom_rate"]}
+                    size="small"
+                    name="enable_custom_rate"
+                  />} label={props.literals?.enable_custom_rate} />
+              </FormGroup>
+            </Grid>
+            {props.inputField.enable_custom_rate && <>
+              <Grid item xs={6}>
+                <TextField
+                  id="standard-error-helper-text"
+                  label={props.literals.max_custom_rate_in_minutes}
+                  color="primary"
+                  type="number"
+                  name="max_custom_rate_in_minutes"
+                  value={props.inputField["max_custom_rate_in_minutes"]}
+                  onChange={props.handleChange}
+                  size="small"
+                  required
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <FormControl fullWidth>
+                  <InputLabel>{props.literals.custom_rate_type}</InputLabel>
+                  <Select
+                    name={"custom_rate_type"}
+                    value={props.inputField["custom_rate_type"]}
+                    label="custom_rate_type"
+                    size="small"
+                    onChange={props.handleChange}
+                    required
+                  >
+                    <MenuItem value={'year'}>Yearly</MenuItem>
+                    <MenuItem value={'month'}>Monthly</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+            </>}
             <Grid item xs={12}>
               <TextField
                 id="standard-error-helper-text"

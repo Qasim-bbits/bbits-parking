@@ -154,12 +154,12 @@ export default function AddZone(props) {
               name="caption_en"
               value={props.inputField["caption_en"]}
               onChange={props.handleChange}
-              maxlength="100"
+              maxlength="300"
               required
               style={{ width: '100%', height: '54px', border: '1px solid rgb(196, 196, 196)', borderRadius: '5px' }}
             ></textarea>
             <Grid align="end">
-              <Typography variant="caption" sx={{ color: 'rgb(196, 196, 196)' }}>{props.inputField['caption_en']?.length || 0}/100</Typography>
+              <Typography variant="caption" sx={{ color: 'rgb(196, 196, 196)' }}>{props.inputField['caption_en']?.length || 0}/300</Typography>
             </Grid>
           </Grid>
           <Grid item xs={12}>
@@ -169,12 +169,12 @@ export default function AddZone(props) {
               name="caption_fr"
               value={props.inputField["caption_fr"]}
               onChange={props.handleChange}
-              maxlength="100"
+              maxlength="300"
               required
               style={{ width: '100%', height: '54px', border: '1px solid rgb(196, 196, 196)', borderRadius: '5px' }}
             ></textarea>
             <Grid align="end">
-              <Typography variant="caption" sx={{ color: 'rgb(196, 196, 196)' }}>{props.inputField['caption_fr']?.length || 0}/100</Typography>
+              <Typography variant="caption" sx={{ color: 'rgb(196, 196, 196)' }}>{props.inputField['caption_fr']?.length || 0}/300</Typography>
             </Grid>
           </Grid>
         </>}

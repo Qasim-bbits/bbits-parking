@@ -365,7 +365,11 @@ export const literals = {
     "enabled_from_utc": "Enabled From UTC",
     "enabled_to_utc": "Enabled To UTC",
     "parking_limit_exceed": "Parking limit exceed, you cannot park in this zone",
-    "parkings_left_for_plate": "Number of Parking Passes Remaining for this license plate"
+    "parkings_left_for_plate": "Number of Parking Passes Remaining for this license plate",
+    "max_custom_rate_in_minutes": "Maximum Custom Rate (in minutes)",
+    "custom_rate_type": "Custom Rate Type",
+    "black_listed_plates": "Black Listed Plates",
+    "manage_black_listed_plates": "Manage Black Listed Plates"
   },
   "fr": {
     "action": "Action",
@@ -733,6 +737,10 @@ export const literals = {
     "enabled_from_utc": "Enabled From UTC",
     "enabled_to_utc": "Enabled To UTC",
     "parking_limit_exceed": "Parking limit exceed, you cannot park in this zone",
-    "parkings_left_for_plate": "Nombre de laissez-passer restants pour ce numéro de plaque"
+    "parkings_left_for_plate": "Nombre de laissez-passer restants pour ce numéro de plaque",
+    "black_listed_plates": "Plaques sur liste noire",
+    "max_custom_rate_in_minutes": "Taux personnalisé maximum (en minutes)",
+    "custom_rate_type": "Type de taux personnalisé",
+    "manage_black_listed_plates": "Gérer les plaques sur liste noire"
   }
 }

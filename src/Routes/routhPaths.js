@@ -35,6 +35,7 @@ export const router = {
   profile: "/profile",
   external_parking_config: "/suite/external_parking_config",
   reporting: "/suite/reporting",
+  blackListedPlates: "/suite/black_listed_plates",
   kickOutPlates: "/suite/kick_out_plates",
   visitor: "/visitor",
   visitorPass: '/visitor_pass',

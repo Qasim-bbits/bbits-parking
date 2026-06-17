@@ -66,6 +66,11 @@ const adminRoutes = [
     value: "manage_residant_plates",
   },
   {
+    path: router.blackListedPlates,
+    icon: <DirectionsCar />,
+    value: "manage_black_listed_plates",
+  },
+  {
     path: router.businessPassPlates,
     icon: <DirectionsCar />,
     value: "manage_business_pass_plates",

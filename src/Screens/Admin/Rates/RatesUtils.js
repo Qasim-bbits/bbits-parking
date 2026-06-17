@@ -130,6 +130,8 @@ export default function RatesUtils(props) {
     let body = {};
     body['rate_name']= inputAddField["rate_name"];
     body['enable_custom_rate']= inputAddField["enable_custom_rate"];
+    body['max_custom_rate_in_minutes']= inputAddField["max_custom_rate_in_minutes"];
+    body['custom_rate_type']= inputAddField["custom_rate_type"];
     body['is_visitor_pass']= inputAddField["is_visitor_pass"];
     body['is_whitelist']= inputAddField["is_whitelist"];
     body['zone_id']= selectedZone._id;

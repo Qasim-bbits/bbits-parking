@@ -57,6 +57,7 @@ import EmailTemplate from './Screens/Admin/EmailTemplate/EmailTemplate';
 import VirtualMeterAd from './Screens/Admin/VirtualMeterAds/VirtualMeterAd';
 import PublicPrivateNotes from './Screens/Admin/PublicPrivateNotes/PublicPrivateNotes';
 import ReportPage from './Screens/Admin/Reporting/ReportPage';
+import BlackListedPlates from './Screens/Admin/BlackListedPlates/BlackListedPlates';
 
 const App = () => {
   const location = useLocation();
@@ -227,6 +228,7 @@ const App = () => {
             <Route exact path={router.residantPlate} element={<ResidantPlates literals={literals} org={org} />} />
             {/* <Route exact path={router.reporting} element={<Reporting literals={literals} org={org} />} /> */}
             <Route exact path={router.reporting} element={<ReportPage literals={literals} org={org} />} />
+            <Route exact path={router.blackListedPlates} element={<BlackListedPlates literals={literals} org={org} />} />
             <Route exact path={router.kickOutPlates} element={<KickOutPlates literals={literals} org={org} />} />
             <Route exact path={router.parkings + "/:id"} element={<ParkingsUtils org={org} literals={literals} />} />
           </Route>

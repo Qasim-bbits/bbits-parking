@@ -292,7 +292,7 @@ function Payment(props) {
               sx={{borderRadius: 8, width: '100%',my: 2}}
             >
               {props.props.selectedTariff?.enable_custom_rate ? 'Click Here to Start Parking Session — $'+(props.props.rateCycle[props.props.steps].total/100).toFixed(2)
-                : '$'+(props.props.rateCycle[props.props.steps].total/100).toFixed(2)}
+                : '$'+(props.props.rateCycle[props.props.steps].total/100).toFixed(2)+ ' - ' + props.props.literals.confirm}
             </Button>
           </Paper>
         </form>}

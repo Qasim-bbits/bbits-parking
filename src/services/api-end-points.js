@@ -138,6 +138,14 @@ export const endpoints = {
     delResidantPlate : config.url.API_URL + 'delResidantPlate',
   },
 
+     ///---Black Listed Plates service--///
+  
+   black_listed_plates : {
+    getBlackListedPlates : config.url.API_URL + 'getBlackListedPlates',
+    editBlackListedPlate : config.url.API_URL + 'editBlackListedPlate',
+    addBlackListedPlate : config.url.API_URL + 'addBlackListedPlate',
+    delBlackListedPlate : config.url.API_URL + 'delBlackListedPlate',
+  },
   ///---City and Zone service--///
 
   city : {

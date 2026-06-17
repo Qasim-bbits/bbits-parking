@@ -192,8 +192,8 @@ export default function QRCodeUtils(props) {
   }
 
   const handleCustomRate = async (customRate) => {
-    console.log('cistm')
-    const customRateInMin = customRate * 24 * 60;
+    console.log(rateCycle[0])
+    const customRateInMin = customRate;
     const customRateAmount = rateCycle[0].rate / rateCycle[0].time * customRateInMin;
     const timeDesc = moment(rateCycle[0].current_time, 'MMMM Do YYYY, hh:mm a').add(customRateInMin, 'minutes').format('MMMM Do YYYY, hh:mm a');
     let customRateCycle = {
@@ -211,8 +211,8 @@ export default function QRCodeUtils(props) {
     handleChange(allSteps.length - 1);
     setOpenCustomRateModal(false);
     setShowPayment(false);
-    setShowSpinner(true);
-    purchaseKickOutParking(allSteps[allSteps.length - 1]);
+    // setShowSpinner(true);
+    // purchaseKickOutParking(allSteps[allSteps.length - 1]);
   }
 
   const purchaseKickOutParking = async (cycle) => {
