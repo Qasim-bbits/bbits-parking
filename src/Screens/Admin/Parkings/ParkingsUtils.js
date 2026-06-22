@@ -128,7 +128,9 @@ export default function ParkingsUtils(props) {
   const onResetParking = async (e)=>{
     let body = {
       org: e.org,
-      plate: e.plate
+      plate: e.plate,
+      rate: e.rate._id,
+      enable_custom_rate: e.rate.enable_custom_rate,
     }
     setSpinner(true);
     await parkingServices.resetParkingLimit(body);

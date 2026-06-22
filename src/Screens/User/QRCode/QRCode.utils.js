@@ -199,6 +199,7 @@ export default function QRCodeUtils(props) {
     let customRateCycle = {
       time: customRateInMin,
       rate: customRateAmount,
+      minutesLeft: rateCycle[0].minutesLeft,
       time_desc: timeDesc,
       time_diff: helpers.showDiff(timeDesc),
       day: helpers.calculateDay(moment(timeDesc, 'MMMM Do YYYY, hh:mm a').format()),

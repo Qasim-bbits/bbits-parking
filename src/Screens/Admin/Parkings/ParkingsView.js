@@ -4,6 +4,7 @@ import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import CustomTable from "../../../shared/CustomTable";
 import organizationServices from "../../../services/organization-service";
 import cityServices from "../../../services/city-service";
+import helpers from "../../../Helpers/Helpers";
 import { useTheme } from "@mui/styles";
 import { constants } from "../../../constants/app.constants";
 import { Close } from "@mui/icons-material";
@@ -52,12 +53,13 @@ export default function ParkingsView(props) {
       minWidth: 200,
       renderCell: (params) => (
         <>
-          {params.row.org?.enable_parking_limit &&
+          {(params.row.org?.enable_parking_limit || params.row.rate?.enable_custom_rate) &&
             <Button 
               variant="outlined"
               color="primary"
               size="small"
               onClick={()=>props.onResetParking(params.row)}
+              disabled={!helpers.abilityByModuleKey('parking_limits')?.can_edit}
             >
               {props.literals.reset_parking_limit}
             </Button>

@@ -114,6 +114,20 @@ function ParkingRateForm(props) {
     setSpinner(false);
   }
 
+  const formatRemainingTime = (totalMinutes) => {
+    const days = Math.floor(totalMinutes / 1440);
+    const hours = Math.floor((totalMinutes % 1440) / 60);
+    const minutes = totalMinutes % 60;
+
+    const parts = [];
+
+    if (days) parts.push(`${days}d`);
+    if (hours) parts.push(`${hours}h`);
+    if (minutes || parts.length === 0) parts.push(`${minutes}m`);
+
+    return `Parking limit left: ${parts.join(" ")}`;
+  };
+
   return (
     <Box sx={{
       display: 'flex',
@@ -149,6 +163,9 @@ function ParkingRateForm(props) {
           <Typography variant='caption' align='left' sx={{color: 'primary.main'}} >
             {moment(props.rateCycle[props.steps].current_time, "MMMM Do YYYY, hh:mm a", 'en').locale(props.selectedLanguage).format("MMMM Do YYYY, hh:mm a")}
           </Typography>
+          {props.selectedTariff.enable_custom_rate && <Typography variant='caption' align='left' sx={{color: 'primary.main'}} >
+            {formatRemainingTime(props.rateCycle[0].minutesLeft)}
+          </Typography>}
         </Box>
         <Divider/>
         <Box sx={{display: 'flex', marginTop: 2, justifyContent: 'space-between', alignItems: 'flex-end', color: 'black'}}>
@@ -313,7 +330,7 @@ function ParkingRateForm(props) {
             <Grid item xs={12}>
               <TextField
                 id="standard-error-helper-text"
-                label={'How long are you registering for (in minutes)?'}
+                label={'How many minutes are you looking to park for?'}
                 color="primary"
                 type="number"
                 value={customRate}

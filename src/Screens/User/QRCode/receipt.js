@@ -25,6 +25,20 @@ function Receipt(props) {
     noSsr: false
   });
 
+  const formatRemainingTime = (totalMinutes) => {
+    const days = Math.floor(totalMinutes / 1440);
+    const hours = Math.floor((totalMinutes % 1440) / 60);
+    const minutes = totalMinutes % 60;
+
+    const parts = [];
+
+    if (days) parts.push(`${days}d`);
+    if (hours) parts.push(`${hours}h`);
+    if (minutes || parts.length === 0) parts.push(`${minutes}m`);
+
+    return `Parking time remaining for this license plate: ${parts.join(" ")}`;
+  };
+
   return (
     <div id="receipt" style={{width: '100%', textAlign: '-webkit-center'}}>
       <Box sx={{
@@ -66,6 +80,13 @@ function Receipt(props) {
           <Typography variant='subtitle1' align='left' sx={{border: '1px solid '+theme.palette.primary.main, padding: '6px 12px', borderRadius: '25px'}} >
             <Box sx={{ fontWeight: 'bold', display: 'flex', alignItems: 'center' }}>
               {props.literals.parkings_left_for_plate} {props.parking.parkings_left}
+            </Box>
+          </Typography>
+        </Box>}
+        {props.selectedTariff.enable_custom_rate && <Box sx={{display: 'flex', width: '80%', marginTop: 1, justifyContent: 'center', alignItems: 'center', color: 'black'}}>
+          <Typography variant='subtitle1' align='left' sx={{border: '1px solid '+theme.palette.primary.main, padding: '6px 12px', borderRadius: '25px'}} >
+            <Box sx={{ fontWeight: 'bold', display: 'flex', alignItems: 'center' }}>
+              {formatRemainingTime(props.rateCycle[props.steps].minutesLeft - props.rateCycle[props.steps].time)}
             </Box>
           </Typography>
         </Box>}
