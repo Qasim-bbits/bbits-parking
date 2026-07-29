@@ -44,6 +44,11 @@ export class ParkingService {
     const res = AxiosServices.post(endpoints.parking.editParkingPlate, body);
     return res;
   }
+
+  externalizeParking(body){    
+    const res = AxiosServices.post(endpoints.parking.externalizeParking, body);
+    return res;
+  }
 }
 const parkingService = new ParkingService();
 export default parkingService;

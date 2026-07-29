@@ -6,7 +6,8 @@ import organizationServices from "../../../services/organization-service";
 import cityServices from "../../../services/city-service";
 import { useTheme } from "@mui/styles";
 import { constants } from "../../../constants/app.constants";
-import { Close } from "@mui/icons-material";
+import { Close, ReplayOutlined, SpeakerNotesOutlined } from "@mui/icons-material";
+import JSONPretty from 'react-json-pretty';
 const moment = require('moment-timezone');
 
 const style = {
@@ -28,6 +29,8 @@ export default function ParkingsView(props) {
   const [organizations, setOrganizations] = useState([]);
   const [cities, setCities] = useState([]);
   const [zones, setZones] = useState([]);
+  const [externalLogModal, setExternalLogModal] = useState(false);
+  const [selectedExternalLog, setSelectedExternalLog] = useState(null);
 
   const columns = [
     { field: 'parking_id', headerName: 'Parking ID', type: 'number', minWidth: 150, filterable: true },
@@ -46,6 +49,65 @@ export default function ParkingsView(props) {
     { field: 'transaction_date', headerName: 'Transaction Date', type: 'date', valueGetter: (params) => params.row.transaction_date ? moment(params.row.transaction_date).tz(params.row?.city?.time_zone ? params.row?.city?.time_zone : 'America/New_York' ).format('ll hh:mm a') : '--', minWidth: 200, filterable: true},
     { field: 'from', headerName: 'Start Date/Time', type: 'date', valueGetter: (params) => moment(params.row.from).tz(params.row?.city?.time_zone ? params.row?.city?.time_zone : 'America/New_York' ).format('ll hh:mm a'), minWidth: 200, filterable: true},
     { field: 'to', headerName: 'End Date/Time', type: 'date', valueGetter: (params) => moment(params.row.to).tz(params.row?.city?.time_zone ? params.row?.city?.time_zone : 'America/New_York' ).format('ll hh:mm a'), minWidth: 200, filterable: true},
+    {
+      field: 'is_externalized',
+      headerName: 'Is Externalized',
+      minWidth: 200,
+      renderCell: (params) => (
+        <>
+          <Button
+            type="button"
+            sx={{
+              color: params?.row.externalize_status == 'success' ? 'green' : params?.row.externalize_status == 'failed' ? '#af0000' : 'blue',
+              background: params?.row.externalize_status == 'success' ? '#00800054' : params?.row.externalize_status == 'failed' ? '#af00004f' : '#0000ff57', px: '5px', py: '2px', minWidth: 0, m: 1, fontSize: '10px'
+            }}
+          >
+            {params?.row.externalize_status}
+          </Button>
+          {params?.row.externalize_status !== 'success' && <Button
+            type="button"
+            variant="outlined"
+            color="primary"
+            size="small"
+            onClick={() => props.externalizeParking(params?.row)}
+          >
+            <ReplayOutlined />
+          </Button>}
+          {/* <Button
+            type="button"
+            variant="outlined"
+            color="primary"
+            size="small"
+            onClick={() => props.externalizeParking(params?.row)}
+          >
+            <ReplayOutlined/>
+          </Button> */}
+        </>
+      )
+    },
+    {
+      field: 'external_request',
+      headerName: 'External Request',
+      minWidth: 200,
+      renderCell: (params) => (
+        <>
+          <Button
+            type="button"
+            onClick={() => {
+              setExternalLogModal(true);
+              setSelectedExternalLog(
+                !params?.row?.external_request ? 'external_not_found' :
+                  params?.row?.external_request == 'external_not_configured' ?
+                    'external_not_configured' :
+                    parseEscapedJsonString(params?.row?.external_request)
+              )
+            }}
+          >
+            <SpeakerNotesOutlined />
+          </Button>
+        </>
+      )
+    },
     {
       field: 'actions', 
       headerName: props.literals.action,
@@ -97,6 +159,15 @@ export default function ParkingsView(props) {
     },
   ]
   
+  const parseEscapedJsonString = (escapedString) => {
+    const outer = JSON.parse(escapedString);
+    const cleanedPayloadStr = outer.payload.replace(/^jsonIn=/, "");
+    const innerPayload = JSON.parse(cleanedPayloadStr);
+    return {
+      payload: innerPayload,
+      response: outer.response
+    };
+  }
     useEffect(() => {
       getOrganizations();
       getCities();
@@ -187,6 +258,28 @@ export default function ParkingsView(props) {
               >
                 {props.literals.submit}
               </Button>
+            </Grid>
+          </Grid>
+        </Box>
+      </Modal>
+      <Modal
+        open={externalLogModal}
+        onClose={() => setExternalLogModal(false)}
+      >
+        <Box component="form" sx={style}>
+          <Grid container spacing={3} sx={{ placeContent: "center" }}>
+            <Grid item xs={6}>
+              <Typography variant="subtitle1" color="primary" className="font-bold m-2 font-gray">
+                External Request
+              </Typography>
+            </Grid>
+            <Grid item xs={6} align='right'>
+              <IconButton color="primary" component="label" onClick={() => setExternalLogModal(false)}>
+                <Close />
+              </IconButton>
+            </Grid>
+            <Grid item xs={12}>
+              <JSONPretty data={selectedExternalLog}></JSONPretty>
             </Grid>
           </Grid>
         </Box>

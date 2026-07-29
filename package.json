@@ -40,6 +40,7 @@
     "react-floating-whatsapp": "^5.0.8",
     "react-image-lightbox": "^5.1.4",
     "react-input-mask": "^3.0.0-alpha.2",
+    "react-json-pretty": "^2.2.0",
     "react-multi-carousel": "^2.8.0",
     "react-quill": "^2.0.0",
     "react-router-dom": "^6.2.1",

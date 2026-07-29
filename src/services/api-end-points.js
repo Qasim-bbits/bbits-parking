@@ -71,6 +71,7 @@ export const endpoints = {
     kickOutPlate : config.url.API_URL + 'kickOutPlate',
     exitParking : config.url.API_URL + 'exitParking',
     editParkingPlate : config.url.API_URL + 'editParkingPlate',
+    externalizeParking : config.url.API_URL + 'externalizeParking',
   },
 
   ///---User service--///

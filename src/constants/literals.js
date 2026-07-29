@@ -365,6 +365,9 @@ export const literals = {
     "enabled_from_utc": "Enabled From UTC",
     "enabled_to_utc": "Enabled To UTC",
     "redirect_to": "Redirect To",
+    "zone_not_configured": "Zone Not Configured",
+    "binkay_throw_error": "Error from Blinkay, please contact support",
+    "axios_throw_error": "Error from Axios, please contact support",
   },
   "fr": {
     "action": "Action",
@@ -732,5 +735,8 @@ export const literals = {
     "enabled_from_utc": "Enabled From UTC",
     "enabled_to_utc": "Enabled To UTC",
     "redirect_to": "Redirect To",
+    "zone_not_configured": "Zone Not Configured",
+    "binkay_throw_error": "Error from Blinkay, please contact support",
+    "axios_throw_error": "Error from Axios, please contact support"
   }
 }

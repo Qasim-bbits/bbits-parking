@@ -205,6 +205,41 @@ export default function ParkingsUtils(props) {
       }
   }
 
+  const externalizeParking = async (e) => {
+    setSpinner(true);
+    const res = await parkingService.externalizeParking({id: e._id});
+    if(res.data.status == 'error'){
+      setMsg(props.literals[res.data.message]);
+      setSeverity('error');
+      setAlert(true);
+      setParking({
+        data: parking.data.map(x=>{
+            if(x._id == e._id){
+              x.external_request = res.data.external_request;
+            }
+            return x;
+          }),
+        pagination: parking.pagination
+      })
+    }else{
+      setMsg("Parking Externalize Successfully");
+      setSeverity('success');
+      setAlert(true);
+      setParking({
+        data: parking.data.map(x=>{
+            if(x._id == e._id){
+              x.is_externalized = true;
+              x.externalize_status = 'success';
+              x.external_request = res.data.external_request;
+            }
+            return x;
+          }),
+        pagination: parking.pagination
+      })
+    }
+    setSpinner(false);
+  }
+
   return (
     <>
       <ParkingsView
@@ -233,6 +268,7 @@ export default function ParkingsUtils(props) {
         handleChange={(e)=>handleChange(e)}
         handleEditPlate={(e)=>handleEditPlate(e)}
         setSpinner={(e) => setSpinner(e)}
+        externalizeParking={(e)=>externalizeParking(e)}
       />
       <SnackAlert
         msg = {msg}
