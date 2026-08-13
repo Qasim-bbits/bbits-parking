@@ -368,6 +368,18 @@ export const literals = {
     "zone_not_configured": "Zone Not Configured",
     "binkay_throw_error": "Error from Blinkay, please contact support",
     "axios_throw_error": "Error from Axios, please contact support",
+    "parking_registration_ui": "Parking Registration UI",
+    "full_name": "Full Name",
+    "license_plate": "License Plate",
+    "register_vehicle": "Register Vehicle",
+    "registration_disclaimer": "Please complete the information below to register your parking stay. Park only in your reserved stall. Your contact information may be used if your vehicle is parked in the wrong stall before ticketing or towing. You will receive an email confirmation of your parking stay.",
+    "privacy_notice": "Privacy Notice",
+    "privacy_policy_registration": "ParkIT collects this information on behalf of Skyline Peak to administer its guest parking program, including registration, parking authorization, guest communication, support and enforcement. Information will only be used or disclosed as reasonably necessary for these purposes.",
+    "privacy_questions": "Privacy questions:",
+    "consent_confirmation": "By submitting this registration, you confirm the information provided is accurate and acknowledge the collection, use and disclosure described above.",
+    "guest_name": "Guest Name",
+    "duration": "Duration",
+    "nights": "Nights"
   },
   "fr": {
     "action": "Action",
@@ -737,6 +749,18 @@ export const literals = {
     "redirect_to": "Redirect To",
     "zone_not_configured": "Zone Not Configured",
     "binkay_throw_error": "Error from Blinkay, please contact support",
-    "axios_throw_error": "Error from Axios, please contact support"
+    "axios_throw_error": "Error from Axios, please contact support",
+    "parking_registration_ui": "Parking Registration UI",
+    "full_name": "Full Name",
+    "license_plate": "License Plate",
+    "register_vehicle": "Register Vehicle",
+    "registration_disclaimer": "Please complete the information below to register your parking stay. Park only in your reserved stall. Your contact information may be used if your vehicle is parked in the wrong stall before ticketing or towing. You will receive an email confirmation of your parking stay.",
+    "privacy_notice": "Privacy Notice",
+    "privacy_policy_registration": "ParkIT collects this information on behalf of Skyline Peak to administer its guest parking program, including registration, parking authorization, guest communication, support and enforcement. Information will only be used or disclosed as reasonably necessary for these purposes.",
+    "privacy_questions": "Privacy questions:",
+    "consent_confirmation": "By submitting this registration, you confirm the information provided is accurate and acknowledge the collection, use and disclosure described above.",
+    "guest_name": "Guest Name",
+    "duration": "Duration",
+    "nights": "Nights"
   }
 }

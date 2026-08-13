@@ -19,6 +19,9 @@ import NotRegisteredError from './notRegisteredError';
 import parkingService from '../../../services/parking-service';
 import RegisteredSuccessful from './registeredSuccessful';
 import SessionEnd from './sessionEnd';
+import RegistrationUI from './registrationUI/registrationUI';
+import RegistrationReceipt from './registrationUI/RegistrationReceipt';
+import ConfirmDiallog from '../../../shared/ConfirmDiallog';
 
 export default function QRCodeUtils(props) {
   let navigate = useNavigate();
@@ -48,6 +51,7 @@ export default function QRCodeUtils(props) {
   const [dialogTitle, setDialogTitle] = useState('');
   const [dialogContent, setDialogContent] = useState('');
   const [openDialog, setOpenDialog] = useState(false);
+  const [showReciept, setShowReciept] = useState(false);
 
   useEffect(() => {
     getZonebyId();
@@ -275,9 +279,21 @@ export default function QRCodeUtils(props) {
     // setAlertMessage('Previous vehicle removed. You can now start your parking session. Click below.');
     // setSeverity('success');
     // setShowAlert(true);
-    purchaseKickOutParking(rateCycle[steps]);
+    if(zones[0]?.parking_registration_ui){
+      registerVehicle(inputField);
+    }else
+      purchaseKickOutParking(rateCycle[steps]);
     setShowSpinner(false);
     setOpenDialog(false);
+  }
+
+  const emailReciept = async()=>{
+    // setShowSpinner(true);
+    const res = await mainService.emailReciept({parking_id : parking._id, email: parking.email});
+    setAlertMessage(res.data.msg);
+    setSeverity(res.data.status);
+    setShowAlert(true);
+    setShowSpinner(false);
   }
 
   const showPlateConfirmation = (e) => {
@@ -342,10 +358,53 @@ export default function QRCodeUtils(props) {
     setShowSpinner(false);
   }
 
+  const registerVehicle = async (item) => {
+    console.log(item);
+    setInputField(item);
+    const TIME_FORMAT = 'MMMM Do YYYY, hh:mm a';
+    setSelectedPlate(item.plate);
+    let body = {
+      amount : 0,
+      plate: item.plate,
+      full_name: item.full_name,
+      mobile_no: item.mobile_no,
+      email: item.email,
+      // user: '',
+      zone: zones[0]._id,
+      city: zones[0].city_id._id,
+      from: moment().format(TIME_FORMAT),
+      to: moment().add(1440*item.nights, "minutes").format(TIME_FORMAT),
+      service_fee: 0,
+      org: props.org._id,
+    }
+    console.log(body);
+    setShowSpinner(true);
+    const res = await parkingService.buyParking(body);
+    setShowSpinner(false);
+    if(!res.data.message){
+      setShowReciept(true);
+      setParking(res.data)
+    }else if(res.data.message == 'parking_limit_exceed'){
+      setAlertMessage(props.literals.parking_limit_exceed)
+      setSeverity('error');
+      setShowAlert(true);
+    }else if(res.data.message == 'kickOutZone'){
+      setDialogTitle('Replace existing plate')
+      setDialogContent(`Parking is already active for plate ${res.data.parkings[0].plate} in this zone. Would you like to replace it
+      with your current vehicle?`)
+      setKickOutParking(res.data.parkings);
+      setOpenDialog(true);
+    }else{
+      setAlertMessage(res.data.message);
+      setSeverity('error');
+      setShowAlert(true);
+    }
+  }
+  
   return (
     <>
       <Layout org={props.org} literals={props.literals} zone={zones[0]} getLiterals = {props.getLiterals} selectedLanguage={props.selectedLanguage}>
-        {zones.length && !zones[0]?.is_business_pass && <>
+        {zones.length && !zones[0]?.is_business_pass && !zones[0]?.parking_registration_ui && <>
           {drawerComponent === 0 && <SelectTariff
             tarif={tarif}
             literals={props.literals}
@@ -479,6 +538,27 @@ export default function QRCodeUtils(props) {
             back={() => isSessionEnd ? window.location.reload() : setDrawerComponent(1)}
           />}
         </>}
+        {zones[0]?.parking_registration_ui && !showReciept && <RegistrationUI
+            registerVehicle={(e) => registerVehicle(e)}
+            literals={props.literals}
+            zone={zones[0]}
+          />
+        }
+        {zones[0]?.parking_registration_ui && showReciept && <RegistrationReceipt
+          zone={zones[0]}
+          parking={parking}
+          literals={props.literals}
+          selectedLanguage={props.selectedLanguage}
+          emailReciept={() => emailReciept()}
+        />}
+        <ConfirmDiallog
+          openDialog = {openDialog}
+          dialogTitle = {dialogTitle}
+          dialogContent = {dialogContent}
+  
+          closeDialog = {()=>setOpenDialog(false)}
+          delItem = {()=>kickOutPlate()}
+        />
         <SnackAlert
           alertMessage={alertMessage}
           showAlert={showAlert}

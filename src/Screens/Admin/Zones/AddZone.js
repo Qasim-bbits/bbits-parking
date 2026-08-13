@@ -121,20 +121,6 @@ export default function AddZone(props) {
           <FormGroup>
             <FormControlLabel control={
               <Checkbox
-                name="add_caption"
-                onChange={props.handleCheck}
-                checked={props.inputField['add_caption']}
-              />} label={
-                <Typography variant="subtitle1" color="primary" className="font-gray">
-                  {props.literals.add_caption}
-                </Typography>
-              } />
-          </FormGroup>
-        </Grid>
-        <Grid item xs={4}>
-          <FormGroup>
-            <FormControlLabel control={
-              <Checkbox
                 name="can_user_kick_out"
                 onChange={props.handleCheck}
                 checked={props.inputField['can_user_kick_out']}
@@ -145,16 +131,16 @@ export default function AddZone(props) {
               } />
           </FormGroup>
         </Grid>
-        <Grid item xs={8}>
+        <Grid item xs={4}>
           <FormGroup>
             <FormControlLabel control={
               <Checkbox
-                name="enable_extension"
+                name="add_caption"
                 onChange={props.handleCheck}
-                checked={props.inputField['enable_extension']}
+                checked={props.inputField['add_caption']}
               />} label={
                 <Typography variant="subtitle1" color="primary" className="font-gray">
-                  {props.literals.enable_extension}
+                  {props.literals.add_caption}
                 </Typography>
               } />
           </FormGroup>
@@ -191,6 +177,34 @@ export default function AddZone(props) {
             </Grid>
           </Grid>
         </>}
+        <Grid item xs={4}>
+          <FormGroup>
+            <FormControlLabel control={
+              <Checkbox
+                name="enable_extension"
+                onChange={props.handleCheck}
+                checked={props.inputField['enable_extension']}
+              />} label={
+                <Typography variant="subtitle1" color="primary" className="font-gray">
+                  {props.literals.enable_extension}
+                </Typography>
+              } />
+          </FormGroup>
+        </Grid>
+        <Grid item xs={8}>
+          <FormGroup>
+            <FormControlLabel control={
+              <Checkbox
+                name="parking_registration_ui"
+                onChange={props.handleCheck}
+                checked={props.inputField['parking_registration_ui']}
+              />} label={
+                <Typography variant="subtitle1" color="primary" className="font-gray">
+                  {props.literals.parking_registration_ui}
+                </Typography>
+              } />
+          </FormGroup>
+        </Grid>
         <Grid item xs={4}>
           <FormGroup>
             <FormControlLabel control={

@@ -42,6 +42,8 @@ export default function ParkingsView(props) {
       valueOptions: cities, filterable: true },
     // { field: 'fname', headerName: 'User Name', valueGetter: (params) => params.row?.user?.fname, width: 150, headerClassName: 'header' },
     { field: 'email', headerName: 'User Email', valueGetter: (params) => params.row?.user?.email || params.row?.email, minWidth: 200, filterable: false },
+    { field: 'full_name', headerName: 'Full Name', valueGetter: (params) => params.row?.user?.first_name || params.row?.full_name, minWidth: 200, filterable: false },
+    { field: 'mobile', headerName: 'Mobile No', valueGetter: (params) => params.row?.user?.mobile_no || params.row?.mobile_no, minWidth: 200, filterable: false },
     { field: 'plate', headerName: 'Plate', minWidth: 150, filterable: true},
     { field: 'plate_two', headerName: 'Plate Two', minWidth: 150, filterable: true},
     { field: 'plate_three', headerName: 'Plate Three', minWidth: 150, filterable: true},
