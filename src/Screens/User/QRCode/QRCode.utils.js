@@ -359,9 +359,26 @@ export default function QRCodeUtils(props) {
   }
 
   const registerVehicle = async (item) => {
-    console.log(item);
     setInputField(item);
+    const timezone = zones[0]?.city_id?.time_zone || "America/New_York";
     const TIME_FORMAT = 'MMMM Do YYYY, hh:mm a';
+    const now = moment().tz(timezone);
+
+    const checkoutTime = zones[0]?.night_rate_end_at || "11:00";
+    const [hour, minute] = checkoutTime.split(":").map(Number);
+
+    const checkout = now.clone()
+        .hour(hour)
+        .minute(minute)
+        .second(0)
+        .millisecond(0);
+
+    if (now.isAfter(checkout)) {
+        checkout.add(1, "day");
+    }
+
+    checkout.add(item.nights - 1, "days");
+
     setSelectedPlate(item.plate);
     let body = {
       amount : 0,
@@ -372,8 +389,8 @@ export default function QRCodeUtils(props) {
       // user: '',
       zone: zones[0]._id,
       city: zones[0].city_id._id,
-      from: moment().format(TIME_FORMAT),
-      to: moment().add(1440*item.nights, "minutes").format(TIME_FORMAT),
+      from: moment().tz(timezone).format(TIME_FORMAT),
+      to: checkout.format(TIME_FORMAT),
       service_fee: 0,
       org: props.org._id,
     }
@@ -541,6 +558,7 @@ export default function QRCodeUtils(props) {
         {zones[0]?.parking_registration_ui && !showReciept && <RegistrationUI
             registerVehicle={(e) => registerVehicle(e)}
             literals={props.literals}
+            selectedLanguage={props.selectedLanguage}
             zone={zones[0]}
           />
         }

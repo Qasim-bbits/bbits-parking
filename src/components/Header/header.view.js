@@ -13,6 +13,7 @@ const DashboardNavbarRoot = styled(AppBar)(({ theme }) => ({
 export const HeaderView = (props) => {
   let navigate = useNavigate();
   const { onSidebarOpen, ...other } = props;
+  const user = JSON.parse(sessionStorage.getItem("userLogged"));
 
   const logout = () =>{
     sessionStorage.removeItem("userLogged");
@@ -37,9 +38,11 @@ export const HeaderView = (props) => {
             minHeight: 64,
             px: 2,
             justifyContent: 'space-between',
+            alignItems: 'center',
+            gap: 1,
           }}
         >
-          <IconButton
+        {user && <IconButton
             onClick={onSidebarOpen}
             sx={{
               display: {
@@ -47,14 +50,39 @@ export const HeaderView = (props) => {
                 lg: 'none'
               },
               color: '#fff',
+              flexShrink: 0,
             }}
           >
             <MenuIcon fontSize="small" />
-          </IconButton>
-          {props.zone && <Typography variant='subtitle1'>
-            {props.zone?.zone_name}
-          </Typography>}
-          <Box sx={{display: 'flex', alignItems: 'center'}}>
+          </IconButton>}
+          {props.zone && <Box
+            sx={{
+              flex: '1 1 auto', // Allows container to expand/shrink dynamically
+              minWidth: 0,      // Crucial: allows flex items to shrink below their text content width
+              maxWidth: { xs: '150px', sm: '250px', md: '350px' }, // Set thresholds based on screen size
+              mx: 1,
+            }}
+          >
+            <Typography variant='subtitle1' noWrap 
+              sx={{
+              fontWeight: 'bold',
+                display: 'block',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+              }}>
+              {props.zone?.org?.org_name}
+            </Typography>
+            <Typography variant='subtitle1' noWrap 
+              sx={{
+                display: 'block',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+              }}>
+              {props.zone?.zone_name}
+            </Typography>
+            </Box>
+            }
+          <Box sx={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
             <FormControl variant="standard">
               <Select
                 sx={{

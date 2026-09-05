@@ -37,6 +37,7 @@ export default function AddZone(props) {
                 label={props.literals.select_city}
                 variant='outlined'
                 size='small'
+                required
                 InputProps={{
                   ...params.InputProps,
                   type: 'search',
@@ -153,12 +154,12 @@ export default function AddZone(props) {
               name="caption_en"
               value={props.inputField["caption_en"]}
               onChange={props.handleChange}
-              maxlength="100"
+              maxlength="500"
               required
               style={{ width: '100%', height: '54px', border: '1px solid rgb(196, 196, 196)', borderRadius: '5px' }}
             ></textarea>
             <Grid align="end">
-              <Typography variant="caption" sx={{ color: 'rgb(196, 196, 196)' }}>{props.inputField['caption_en']?.length || 0}/100</Typography>
+              <Typography variant="caption" sx={{ color: 'rgb(196, 196, 196)' }}>{props.inputField['caption_en']?.length || 0}/500</Typography>
             </Grid>
           </Grid>
           <Grid item xs={12}>
@@ -168,12 +169,12 @@ export default function AddZone(props) {
               name="caption_fr"
               value={props.inputField["caption_fr"]}
               onChange={props.handleChange}
-              maxlength="100"
+              maxlength="500"
               required
               style={{ width: '100%', height: '54px', border: '1px solid rgb(196, 196, 196)', borderRadius: '5px' }}
             ></textarea>
             <Grid align="end">
-              <Typography variant="caption" sx={{ color: 'rgb(196, 196, 196)' }}>{props.inputField['caption_fr']?.length || 0}/100</Typography>
+              <Typography variant="caption" sx={{ color: 'rgb(196, 196, 196)' }}>{props.inputField['caption_fr']?.length || 0}/500</Typography>
             </Grid>
           </Grid>
         </>}
@@ -191,7 +192,7 @@ export default function AddZone(props) {
               } />
           </FormGroup>
         </Grid>
-        <Grid item xs={8}>
+        <Grid item xs={4}>
           <FormGroup>
             <FormControlLabel control={
               <Checkbox
@@ -204,6 +205,22 @@ export default function AddZone(props) {
                 </Typography>
               } />
           </FormGroup>
+        </Grid>
+        <Grid item xs={4}>
+          {props.inputField.parking_registration_ui && <>
+            <TextField
+              label={props.literals.end_time}
+              color="primary"
+              type="time"
+              name="night_rate_end_at"
+              value={props.inputField['night_rate_end_at']}
+              onChange={props.handleChange}
+              size="small"
+              InputLabelProps={{ shrink: true }}
+              required
+              fullWidth
+            />
+          </>}
         </Grid>
         <Grid item xs={4}>
           <FormGroup>

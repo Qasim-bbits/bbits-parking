@@ -35,7 +35,7 @@ export default function RegistrationUI(props) {
         <Grid item xs={12}>
           <Typography variant="subtitle1">
             {props.literals.registration_disclaimer}
-            </Typography>
+          </Typography>
         </Grid>
         <Grid item xs={12}>
           <TextField
@@ -85,41 +85,43 @@ export default function RegistrationUI(props) {
           />
         </Grid>
         <Grid item xs={12} >
-          <InputMask
-            mask="+1 (999) 999-9999"
-            maskChar=""
-            value={inputField['mobile_no']}
-            onChange={handleChange}
-          >
-            <TextField
-              label={props.literals.phone_no}
-              color="primary"
-              name="mobile_no"
-              size="small"
-              required
-              fullWidth
-            />
-          </InputMask>
+          <TextField
+            label={props.literals.phone_no}
+            color="primary"
+            name="mobile_no"
+            size="small"
+            required
+            fullWidth
+            value={inputField["mobile_no"]}
+            onChange={(e) => {
+              const value = e.target.value.replace(/[^\d+]/g, "");
+
+              // Allow + only at the beginning
+              const formattedValue = value.replace(/(?!^)\+/g, "");
+
+              handleChange({
+                target: {
+                  name: "mobile_no",
+                  value: formattedValue,
+                },
+              });
+            }}
+          />
         </Grid>
         <Grid item xs={12}>
           <TextField
             id="nights"
-            label="How many nights you want to stay?"
+            label={props.literals.how_many_nights_you_want_to_stay}
             color="primary"
             name="nights"
+            type="number"
             value={inputField["nights"]}
             onChange={handleChange}
             size="small"
             required
             fullWidth
-            select
-          >
-            {[...Array(10)].map((_, index) => (
-              <MenuItem key={index + 1} value={index + 1}>
-                {index + 1}
-              </MenuItem>
-            ))}
-          </TextField>
+            inputProps={{ min: 1 }}
+          />
         </Grid>
         <Grid item xs={12}>
           <Button
@@ -128,31 +130,33 @@ export default function RegistrationUI(props) {
             variant="contained"
             size="medium"
             fullWidth>
-            {props.literals.register_vehicle}
+            {props.literals.click_here_to_register}
           </Button>
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={12} align="center">
           <Typography variant="subtitle1" className="font-bold">
-            {props.literals.privacy_notice}
+            {props.literals.no_payment_required}
           </Typography>
         </Grid>
         <Grid item xs={12}>
-          <Typography variant="subtitle1">
-            {props.literals.privacy_policy_registration}
-            </Typography>
-        </Grid>
-        <Grid item xs={12} sx={{ display: "flex", gap: "5px", alignItems: "center" }}>
-          <Typography variant="subtitle1">
-            {props.literals.privacy_questions}
-            </Typography>
-            <Typography variant="subtitle1" className="font-bold">
-              {props.zone.owner_email}
-            </Typography>
-        </Grid>
-        <Grid item xs={12}>
-          <Typography variant="subtitle1">
-            {props.literals.consent_confirmation}
-            </Typography>
+          <Typography
+            component="div"
+            variant="subtitle1"
+            sx={{
+              "& a": {
+                color: "primary.main",
+                textDecoration: "underline",
+                cursor: "pointer",
+              },
+            }}
+            dangerouslySetInnerHTML={{
+              __html: (props.selectedLanguage === "en"
+              ? props.zone.caption_en
+              : props.zone.caption_fr)
+                ?.replace(/\r?\n\r?\n/g, "<br /><br />")
+                ?.replace(/\r?\n/g, "<br />"),
+            }}
+          />
         </Grid>
       </Grid>
     </Box>
